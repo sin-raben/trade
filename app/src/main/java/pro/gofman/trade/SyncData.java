@@ -162,7 +162,8 @@ public class SyncData extends IntentService {
 
             @Override
             public void onTextMessage(WebSocket websocket, String text) throws Exception {
-                Log.i("WS", "Text: " + text);
+                //Log.i("WS", "Text: " + text);
+
                 JSONObject result = new JSONObject(text);
 
                 String head = result.getString("head");
@@ -175,8 +176,24 @@ public class SyncData extends IntentService {
                     }
 
                     case "getMbTov": {
-                        // процедура загрузкив базу
-                        // ответ серверу о результате
+                        /*
+                            {"items":[{Номенклатура}],"count":1000}
+
+                         */
+                        break;
+                    }
+
+                    case "getMbPartner": {
+                        /*
+                            {"items":[{Торговая точка}],"count":600}
+                         */
+                        break;
+                    }
+
+                    case "getMbClient": {
+                        /*
+                            {"items":[{Контрагент}],"count":600}
+                         */
                         break;
                     }
 
@@ -251,7 +268,7 @@ public class SyncData extends IntentService {
             public void onSendingHandshake(WebSocket websocket, String requestLine, List<String[]> headers) throws Exception {
 
             }
-        })
+        });
 
         try
         {
