@@ -1,51 +1,116 @@
 {
-  "database":"trade",
-  "version":1,
-  "tables":[
+  "database": "trade",
+  "version": 1,
+  "tables": [
     {
-      "table":"items",
-      "description":"Справочник номенклатуры",
-      "fields":[{
-            "field":"id_i",
-            "type":"integer",
-            "description":"ID справочника номенклатуры",
-            "primary_key":true
-        },{
-            "field":"name",
-            "type":"text",
-            "description":"Наименование номенклатуры"
-      }],
-      "values":[{"id_i":1,"name":"Номенклатура 1"},{"id_i":2,"name":"Номенклатура 2"}]
-    },{
-      "table":"price",
-      "description":"Цены",
-      "fields":[{
-        "field":"id_pl",
-        "type":"integer",
-        "description":"ID прайс-листа"
-        },{
-        "field":"id_i",
-        "type":"integer",
-        "description":"ID номенклатуры"
-      },{
-        "field":"cn",
-        "type":"integer",
-        "description":"Цена номенклатуры"
-      }
-      ]
-    },{
-      "table":"pricelist",
-      "description":"Справочник прайс-листов",
-      "fields":[
+      "table": "items",
+      "description": "Справочник номенклатуры",
+      "fields": [
         {
-          "field":"id_pl",
-          "type":"integer",
-          "description":"ID прайс-листа",
-          "primary_key":true
-        },{
-          "field":"name",
-          "type":"text",
-          "description":"Наименование прайс-листа"
+          "field": "id_i",
+          "type": "integer",
+          "description": "ID справочника номенклатуры",
+          "primary_key": true
+        },
+        {
+          "field": "name",
+          "type": "text",
+          "description": "Наименование номенклатуры"
+        }
+      ],
+      "values": [
+        {
+          "id_i": 1,
+          "name": "Номенклатура 1"
+        },
+        {
+          "id_i": 2,
+          "name": "Номенклатура 2"
+        }
+      ]
+    },
+    {
+      "table": "price",
+      "description": "Цены",
+      "fields": [
+        {
+          "field": "id_pl",
+          "type": "integer",
+          "description": "ID прайс-листа"
+        },
+        {
+          "field": "id_i",
+          "type": "integer",
+          "description": "ID номенклатуры"
+        },
+        {
+          "field": "cn",
+          "type": "integer",
+          "description": "Цена номенклатуры"
+        }
+      ]
+    },
+    {
+      "table": "pricelist",
+      "description": "Справочник прайс-листов",
+      "fields": [
+        {
+          "field": "id_pl",
+          "type": "integer",
+          "description": "ID прайс-листа",
+          "primary_key": true
+        },
+        {
+          "field": "name",
+          "type": "text",
+          "description": "Наименование прайс-листа"
+        }
+      ]
+    },
+    {
+      "table": "pricelist_link",
+      "description": "Связи Составного прайс-листа и Базового прайс-листа",
+      "fields": [
+        {
+          "field": "parent",
+          "type": "integer",
+          "description": "ID составного прайс-листа"
+        },
+        {
+          "field": "child",
+          "type": "integer",
+          "description": "ID базового прайс-листа"
+        },
+        {
+          "field": "prior",
+          "type": "integer",
+          "description": "Чем больше число тем выше приоритет прайс-листа"
+        }
+      ]
+    },
+    {
+      "table": "coords",
+      "description": "Хранение координат",
+      "fields": [
+        {
+          "field": "lat",
+          "type": "text",
+          "description": "Широта"
+        },
+        {
+          "field": "lon",
+          "type": "text",
+          "description": "Долгота"
+        },
+        {
+          "field": "atime",
+          "type": "integer",
+          "description": "Время получения координат"
+        },
+        {
+          "field": "provider",
+          "type": "text",
+          "description": "Провайдер который зарегистрировал координаты"
         }
       ]
     }

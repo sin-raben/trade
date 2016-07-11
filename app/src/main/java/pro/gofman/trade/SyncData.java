@@ -1,9 +1,18 @@
 package pro.gofman.trade;
 
+import android.Manifest;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Looper;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.neovisionaries.ws.client.OpeningHandshakeException;
@@ -14,6 +23,8 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 import com.neovisionaries.ws.client.WebSocketListener;
 import com.neovisionaries.ws.client.WebSocketState;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -30,12 +41,10 @@ import java.util.Map;
 public class SyncData extends IntentService {
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    private static final String ACTION_SYNCDATA = "pro.gofman.trade.action.syncdata";
-    private static final String ACTION_BAZ = "pro.gofman.trade.action.BAZ";
+    protected static final String ACTION_SYNCDATA = "pro.gofman.trade.action.syncdata";
+    protected static final String ACTION_LOGCOORD = "pro.gofman.trade.action.logcoord";
 
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "pro.gofman.trade.extra.PARAM2";
+    protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.PARAM1";
 
     public SyncData() {
         super("SyncData");
@@ -48,11 +57,10 @@ public class SyncData extends IntentService {
      * @see IntentService
      */
     // TODO: Customize helper method
-    public static void startActionSyncData(Context context, String param1, String param2) {
+    public static void startActionSyncData(Context context, JSONObject j) {
         Intent intent = new Intent(context, SyncData.class);
         intent.setAction(ACTION_SYNCDATA);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
+        intent.putExtra(EXTRA_PARAM1, j.toString() );
         context.startService(intent);
     }
 
@@ -63,11 +71,11 @@ public class SyncData extends IntentService {
      * @see IntentService
      */
     // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
+    public static void startActionLogCoord(Context context, JSONObject j) {
         Intent intent = new Intent(context, SyncData.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
+        intent.setAction(ACTION_LOGCOORD);
+        Log.i("LOG", j.toString() );
+        intent.putExtra(EXTRA_PARAM1, j.toString());
         context.startService(intent);
     }
 
@@ -76,21 +84,26 @@ public class SyncData extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
 
-
-            Log.i("Handle", "33333");
-
             if (ACTION_SYNCDATA.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
+                JSONObject p;
                 try {
-                    handleActionSyncData(param1, param2);
+                    p = new JSONObject( intent.getStringExtra(EXTRA_PARAM1) );
+                    handleActionSyncData(p);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
+
+            } else if (ACTION_LOGCOORD.equals(action)) {
+                JSONObject p;
+                try {
+                    p = new JSONObject( intent.getStringExtra(EXTRA_PARAM1) );
+                    handleActionLogCoord(p);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     }
@@ -99,7 +112,7 @@ public class SyncData extends IntentService {
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionSyncData(String param1, String param2) throws IOException {
+    private void handleActionSyncData(JSONObject p) throws IOException {
         // TODO: Handle action SyncData
         Log.i("SyncData", "SyncData стартанул");
 
@@ -162,7 +175,10 @@ public class SyncData extends IntentService {
 
             @Override
             public void onTextMessage(WebSocket websocket, String text) throws Exception {
-                //Log.i("WS", "Text: " + text);
+                // Log.i("WS", "Text: " + text);
+
+                DB db = Trade.getWritableDatabase();
+                String sql = "";
 
                 JSONObject result = new JSONObject(text);
 
@@ -178,8 +194,25 @@ public class SyncData extends IntentService {
                     case "getMbTov": {
                         /*
                             {"items":[{Номенклатура}],"count":1000}
-
                          */
+
+                        JSONArray items = body.getJSONArray("items");
+                        for (int i = 0; i < items.length(); i++){
+                            JSONObject t = items.getJSONObject(i);
+
+                            sql = "INSERT INTO items (\"id_i\", \"name\") VALUES (";
+                            sql += "\"" + t.getString("key") + "\", \"" + t.getString("name") + "\"";
+                            sql += ");";
+                            // Log.i("TOV", sql );
+
+                            db.addItems(sql);
+
+
+                        }
+
+
+                        Log.i("SQL", "Загружено: " + String.valueOf( db.getItemsCount() ));
+
                         break;
                     }
 
@@ -300,8 +333,75 @@ public class SyncData extends IntentService {
      * Handle action Baz in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+    private void handleActionLogCoord(JSONObject p) {
+
+        //long minTime = 60 * 60 * 60 * 1000;  // 1 час
+        long minTime = 60 * 1000;  // 1 час
+        float minDistance = 300;
+
+
+        if ( p.optLong("minTime") > 0 ) {
+            minTime = p.optLong("minTime");
+        }
+        if ( p.optInt("minDistance") > 0 ) {
+            minDistance = (float) p.optLong("minDistance");
+        }
+
+        Log.i("LOG", "1");
+
+        Log.i("LOG", "2");
+
+        LocationListener ll = new LocationListener() {
+
+
+
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.i("LOG", "7");
+
+                DB db = Trade.getWritableDatabase();
+
+                if ( location != null ) {
+                    Log.i("GPS", "Широта="+location.getLatitude());
+                    Log.i("GPS", "Долгота="+location.getLongitude());
+
+                    Log.i("LOG", "8");
+
+                    String sql = "INSERT INTO coords (\"lat\", \"lon\", \"atime\", \"provider\" ) VALUES (";
+                    sql += "\"" + location.getLatitude() + "\", \"" + location.getLongitude() + "\"," + String.valueOf( System.currentTimeMillis() ) + ", \"" + location.getProvider() + "\"";
+                    sql += ");";
+
+                    Log.i("SQL", sql);
+                    db.execSQL(sql);
+                    Log.i("LOG", "11");
+                }
+            }
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+
+        Log.i("LOG", "3");
+
+        LocationManager lm = (LocationManager) getSystemService( LOCATION_SERVICE );
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.i("LOG", "4");
+            return;
+        }
+        Log.i("LOG", "5");
+        lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, minTime, minDistance, ll, Looper.getMainLooper() );
+        Log.i("LOG", "6");
+
     }
 }
