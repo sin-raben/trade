@@ -54,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
-        AccountHeader headerResult = new AccountHeaderBuilder()
+        AccountHeader ah = new AccountHeaderBuilder()
                 .withActivity(this)
+                .withSelectionListEnabledForSingleProfile(false)
+                .withCompactStyle(true)
                 //.withHeaderBackground(R.drawable.header)
                 .addProfiles(
                         new ProfileDrawerItem().withName("Гофман Роман").withEmail("roman@gofman.pro") //.withIcon(getResources().getDrawable(R.drawable.profile))
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         DrawerBuilder dwb = new DrawerBuilder(this);
         dwb.withActionBarDrawerToggleAnimated(true);
 
-        dwb.withAccountHeader( headerResult );
+        dwb.withAccountHeader( ah );
 
         dwb.addDrawerItems(
                 new PrimaryDrawerItem()
