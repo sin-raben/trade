@@ -20,11 +20,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+
 public class MainActivity extends AppCompatActivity {
+
+
+    Drawer dw = null;
+    int dwItemSelected = -1;
+
+
 
     final String ADDRESS = "ws://pol-ice.ru:8890/ws";
     //private WebSocket webSocketConnection;
     //private MessageListenerInterface messageListener;
+
 
     private EditText editMessage;
     private Button btn_send;
@@ -38,6 +53,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
+
+        AccountHeader headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                //.withHeaderBackground(R.drawable.header)
+                .addProfiles(
+                        new ProfileDrawerItem().withName("Гофман Роман").withEmail("roman@gofman.pro") //.withIcon(getResources().getDrawable(R.drawable.profile))
+                )
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+                        return false;
+                    }
+                })
+                .build();
+
+
+
+
+        DrawerBuilder dwb = new DrawerBuilder(this);
+        dwb.withActionBarDrawerToggleAnimated(true);
+
+        dwb.withAccountHeader( headerResult );
+
+        dwb.addDrawerItems(
+                new PrimaryDrawerItem()
+                        .withName("Номенклатура")
+                        .withIdentifier(1)
+        );
+
+        dwb.addDrawerItems(
+                new PrimaryDrawerItem()
+                        .withName("Прайс-листы")
+                        .withIdentifier(2)
+
+        );
+
+        dw = dwb.build();
 
 
         txtMessages = (TextView) findViewById(R.id.txt_msg);

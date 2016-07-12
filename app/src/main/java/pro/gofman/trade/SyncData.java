@@ -337,7 +337,7 @@ public class SyncData extends IntentService {
 
         //long minTime = 60 * 60 * 60 * 1000;  // 1 час
         long minTime = 60 * 1000;  // 1 час
-        float minDistance = 300;
+        float minDistance = 0;
 
 
         if ( p.optLong("minTime") > 0 ) {
