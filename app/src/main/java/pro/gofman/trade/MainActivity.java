@@ -28,6 +28,7 @@ import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 public class MainActivity extends AppCompatActivity {
@@ -79,48 +80,61 @@ public class MainActivity extends AppCompatActivity {
         dwb.withActionBarDrawerToggleAnimated(true);
 
         dwb.withAccountHeader( ah );
-/*
-        dwb.addDrawerItems(
-                new PrimaryDrawerItem()
-                        .withName("Номенклатура")
-                        .withIdentifier(1)
-        );
-
-        dwb.addDrawerItems(
-                new PrimaryDrawerItem()
-                        .withName("Прайс-листы")
-                        .withIdentifier(2)
-
-        );
-*/
 
         dwb.addDrawerItems(
                 new ExpandableDrawerItem().withName("Справочники").withIcon(R.drawable.items).withIdentifier(19).withSelectable(false).withSubItems(
-                    new SecondaryDrawerItem().withName("Номенклатура").withLevel(2).withIcon(R.drawable.document).withIdentifier(2000),
-                    new SecondaryDrawerItem().withName("Прайс-листы").withLevel(2).withIcon(R.drawable.document).withIdentifier(2001)
+                        new SecondaryDrawerItem().withName("Номенклатура").withLevel(2).withIcon(R.drawable.document).withIdentifier(2000),
+                        new SecondaryDrawerItem().withName("Прайс-листы").withLevel(2).withIcon(R.drawable.document).withIdentifier(2001)
                 ),
                 new ExpandableDrawerItem().withName("Документы").withIcon(R.drawable.items).withIdentifier(20).withSelectable(false).withSubItems(
-                        new SecondaryDrawerItem().withName("Заказ покупателя").withLevel(2).withIcon(R.drawable.document).withIdentifier(2002)
+                        new SecondaryDrawerItem().withName("Заказ покупателя").withLevel(2).withIcon(R.drawable.document).withIdentifier(2002),
+                        new SecondaryDrawerItem().withName("Оплата покупателя").withLevel(2).withIcon(R.drawable.document).withIdentifier(2003),
+                        new SecondaryDrawerItem().withName("Фотография").withLevel(2).withIcon(R.drawable.document).withIdentifier(2004)
                 )
         );
+
+        dwb.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                int id = (int)drawerItem.getIdentifier();
+
+                if ( drawerItem.isSelectable() ) {
+
+                    switch ( id ) {
+                        case 2000: {
+                            Log.i("FRAGMENT", "2000");
+                            ItemsFragment f2000 = new ItemsFragment();
+
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment, f2000)
+                                    .commit();
+
+
+                            break;
+                        }
+
+                        default:
+
+                            break;
+
+
+                    }
+
+                } // isSelectable
+
+                return false;
+            }
+        });
 
 
         dw = dwb.build();
 
-
-        txtMessages = (TextView) findViewById(R.id.txt_msg);
-
-
-        btn_send = (Button) findViewById(R.id.btn_send);
-        btn_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        /*
                 Intent intent = new Intent(MainActivity.this, SyncData.class);
                 intent.setAction(SyncData.ACTION_LOGCOORD);
                 intent.putExtra("pro.gofman.trade.extra.PARAM1", "{}");
                 startService( intent );
-            }
-        });
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
                 startService( intent );
             }
         });
+
+        */
 
     }
 
@@ -174,4 +190,6 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+
 }
