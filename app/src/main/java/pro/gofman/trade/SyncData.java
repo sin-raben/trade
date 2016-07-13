@@ -2,6 +2,7 @@ package pro.gofman.trade;
 
 import android.Manifest;
 import android.app.IntentService;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.neovisionaries.ws.client.OpeningHandshakeException;
@@ -46,8 +48,17 @@ public class SyncData extends IntentService {
 
     protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.PARAM1";
 
+    private NotificationManager mNM;
+
+
     public SyncData() {
         super("SyncData");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
     }
 
     /**
@@ -338,6 +349,14 @@ public class SyncData extends IntentService {
         //long minTime = 60 * 60 * 60 * 1000;  // 1 час
         long minTime = 60 * 1000;  // 1 час
         float minDistance = 0;
+
+
+        NotificationCompat.Builder mNB = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.worker)
+                .setContentTitle("Собираем координаты")
+                .setContentText("Необходимо чтобы датчик GPS был включен");
+
+        mNM.notify( 1, mNB.build() );
 
 
         if ( p.optLong("minTime") > 0 ) {

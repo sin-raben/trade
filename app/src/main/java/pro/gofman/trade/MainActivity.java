@@ -24,8 +24,10 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         dwb.withActionBarDrawerToggleAnimated(true);
 
         dwb.withAccountHeader( ah );
-
+/*
         dwb.addDrawerItems(
                 new PrimaryDrawerItem()
                         .withName("Номенклатура")
@@ -90,6 +92,18 @@ public class MainActivity extends AppCompatActivity {
                         .withIdentifier(2)
 
         );
+*/
+
+        dwb.addDrawerItems(
+                new ExpandableDrawerItem().withName("Справочники").withIcon(R.drawable.items).withIdentifier(19).withSelectable(false).withSubItems(
+                    new SecondaryDrawerItem().withName("Номенклатура").withLevel(2).withIcon(R.drawable.document).withIdentifier(2000),
+                    new SecondaryDrawerItem().withName("Прайс-листы").withLevel(2).withIcon(R.drawable.document).withIdentifier(2001)
+                ),
+                new ExpandableDrawerItem().withName("Документы").withIcon(R.drawable.items).withIdentifier(20).withSelectable(false).withSubItems(
+                        new SecondaryDrawerItem().withName("Заказ покупателя").withLevel(2).withIcon(R.drawable.document).withIdentifier(2002)
+                )
+        );
+
 
         dw = dwb.build();
 
@@ -150,5 +164,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (dw != null && dw.isDrawerOpen()) {
+            dw.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
