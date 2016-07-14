@@ -128,7 +128,7 @@ public class SyncData extends IntentService {
         Log.i("SyncData", "SyncData стартанул");
 
         WebSocket ws = new WebSocketFactory().createSocket("ws://pol-ice.ru:8890/ws");
-        ws.addListener(new WebSocketListener() {
+        WebSocket webSocket = ws.addListener(new WebSocketListener() {
             @Override
             public void onStateChanged(WebSocket websocket, WebSocketState newState) throws Exception {
 
@@ -207,8 +207,12 @@ public class SyncData extends IntentService {
                             {"items":[{Номенклатура}],"count":1000}
                          */
 
+
+                        db.execSQL("DELETE FROM items");
+
+
                         JSONArray items = body.getJSONArray("items");
-                        for (int i = 0; i < items.length(); i++){
+                        for (int i = 0; i < items.length(); i++) {
                             JSONObject t = items.getJSONObject(i);
 
                             sql = "INSERT INTO items (\"id_i\", \"name\") VALUES (";
@@ -222,7 +226,7 @@ public class SyncData extends IntentService {
                         }
 
 
-                        Log.i("SQL", "Загружено: " + String.valueOf( db.getItemsCount() ));
+                        Log.i("SQL", "Загружено: " + String.valueOf(db.getItemsCount()));
 
                         break;
                     }

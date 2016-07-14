@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
                         new SecondaryDrawerItem().withName("Заказ покупателя").withLevel(2).withIcon(R.drawable.document).withIdentifier(2002),
                         new SecondaryDrawerItem().withName("Оплата покупателя").withLevel(2).withIcon(R.drawable.document).withIdentifier(2003),
                         new SecondaryDrawerItem().withName("Фотография").withLevel(2).withIcon(R.drawable.document).withIdentifier(2004)
+                ),
+                new ExpandableDrawerItem().withName("Операции").withIcon(R.drawable.items).withIdentifier(21).withSelectable(false).withSubItems(
+                        new SecondaryDrawerItem().withName("Полная синхронизация").withLevel(2).withIcon(R.drawable.document).withIdentifier(2005)
                 )
         );
 
@@ -109,6 +112,18 @@ public class MainActivity extends AppCompatActivity {
                                     .replace(R.id.fragment, f2000)
                                     .commit();
 
+
+                            break;
+                        }
+
+
+                        case 2005: {
+
+                            Intent intent = new Intent(MainActivity.this, SyncData.class);
+                            intent.setAction("pro.gofman.trade.action.syncdata");
+                            intent.putExtra("pro.gofman.trade.extra.PARAM1", "{}");
+
+                            startService( intent );
 
                             break;
                         }
@@ -143,11 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                Intent intent = new Intent(MainActivity.this, SyncData.class);
-                intent.setAction("pro.gofman.trade.action.syncdata");
-                intent.putExtra("pro.gofman.trade.extra.PARAM1", "{}");
 
-                startService( intent );
             }
         });
 

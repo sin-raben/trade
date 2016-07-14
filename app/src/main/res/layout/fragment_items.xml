@@ -9,12 +9,6 @@
     tools:context="pro.gofman.trade.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textColor="@color/colorAccent"
-        android:text="@string/hello_blank_fragment" />
-
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

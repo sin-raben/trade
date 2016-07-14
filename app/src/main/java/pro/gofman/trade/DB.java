@@ -14,6 +14,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -49,11 +51,38 @@ public class DB {
         if ( c != null ) {
             if ( c.moveToFirst() ) {
                 result = c.getInt( 0 );
+
+                c.close();
             }
         }
 
         return result;
     }
+
+    public List<Items> getItems() {
+        List<Items> r = new ArrayList<Items>();
+
+        Cursor c = mDatabase.rawQuery("SELECT * FROM items", null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    Items i = new Items();
+                    i.withName( c.getString( c.getColumnIndex("name") ) );
+                    i.withDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("id_i") ) ) );
+
+                    r.add(i);
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+
+
 
 
     private static class dbHelper extends SQLiteOpenHelper {

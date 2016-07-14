@@ -1,14 +1,21 @@
 package pro.gofman.trade;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.IAdapter;
+import com.mikepenz.fastadapter.adapters.FastItemAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ItemsFragment extends Fragment {
@@ -51,10 +58,31 @@ public class ItemsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_items, container, false);
         RecyclerView r = (RecyclerView) v.findViewById(R.id.recycler_view);
 
-        // FastAdapter
+
+        FastItemAdapter ia = new FastItemAdapter();
+        ia.withSelectable(false);
+        ia.withOnClickListener(new FastAdapter.OnClickListener<Items>() {
+            @Override
+            public boolean onClick(View v, IAdapter<Items> adapter, Items item, int position) {
+                Log.i("CLICK", String.valueOf(position));
+                return true;
+            }
+        });
+
 
         r.setLayoutManager( new LinearLayoutManager( v.getContext() ) );
+        r.setAdapter( ia );
 
+        List<Items> li = new ArrayList<Items>();
+
+        li.add( new Items().withName("Привет").withDescription("Приветствие"));
+        li.add( new Items().withName("Как дела?").withDescription("Заинтересованность в делах"));
+
+        DB db = Trade.getWritableDatabase();
+
+
+
+        ia.add( db.getItems() );
 
 
 
