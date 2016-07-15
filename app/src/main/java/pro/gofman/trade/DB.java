@@ -82,6 +82,29 @@ public class DB {
         return r;
     }
 
+    public List<Items> getCoords() {
+        List<Items> r = new ArrayList<Items>();
+
+        Cursor c = mDatabase.rawQuery("SELECT * FROM coords", null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    Items i = new Items();
+                    i.withName( c.getString( c.getColumnIndex("lat") ) + "," + c.getString( c.getColumnIndex("lon") ) );
+                    i.withDescription( "Провайдер: " + c.getString( c.getColumnIndex("provider") ) + " Время: " + String.valueOf( c.getInt( c.getColumnIndex("atime") ) ) );
+
+                    r.add(i);
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+
+    }
 
 
 

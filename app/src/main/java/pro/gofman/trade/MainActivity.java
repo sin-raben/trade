@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -24,35 +26,44 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondarySwitchDrawerItem;
+import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String GPS_MONITORING_STATUS = "GPSMonitoringStatus";
 
     Drawer dw = null;
     int dwItemSelected = -1;
+    boolean bGPSMonitoringStatus = false;
 
 
 
     final String ADDRESS = "ws://pol-ice.ru:8890/ws";
-    //private WebSocket webSocketConnection;
-    //private MessageListenerInterface messageListener;
 
 
-    private EditText editMessage;
-    private Button btn_send;
-    private TextView txtMessages;
-
-    private LocationListener ll;
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        Log.i("GPSMonitoring", String.valueOf(bGPSMonitoringStatus));
+        outState.putBoolean(GPS_MONITORING_STATUS, bGPSMonitoringStatus);
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null ) {
+            bGPSMonitoringStatus = savedInstanceState.getBoolean(GPS_MONITORING_STATUS, false);
+        }
+
         setContentView(R.layout.activity_main);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -93,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
                 ),
                 new ExpandableDrawerItem().withName("Операции").withIcon(R.drawable.items).withIdentifier(21).withSelectable(false).withSubItems(
                         new SecondaryDrawerItem().withName("Полная синхронизация").withLevel(2).withIcon(R.drawable.document).withIdentifier(2005)
+                ),
+                // new SwitchDrawerItem().withName("Мониторинг").withIcon(R.drawable.items).withChecked(false).withOnCheckedChangeListener(onCheckedChangeListener)
+                new ExpandableDrawerItem().withName("Мониторинг").withIcon(R.drawable.items).withIdentifier(22).withSelectable(false).withSubItems(
+                        new SecondarySwitchDrawerItem().withName("Рубильник").withIcon(R.drawable.document).withLevel(2).withChecked(bGPSMonitoringStatus).withOnCheckedChangeListener(onCheckedChangeListener),
+                        new SecondaryDrawerItem().withName("Координаты").withLevel(2).withIcon(R.drawable.document).withIdentifier(2006)
                 )
         );
 
@@ -124,6 +140,19 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra("pro.gofman.trade.extra.PARAM1", "{}");
 
                             startService( intent );
+
+                            break;
+                        }
+
+                        case 2006: {
+
+                            Log.i("FRAGMENT", "2006");
+                            CoordsFragment f2000 = new CoordsFragment();
+
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment, f2000)
+                                    .commit();
+
 
                             break;
                         }
@@ -165,6 +194,23 @@ public class MainActivity extends AppCompatActivity {
         */
 
     }
+    private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
+
+            bGPSMonitoringStatus = isChecked;
+
+            Intent intent = new Intent(MainActivity.this, SyncData.class);
+            intent.setAction(SyncData.ACTION_LOGCOORD);
+            intent.putExtra("pro.gofman.trade.extra.PARAM1", "{}");
+
+            if ( isChecked ) {
+                startService(intent);
+            } else {
+                stopService(intent);
+            }
+        }
+    };
 
     @Override
     protected void onDestroy() {

@@ -14,8 +14,7 @@ import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
 
-
-public class ItemsFragment extends Fragment {
+public class CoordsFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -25,13 +24,13 @@ public class ItemsFragment extends Fragment {
     private String mParam2;
 
 
-    public ItemsFragment() {
+    public CoordsFragment() {
         // Required empty public constructor
     }
 
 
-    public static ItemsFragment newInstance() {
-        ItemsFragment fragment = new ItemsFragment();
+    public static CoordsFragment newInstance() {
+        CoordsFragment fragment = new CoordsFragment();
 
         return fragment;
     }
@@ -74,7 +73,7 @@ public class ItemsFragment extends Fragment {
 
 
 
-        ia.add( db.getItems() );
+        ia.add( db.getCoords() );
 
 
 
