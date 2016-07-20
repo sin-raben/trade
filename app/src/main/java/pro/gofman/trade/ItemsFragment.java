@@ -1,7 +1,9 @@
 package pro.gofman.trade;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -53,6 +55,18 @@ public class ItemsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_items, container, false);
+        ViewPager vp = (ViewPager) v.findViewById(R.id.id_viewpager);
+        TabLayout t = (TabLayout) v.findViewById(R.id.id_tabs);
+
+        ItemsTabPagerAdapter a = new ItemsTabPagerAdapter(this.getActivity().getSupportFragmentManager());
+
+        vp.setAdapter( a );
+
+        t.setupWithViewPager(vp);
+
+
+
+
         RecyclerView r = (RecyclerView) v.findViewById(R.id.recycler_view);
 
 
