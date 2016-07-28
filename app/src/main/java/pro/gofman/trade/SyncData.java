@@ -48,6 +48,16 @@ public class SyncData extends IntentService {
 
     protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.PARAM1";
 
+
+    private DB db; ;
+    private String sql = "";
+    private JSONObject result = null;
+
+    private String head = "";
+    private JSONObject body = null;
+
+    private boolean mAuth = false;
+
     private NotificationManager mNM;
 
 
@@ -58,6 +68,7 @@ public class SyncData extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
+        db = Trade.getWritableDatabase();
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
     }
 
@@ -127,6 +138,8 @@ public class SyncData extends IntentService {
         // TODO: Handle action SyncData
         Log.i("SyncData", "SyncData стартанул");
 
+
+
         WebSocket ws = new WebSocketFactory().createSocket("ws://pol-ice.ru:8890/ws");
         WebSocket webSocket = ws.addListener(new WebSocketListener() {
             @Override
@@ -186,19 +199,23 @@ public class SyncData extends IntentService {
 
             @Override
             public void onTextMessage(WebSocket websocket, String text) throws Exception {
-                // Log.i("WS", "Text: " + text);
+                Log.i("WS", "Text: " + text);
 
-                DB db = Trade.getWritableDatabase();
-                String sql = "";
+                result = new JSONObject(text);
+                head = result.getString("head");
+                body = result.getJSONObject("body");
 
-                JSONObject result = new JSONObject(text);
-
-                String head = result.getString("head");
-                JSONObject body = result.getJSONObject("body");
 
                 switch (head) {
-                    case "auth": {
+                    case "autchUser": {
                         // успешная авторизация запуск процедуры обмена
+                        mAuth = body.optString("result", "").equalsIgnoreCase("ok");
+
+                        if ( mAuth ) {
+                            Log.i("WS", "sendCoord");
+                            sendCoord(websocket);
+                        }
+
                         break;
                     }
 
@@ -316,6 +333,15 @@ public class SyncData extends IntentService {
             public void onSendingHandshake(WebSocket websocket, String requestLine, List<String[]> headers) throws Exception {
 
             }
+
+            public void sendCoord(WebSocket websocket) throws Exception {
+                Log.i("WS", "11");
+                String coords = db.getCoords2().toString();
+                Log.i("WS", coords);
+                websocket.sendText(coords);
+
+                Log.i("WS", "22");
+            }
         });
 
         try
@@ -325,7 +351,12 @@ public class SyncData extends IntentService {
             ws.connect();
 
             if ( ws.isOpen() ) {
-                ws.sendText("{\"head\":\"getMbTov\",\"body\":{\"len\":1}}");
+
+                String AuthCommand = "{\"head\":\"autchUser\",\"body\":{\"idToken\":\"gofman-1\",\"criptoPass\":{\"login\":\"gofman\",\"pass\":\"1\"}}}";
+
+                ws.sendText(AuthCommand);
+
+                //ws.sendText("{\"head\":\"getMbTov\",\"body\":{\"len\":1}}");
             }
 
             //ws.disconnect();
@@ -391,8 +422,12 @@ public class SyncData extends IntentService {
                     Log.i("LOG", "8");
 
                     String sql = "INSERT INTO coords (\"lat\", \"lon\", \"atime\", \"provider\" ) VALUES (";
-                    sql += "\"" + location.getLatitude() + "\", \"" + location.getLongitude() + "\"," + String.valueOf( System.currentTimeMillis() ) + ", \"" + location.getProvider() + "\"";
+                    sql += "\"" + location.getLatitude() + "\", \"" + location.getLongitude() + "\"," + String.valueOf( System.currentTimeMillis() / 1000 ) + ", \"" + location.getProvider() + "\"";
                     sql += ");";
+
+                    long time = System.currentTimeMillis() / 1000;
+
+                    Log.i("TIME", String.valueOf(time) );
 
                     Log.i("SQL", sql);
                     db.execSQL(sql);

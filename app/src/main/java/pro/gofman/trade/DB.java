@@ -103,7 +103,49 @@ public class DB {
         }
 
         return r;
+    }
 
+    public JSONObject getCoords2() throws JSONException {
+        JSONObject r = new JSONObject();
+        r.put("head", "setLogCoord");
+
+        JSONArray points = new JSONArray();
+        int i = 0;
+
+        Cursor c = mDatabase.rawQuery("SELECT * FROM coords", null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    JSONObject coord = new JSONObject();
+                    coord.put( "lat", c.getString( c.getColumnIndex("lat") ) );
+                    coord.put( "lon", c.getString( c.getColumnIndex("lon") ) );
+
+                    JSONObject point = new JSONObject();
+                    point.put( "coord", coord );
+                    point.put( "time", c.getInt( c.getColumnIndex("atime") ) * 1000 );
+
+                    Log.i("DB", point.toString() );
+
+
+                    points.put( i, point );
+                    i++;
+
+                } while ( c.moveToNext() );
+            }
+        }
+
+        if ( points.length() > 0 ) {
+
+            JSONObject opoints = new JSONObject();
+            opoints.put("points",  points );
+
+            r.put( "body", opoints );
+
+        }
+
+
+        return r;
     }
 
 
