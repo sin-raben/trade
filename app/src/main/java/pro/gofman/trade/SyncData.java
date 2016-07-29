@@ -209,17 +209,22 @@ public class SyncData extends IntentService {
                 switch (head) {
                     case "autchUser": {
                         // успешная авторизация запуск процедуры обмена
-                        mAuth = body.optString("result", "").equalsIgnoreCase("ok");
+                        mAuth = body.optBoolean("result", false);
 
                         if ( mAuth ) {
                             Log.i("WS", "sendCoord");
+                            // Отправляем координаты
                             sendCoord(websocket);
+
+                            // Запрашиваем номенклатуру
+                            getItems(websocket);
+
                         }
 
                         break;
                     }
 
-                    case "getMbTov": {
+                    case "getItems": {
                         /*
                             {"items":[{Номенклатура}],"count":1000}
                          */
@@ -233,9 +238,9 @@ public class SyncData extends IntentService {
                             JSONObject t = items.getJSONObject(i);
 
                             sql = "INSERT INTO items (\"id_i\", \"name\") VALUES (";
-                            sql += "\"" + t.getString("key") + "\", \"" + t.getString("name") + "\"";
+                            sql += "\"" + t.getString("KEY") + "\", \"" + t.getString("NAME") + "\"";
                             sql += ");";
-                            // Log.i("TOV", sql );
+                            Log.i("TOV", sql );
 
                             db.addItems(sql);
 
@@ -243,7 +248,7 @@ public class SyncData extends IntentService {
                         }
 
 
-                        Log.i("SQL", "Загружено: " + String.valueOf(db.getItemsCount()));
+                        Log.i("SQL", "Загружено: " + String.valueOf( db.getItemsCount() ) );
 
                         break;
                     }
@@ -335,13 +340,33 @@ public class SyncData extends IntentService {
             }
 
             public void sendCoord(WebSocket websocket) throws Exception {
-                Log.i("WS", "11");
-                String coords = db.getCoords2().toString();
-                Log.i("WS", coords);
-                websocket.sendText(coords);
-
-                Log.i("WS", "22");
+                websocket.sendText( db.getCoords2().toString() );
             }
+
+            public void getItems(WebSocket websocket) throws Exception {
+            /*
+                "head":"getItems",
+                "body": {
+                    "items": "full",
+                            "itemsGroupType": "full",
+                            "itemsGroup": "full",
+                            "itemsUnitType": "full",
+                            "itemsUnit": "full"
+                }
+            */
+
+                JSONObject r = new JSONObject();
+                r.put( "head", "getItems" );
+
+                JSONObject body = new JSONObject();
+                body.put( "items", "full" );
+
+                r.put( "body", body );
+
+                Log.i("getItems", r.toString() );
+                websocket.sendText( r.toString() );
+            }
+
         });
 
         try

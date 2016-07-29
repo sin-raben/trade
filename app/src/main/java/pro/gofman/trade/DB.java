@@ -123,7 +123,7 @@ public class DB {
 
                     JSONObject point = new JSONObject();
                     point.put( "coord", coord );
-                    point.put( "time", c.getInt( c.getColumnIndex("atime") ) * 1000 );
+                    point.put( "time", c.getInt( c.getColumnIndex("atime") )  );
 
                     Log.i("DB", point.toString() );
 
