@@ -421,13 +421,13 @@ public class SyncData extends IntentService {
 
                     Log.i("LOG", "8");
 
+                    long time = System.currentTimeMillis() / 1000;
                     String sql = "INSERT INTO coords (\"lat\", \"lon\", \"atime\", \"provider\" ) VALUES (";
-                    sql += "\"" + location.getLatitude() + "\", \"" + location.getLongitude() + "\"," + String.valueOf( System.currentTimeMillis() / 1000 ) + ", \"" + location.getProvider() + "\"";
+                    sql += "\"" + location.getLatitude() + "\", \"" + location.getLongitude() + "\"," + String.valueOf( time ) + ", \"" + location.getProvider() + "\"";
                     sql += ");";
 
-                    long time = System.currentTimeMillis() / 1000;
 
-                    Log.i("TIME", String.valueOf(time) );
+                    Log.i("TIME", String.valueOf( System.currentTimeMillis() ) + " -- " + String.valueOf(time) );
 
                     Log.i("SQL", sql);
                     db.execSQL(sql);

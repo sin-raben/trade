@@ -31,12 +31,10 @@ public class Items extends AbstractItem<Items, Items.ViewHolder> {
         return this;
     }
 
-
     public Items withDescription(String description) {
         this.description = new String(description);
         return this;
     }
-
 
     @Override
     public void bindView(ViewHolder holder) {
