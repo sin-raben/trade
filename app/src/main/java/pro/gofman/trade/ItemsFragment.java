@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.IAdapter;
+import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
 
 public class ItemsFragment extends Fragment {
@@ -55,6 +58,27 @@ public class ItemsFragment extends Fragment {
 
         r.setLayoutManager( new LinearLayoutManager( v.getContext() ) );
 
+
+
+        FastItemAdapter ia = new FastItemAdapter();
+        ia.withSelectable(false);
+        ia.withOnClickListener(new FastAdapter.OnClickListener<Items>() {
+            @Override
+            public boolean onClick(View v, IAdapter<Items> adapter, Items item, int position) {
+                Log.i("CLICK", String.valueOf(position));
+                return true;
+            }
+        });
+
+
+        r.setLayoutManager( new LinearLayoutManager( v.getContext() ) );
+        r.setAdapter( ia );
+
+        DB db = Trade.getWritableDatabase();
+
+
+
+        ia.add( db.getItems() );
 
 
 

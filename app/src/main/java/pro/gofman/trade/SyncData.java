@@ -3,9 +3,11 @@ package pro.gofman.trade;
 import android.Manifest;
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.DatabaseUtils;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,6 +17,7 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.database.DatabaseUtilsCompat;
 import android.util.Log;
 
 import com.neovisionaries.ws.client.OpeningHandshakeException;
@@ -229,7 +232,7 @@ public class SyncData extends IntentService {
                             {"items":[{Номенклатура}],"count":1000}
                          */
 
-
+                        ContentValues cv;
                         db.execSQL("DELETE FROM items");
 
 
@@ -237,18 +240,25 @@ public class SyncData extends IntentService {
                         for (int i = 0; i < items.length(); i++) {
                             JSONObject t = items.getJSONObject(i);
 
-                            sql = "INSERT INTO items (\"id_i\", \"name\") VALUES (";
-                            sql += "\"" + t.getString("KEY") + "\", \"" + t.getString("NAME") + "\"";
-                            sql += ");";
-                            Log.i("TOV", sql );
+                            cv = new ContentValues();
+                            cv.put( "id_i", i );
+                            cv.put( "name", t.getString("NAME") );
 
-                            db.addItems(sql);
+                            /*sql = "INSERT INTO items (\"id_i\", \"name\") VALUES (";
+                            sql += String.valueOf(i) + ", \"" + DatabaseUtils.sqlEscapeString( t.getString("NAME") ) + "\"";
+                            sql += ");";*/
+
+                            db.insert("items", cv);
+
+                            Log.i("TOV", t.getString("NAME") );
+
+                            // db.addItems(sql);
 
 
                         }
 
 
-                        Log.i("SQL", "Загружено: " + String.valueOf( db.getItemsCount() ) );
+                        Log.i("SQL", "Всего записей: " + String.valueOf( db.getItemsCount() ) );
 
                         break;
                     }
@@ -371,29 +381,33 @@ public class SyncData extends IntentService {
 
         try
         {
-            // Connect to the server and perform an opening handshake.
-            // This method blocks until the opening handshake is finished.
+
+
+            // Соединение с сервером
             ws.connect();
 
+            // Проверка соединения
             if ( ws.isOpen() ) {
 
-                String AuthCommand = "{\"head\":\"autchUser\",\"body\":{\"idToken\":\"gofman-1\",\"criptoPass\":{\"login\":\"gofman\",\"pass\":\"1\"}}}";
+                // Формирование и отправка команды авторизации
+                ws.sendText(
+                        new JSONObject()
+                                .put("head", "autchUser")
+                                .put("body", p )
+                                .toString()
 
-                ws.sendText(AuthCommand);
-
-                //ws.sendText("{\"head\":\"getMbTov\",\"body\":{\"len\":1}}");
+                );
             }
-
-            //ws.disconnect();
         }
-        catch (OpeningHandshakeException e)
-        {
+        catch (OpeningHandshakeException e) {
             // A violation against the WebSocket protocol was detected
             // during the opening handshake.
         }
         catch (WebSocketException e)
         {
             // Failed to establish a WebSocket connection.
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
 

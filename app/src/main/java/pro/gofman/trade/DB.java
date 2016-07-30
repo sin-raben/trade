@@ -1,5 +1,6 @@
 package pro.gofman.trade;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -37,12 +38,10 @@ public class DB {
         mDatabase.execSQL(sql);
     }
 
-    public boolean addItems(String sql) {
-
-        mDatabase.execSQL(sql);
-
-        return true;
+    public void insert(String dn, ContentValues cv) {
+        mDatabase.insert(dn, null, cv);
     }
+
 
     public int getItemsCount() {
         int result = 0;

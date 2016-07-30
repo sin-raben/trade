@@ -36,6 +36,9 @@ import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String GPS_MONITORING_STATUS = "GPSMonitoringStatus";
@@ -47,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     final String ADDRESS = "ws://pol-ice.ru:8890/ws";
+    private JSONObject userData;
+
+
+
 
 
     @Override
@@ -68,13 +75,31 @@ public class MainActivity extends AppCompatActivity {
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
+        userData = new JSONObject();
+        try {
+
+            userData.put( "FullName", "Гофман Роман" );
+            userData.put( "Email", "roman@gofman.pro" );
+            userData.put( "idToken", "gofman-1" );
+            userData.put(
+                    "criptoPass" ,
+                    new JSONObject()
+                            .put( "login", "gofman" )
+                            .put( "pass", "1" )
+            );
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
         AccountHeader ah = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withSelectionListEnabledForSingleProfile(false)
                 .withCompactStyle(true)
                 //.withHeaderBackground(R.drawable.header)
                 .addProfiles(
-                        new ProfileDrawerItem().withName("Гофман Роман").withEmail("roman@gofman.pro") //.withIcon(getResources().getDrawable(R.drawable.profile))
+                        new ProfileDrawerItem().withName(userData.optString("FullName")).withEmail(userData.optString("Email")) //.withIcon(getResources().getDrawable(R.drawable.profile))
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
@@ -137,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(MainActivity.this, SyncData.class);
                             intent.setAction("pro.gofman.trade.action.syncdata");
-                            intent.putExtra("pro.gofman.trade.extra.PARAM1", "{}");
+                            intent.putExtra("pro.gofman.trade.extra.PARAM1", userData.toString() );
 
                             startService( intent );
 
