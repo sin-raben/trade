@@ -28,18 +28,39 @@ public class DB {
     private dbHelper mHelper;
     private SQLiteDatabase mDatabase;
 
+    protected static final int OPTION_AUTH = 1;
+
 
     public DB(Context context) {
         mHelper = new dbHelper(context);
         mDatabase = mHelper.getWritableDatabase();
     }
 
+    public String getOptions(int o_id) {
+        String r = "";
+        Cursor c = mDatabase.rawQuery("SELECT o_data FROM options WHERE o_id = " + String.valueOf( o_id ), null );
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                r = c.getString(0);
+                c.close();
+            }
+
+        }
+        return r;
+    }
+    public boolean setOptions(int o_id, String json) {
+        boolean r = false;
+
+
+        return r;
+    }
+
     public void execSQL(String sql) {
         mDatabase.execSQL(sql);
     }
 
-    public void insert(String dn, ContentValues cv) {
-        mDatabase.insert(dn, null, cv);
+    public void insert(String tn, ContentValues cv) {
+        mDatabase.insert(tn, null, cv);
     }
 
 
@@ -59,7 +80,7 @@ public class DB {
     }
 
     public List<Items> getItems() {
-        List<Items> r = new ArrayList<Items>();
+        List<Items> r = new ArrayList<>();
 
         Cursor c = mDatabase.rawQuery("SELECT * FROM items", null);
         if ( c != null ) {
@@ -82,7 +103,7 @@ public class DB {
     }
 
     public List<Items> getCoords() {
-        List<Items> r = new ArrayList<Items>();
+        List<Items> r = new ArrayList<>();
 
         Cursor c = mDatabase.rawQuery("SELECT * FROM coords", null);
         if ( c != null ) {
@@ -132,6 +153,7 @@ public class DB {
 
                 } while ( c.moveToNext() );
             }
+            c.close();
         }
 
         if ( points.length() > 0 ) {
@@ -195,9 +217,9 @@ public class DB {
                     Log.i("SQLCREATE", sql);
 
                     if ( table.optJSONArray("values") != null ) {
-                        sql = SQLBuilderFillTable(table.getString("table"), table.optJSONArray("values"));
-                        s.execSQL(sql);
-                        Log.i("SQLFILL", sql);
+                        FillTable(table.getString("table"), table.optJSONArray("values"), s);
+                        //s.execSQL(sql);
+                        //Log.i("SQLFILL", sql);
                     }
 
                 }
@@ -242,17 +264,25 @@ public class DB {
 
             return result;
         }
-        private String SQLBuilderFillTable(String t, JSONArray a) throws JSONException {
+        private void FillTable(String t, JSONArray a, SQLiteDatabase s) throws JSONException {
             int length = a.length();
-            String result = "", d = "";
             JSONArray f;
 
 
             if (length > 0) {
                 f = a.getJSONObject(0).names();
+                ContentValues cv;
 
-                result = "INSERT INTO " + t + " (";
+                for (int i=0; i < length; i++) {
+                    cv = new ContentValues();
+                    for (int j=0; j < f.length(); j++) {
+                        cv.put( f.getString(j), a.getJSONObject(i).getString(f.getString(j)) );
+                        Log.i("SQLVALUES", f.getString(j) + " : " + a.getJSONObject(i).getString(f.getString(j)) );
+                    }
+                    s.insert(t, null, cv);
 
+                }
+/*
                 for (int i=0; i < f.length(); i++) {
                     result += f.getString(i);
                     d = i == f.length() - 1 ? " " : ", ";
@@ -272,12 +302,13 @@ public class DB {
 
                     result += " );";
                 }
+*/
 
 
             }
 
 
-            return result;
+            //return result;
         }
 
     } // dbHelper

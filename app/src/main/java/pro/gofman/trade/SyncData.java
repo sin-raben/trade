@@ -52,7 +52,7 @@ public class SyncData extends IntentService {
     protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.PARAM1";
 
 
-    private DB db; ;
+    private DB db; //;
     private String sql = "";
     private JSONObject result = null;
 

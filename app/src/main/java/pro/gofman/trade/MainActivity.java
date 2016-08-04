@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     int dwItemSelected = -1;
     boolean bGPSMonitoringStatus = false;
 
-
+    private DB db;
 
     final String ADDRESS = "ws://pol-ice.ru:8890/ws";
     private JSONObject userData;
@@ -80,23 +80,15 @@ public class MainActivity extends AppCompatActivity {
             При первом подключении отправляем IMEI, который является токеном, пользователь вводит логин и пароль
             и вытягиваем информацию о пользователе
          */
-        userData = new JSONObject();
+        db = Trade.getWritableDatabase();
+
+
         try {
-
-            userData.put( "FullName", "Гофман Роман" );
-            userData.put( "Email", "roman@gofman.pro" );
-            userData.put( "idToken", "gofman-1" );
-            userData.put(
-                    "criptoPass" ,
-                    new JSONObject()
-                            .put( "login", "gofman" )
-                            .put( "pass", "1" )
-            );
-
+            // Берем с базы данных информацию о пользователе
+            userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         AccountHeader ah = new AccountHeaderBuilder()
                 .withActivity(this)
