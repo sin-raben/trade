@@ -75,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
+
+        /*
+            При первом подключении отправляем IMEI, который является токеном, пользователь вводит логин и пароль
+            и вытягиваем информацию о пользователе
+         */
         userData = new JSONObject();
         try {
 

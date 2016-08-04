@@ -3,29 +3,48 @@
   "version": 1,
   "tables": [
     {
+      "table": "options",
+      "description": "Служебная таблица для хранения настроеек",
+      "fields": [
+        {
+          "field": "o_id",
+          "type": "integer",
+          "description": "ID",
+          "primary_key": true
+        },
+        {
+          "field": "o_info",
+          "type": "text",
+          "description": "Информация об опции"
+        },
+        {
+          "field": "o_data",
+          "type": "text",
+          "description": "Содержимое настройки в формате JSON"
+        }
+      ],
+      "values": [
+        {
+          "o_id": 1,
+          "o_info": "Авторизация",
+          "o_data": "{}"
+        }
+      ]
+    },
+    {
       "table": "items",
       "description": "Справочник номенклатуры",
       "fields": [
         {
-          "field": "id_i",
+          "field": "i_id",
           "type": "integer",
           "description": "ID справочника номенклатуры",
           "primary_key": true
         },
         {
-          "field": "name",
+          "field": "i_name",
           "type": "text",
           "description": "Наименование номенклатуры"
-        }
-      ],
-      "values": [
-        {
-          "id_i": 1,
-          "name": "Номенклатура 1"
-        },
-        {
-          "id_i": 2,
-          "name": "Номенклатура 2"
         }
       ]
     },

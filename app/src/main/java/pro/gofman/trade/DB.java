@@ -45,7 +45,7 @@ public class DB {
 
     public int getItemsCount() {
         int result = 0;
-        Cursor c = mDatabase.rawQuery("SELECT COUNT(id_i) as count FROM items", null);
+        Cursor c = mDatabase.rawQuery("SELECT COUNT(i_id) as count FROM items", null);
 
         if ( c != null ) {
             if ( c.moveToFirst() ) {
@@ -67,8 +67,8 @@ public class DB {
                 do {
 
                     Items i = new Items();
-                    i.withName( c.getString( c.getColumnIndex("name") ) );
-                    i.withDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("id_i") ) ) );
+                    i.withName( c.getString( c.getColumnIndex("i_name") ) );
+                    i.withDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("i_id") ) ) );
 
                     r.add(i);
 
@@ -191,9 +191,15 @@ public class DB {
                     table = tables.getJSONObject(i);
 
                     sql = SQLBuilderCreateTable(table.getString("table"), table.getJSONArray("fields"));
+                    s.execSQL(sql);
                     Log.i("SQLCREATE", sql);
 
-                    s.execSQL(sql);
+                    if ( table.optJSONArray("values") != null ) {
+                        sql = SQLBuilderFillTable(table.getString("table"), table.optJSONArray("values"));
+                        s.execSQL(sql);
+                        Log.i("SQLFILL", sql);
+                    }
+
                 }
 
             } catch (UnsupportedEncodingException | JSONException e) {
@@ -233,6 +239,43 @@ public class DB {
                 if (wr) result += " WITHOUT ROWID";
                 result += ";";
             }
+
+            return result;
+        }
+        private String SQLBuilderFillTable(String t, JSONArray a) throws JSONException {
+            int length = a.length();
+            String result = "", d = "";
+            JSONArray f;
+
+
+            if (length > 0) {
+                f = a.getJSONObject(0).names();
+
+                result = "INSERT INTO " + t + " (";
+
+                for (int i=0; i < f.length(); i++) {
+                    result += f.getString(i);
+                    d = i == f.length() - 1 ? " " : ", ";
+                    result += d;
+                }
+
+                result += ") VALUES ";
+
+                for (int i=0; i < length; i++) {
+                    result += "( ";
+
+                    for (int j=0; j < f.length(); j++ ) {
+                        result += "\"" + a.getJSONObject(i).getString( f.getString(j) ) + "\"";
+                        d = j == f.length() - 1 ? " " : ", ";
+                        result += d;
+                    }
+
+                    result += " );";
+                }
+
+
+            }
+
 
             return result;
         }

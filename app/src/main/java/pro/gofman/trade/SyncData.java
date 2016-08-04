@@ -241,23 +241,13 @@ public class SyncData extends IntentService {
                             JSONObject t = items.getJSONObject(i);
 
                             cv = new ContentValues();
-                            cv.put( "id_i", i );
-                            cv.put( "name", t.getString("NAME") );
-
-                            /*sql = "INSERT INTO items (\"id_i\", \"name\") VALUES (";
-                            sql += String.valueOf(i) + ", \"" + DatabaseUtils.sqlEscapeString( t.getString("NAME") ) + "\"";
-                            sql += ");";*/
+                            cv.put( "i_id", t.getInt("i_id") );
+                            cv.put( "i_name", t.getString("i_name") );
 
                             db.insert("items", cv);
-
-                            Log.i("TOV", t.getString("NAME") );
-
-                            // db.addItems(sql);
-
+                            Log.i("TOV", cv.getAsString("i_name") );
 
                         }
-
-
                         Log.i("SQL", "Всего записей: " + String.valueOf( db.getItemsCount() ) );
 
                         break;
@@ -357,11 +347,11 @@ public class SyncData extends IntentService {
             /*
                 "head":"getItems",
                 "body": {
-                    "items": "full",
-                            "itemsGroupType": "full",
-                            "itemsGroup": "full",
-                            "itemsUnitType": "full",
-                            "itemsUnit": "full"
+                    "items": "all",
+                            "itemsGroupType": "all",
+                            "itemsGroup": "all",
+                            "itemsUnitType": "all",
+                            "itemsUnit": "all"
                 }
             */
 
@@ -369,7 +359,7 @@ public class SyncData extends IntentService {
                 r.put( "head", "getItems" );
 
                 JSONObject body = new JSONObject();
-                body.put( "items", "full" );
+                body.put( "items", "all" );
 
                 r.put( "body", body );
 
