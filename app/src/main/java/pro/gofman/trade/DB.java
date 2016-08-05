@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 
 /**
@@ -44,15 +45,15 @@ public class DB {
                 r = c.getString(0);
                 c.close();
             }
-
         }
         return r;
     }
     public boolean setOptions(int o_id, String json) {
-        boolean r = false;
 
+        ContentValues cv = new ContentValues();
+        cv.put( "o_data", json );
 
-        return r;
+        return 1 == mDatabase.update( "options", cv, "o_id = " + String.valueOf(o_id), null );
     }
 
     public void execSQL(String sql) {
@@ -152,8 +153,10 @@ public class DB {
                     i++;
 
                 } while ( c.moveToNext() );
+
+                c.close();
             }
-            c.close();
+
         }
 
         if ( points.length() > 0 ) {
@@ -282,33 +285,9 @@ public class DB {
                     s.insert(t, null, cv);
 
                 }
-/*
-                for (int i=0; i < f.length(); i++) {
-                    result += f.getString(i);
-                    d = i == f.length() - 1 ? " " : ", ";
-                    result += d;
-                }
-
-                result += ") VALUES ";
-
-                for (int i=0; i < length; i++) {
-                    result += "( ";
-
-                    for (int j=0; j < f.length(); j++ ) {
-                        result += "\"" + a.getJSONObject(i).getString( f.getString(j) ) + "\"";
-                        d = j == f.length() - 1 ? " " : ", ";
-                        result += d;
-                    }
-
-                    result += " );";
-                }
-*/
-
 
             }
 
-
-            //return result;
         }
 
     } // dbHelper
