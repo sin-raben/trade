@@ -30,6 +30,7 @@ public class DB {
     private SQLiteDatabase mDatabase;
 
     protected static final int OPTION_AUTH = 1;
+    protected static final int OPTION_COORD = 2;
 
 
     public DB(Context context) {

@@ -28,6 +28,11 @@
           "o_id": 1,
           "o_info": "Авторизация",
           "o_data": "{\"FullName\": \"Гофман Роман\",\"Email\": \"roman@gofman.pro\",\"idToken\": \"gofman-1\",\"criptoPass\": {\"login\": \"gofman\",\"pass\": \"1\"}}"
+        },
+        {
+          "o_id": 2,
+          "o_info": "Геолокация",
+          "o_data": "{\"mon\":{\"work\":true,\"t0\":\"8:00\",\"t1\":\"17:00\"},\"lm\":{\"minTime\":60000,\"minDistance\":0}}"
         }
       ]
     },
