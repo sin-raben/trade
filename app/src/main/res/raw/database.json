@@ -54,6 +54,148 @@
       ]
     },
     {
+      "table": "items_group_type",
+      "description": "Справочник типов группировок",
+      "fields": [
+        {
+          "field": "igt_id",
+          "type": "integer",
+          "description": "ID",
+          "primary_key": true
+        },
+        {
+          "field": "igt_name",
+          "type": "text",
+          "description": "Значение"
+        }
+      ]
+    },
+    {
+      "table": "items_group",
+      "description": "Справочник группировок",
+      "fields": [
+        {
+          "field": "ig_id",
+          "type": "integer",
+          "description": "ID",
+          "primary_key": true
+        },
+        {
+          "field": "ig_name",
+          "type": "text",
+          "description": "Значение"
+        }
+      ]
+    },
+    {
+      "table": "items_unit_type",
+      "description": "Справочник типов единиц измерения",
+      "fields": [
+        {
+          "field": "iut_id",
+          "type": "integer",
+          "description": "ID",
+          "primary_key": true
+        },
+        {
+          "field": "iut_name",
+          "type": "text",
+          "description": "Значение"
+        }
+      ]
+    },
+    {
+      "table": "items_unit",
+      "description": "Справочник значений единиц измерения",
+      "fields": [
+        {
+          "field": "i_id",
+          "type": "integer",
+          "description": "ID"
+        },
+        {
+          "field": "iut_id",
+          "type": "integer",
+          "description": "ID"
+        },
+        {
+          "field": "iu_krat",
+          "type": "integer",
+          "description": "кратность"
+        },
+        {
+          "field": "iu_num",
+          "type": "integer",
+          "description": "числитель"
+        },
+        {
+          "field": "iu_denum",
+          "type": "integer",
+          "description": "знаменатель"
+        },
+        {
+          "field": "iu_gros",
+          "type": "integer",
+          "description": "масса брутто в г"
+        },
+        {
+          "field": "iu_net",
+          "type": "integer",
+          "description": "масса нетто в г"
+        },
+        {
+          "field": "iu_length",
+          "type": "integer",
+          "description": "длина в мм"
+        },
+        {
+          "field": "iu_width",
+          "type": "integer",
+          "description": "ширина в мм"
+        },
+        {
+          "field": "iu_height",
+          "type": "integer",
+          "description": "высота в мм"
+        },
+        {
+          "field": "iu_area",
+          "type": "integer",
+          "description": "площадь в мм:2"
+        },
+        {
+          "field": "iu_volume",
+          "type": "integer",
+          "description": "объем (мм:3)"
+        },
+        {
+          "field": "iu_base",
+          "type": "boolean",
+          "description": "признак базовой единицы измерения"
+        },
+        {
+          "field": "iu_main",
+          "type": "boolean",
+          "description": "признак основной единицы измерения"
+        }
+      ]
+    },
+    {
+      "table": "point",
+      "description": "Точки доставки",
+      "fields": [
+        {
+          "field": "p_id",
+          "type": "integer",
+          "description": "ID точки"
+        }, {
+          "field": "p_name",
+          "type": "integer",
+          "description": "Наименование"
+        }
+      ]
+    },
+    {
       "table": "price",
       "description": "Цены",
       "fields": [
