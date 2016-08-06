@@ -111,12 +111,12 @@
         {
           "field": "i_id",
           "type": "integer",
-          "description": "ID"
+          "description": "ID номенклатуры"
         },
         {
           "field": "iut_id",
           "type": "integer",
-          "description": "ID"
+          "description": "ID типы единиц измерения"
         },
         {
           "field": "iu_krat",
