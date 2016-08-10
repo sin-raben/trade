@@ -54,7 +54,7 @@
       ]
     },
     {
-      "table": "items_group_type",
+      "table": "item_group_types",
       "description": "Справочник типов группировок",
       "fields": [
         {
@@ -71,7 +71,7 @@
       ]
     },
     {
-      "table": "items_group",
+      "table": "item_groups",
       "description": "Справочник группировок",
       "fields": [
         {
@@ -81,6 +81,11 @@
           "primary_key": true
         },
         {
+          "field": "igt_id",
+          "type": "integer",
+          "description": "ID типа группировки"
+        },
+        {
           "field": "ig_name",
           "type": "text",
           "description": "Значение"
@@ -88,7 +93,7 @@
       ]
     },
     {
-      "table": "items_unit_type",
+      "table": "item_unit_types",
       "description": "Справочник типов единиц измерения",
       "fields": [
         {
@@ -105,7 +110,7 @@
       ]
     },
     {
-      "table": "items_unit",
+      "table": "item_units",
       "description": "Справочник значений единиц измерения",
       "fields": [
         {

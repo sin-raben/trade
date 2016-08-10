@@ -34,7 +34,7 @@ dependencies {
         transitive = true
     }
     compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha5'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha6'
     compile 'com.android.support:design:24.1.1'
     compile 'com.neovisionaries:nv-websocket-client:1.28'
     compile 'com.android.support:support-v4:24.1.1'
