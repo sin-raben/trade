@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
     private DB db;
 
-    final String ADDRESS = "ws://pol-ice.ru:8890/ws";
     private JSONObject userData;
 
 
@@ -154,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
                         case 2005: {
 
                             Intent intent = new Intent(MainActivity.this, SyncData.class);
-                            intent.setAction("pro.gofman.trade.action.syncdata");
-                            intent.putExtra("pro.gofman.trade.extra.PARAM1", userData.toString() );
+                            intent.setAction( "pro.gofman.trade.action.syncdata" );
+                            intent.putExtra( "pro.gofman.trade.extra.PARAM1", userData.toString() );
 
                             startService( intent );
 

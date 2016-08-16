@@ -217,10 +217,13 @@ public class SyncData extends IntentService {
                         if ( mAuth ) {
                             Log.i("WS", "sendCoord");
                             // Отправляем координаты
-                            sendCoord(websocket);
+                            //sendCoord(websocket);
 
                             // Запрашиваем номенклатуру
-                            getItems(websocket);
+                            //getItems(websocket);
+
+                            // Запрашиваем контрагентов
+                            getCountragents(websocket);
 
                         }
 
@@ -288,10 +291,13 @@ public class SyncData extends IntentService {
                         break;
                     }
 
-                    case "getMbPartner": {
+                    case "getCountragents": {
                         /*
                             {"items":[{Торговая точка}],"count":600}
                          */
+
+                        Log.i("returnCountragent", body.toString() );
+
                         break;
                     }
 
@@ -375,6 +381,9 @@ public class SyncData extends IntentService {
             }
 
             public void sendCoord(WebSocket websocket) throws Exception {
+
+                Log.i("setCoord", "1");
+
                 websocket.sendText( db.getCoords2().toString() );
             }
 
@@ -404,6 +413,16 @@ public class SyncData extends IntentService {
                 websocket.sendText( r.toString() );
             }
 
+            public void getCountragents(WebSocket websocket) throws Exception {
+                JSONObject r = new JSONObject();
+                r.put( "head", "getCountragents" );
+                r.put( "body", new JSONObject() );
+
+                Log.i("getCountragent", r.toString() );
+                websocket.sendText( r.toString() );
+            }
+
+
         });
 
         try
@@ -416,6 +435,7 @@ public class SyncData extends IntentService {
             // Проверка соединения
             if ( ws.isOpen() ) {
 
+                Log.i("auth", p.toString());
                 // Формирование и отправка команды авторизации
                 ws.sendText(
                         new JSONObject()

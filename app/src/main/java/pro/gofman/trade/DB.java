@@ -29,8 +29,10 @@ public class DB {
     private dbHelper mHelper;
     private SQLiteDatabase mDatabase;
 
+    protected static final int OPTION_CONNECTION = 11;
     protected static final int OPTION_AUTH = 1;
-    protected static final int OPTION_COORD = 2;
+
+    protected static final int OPTION_COORD = 3;
 
 
     public DB(Context context) {
