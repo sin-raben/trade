@@ -220,10 +220,10 @@ public class SyncData extends IntentService {
                             //sendCoord(websocket);
 
                             // Запрашиваем номенклатуру
-                            //getItems(websocket);
+                            getItems(websocket);
 
                             // Запрашиваем контрагентов
-                            getCountragents(websocket);
+                            //getCountragents(websocket);
 
                         }
 

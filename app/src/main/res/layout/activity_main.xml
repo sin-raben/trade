@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="pro.gofman.trade.MainActivity"
-    android:id="@+id/constraintLayout">
+    android:layout_width="match_parent"
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -16,4 +11,4 @@
 
     </FrameLayout>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

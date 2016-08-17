@@ -72,6 +72,7 @@ public class ItemsFragment extends Fragment {
 
 
         r.setLayoutManager( new LinearLayoutManager( v.getContext() ) );
+        r.addItemDecoration( new LineDividerItemDecoration( this.getContext() ) );
         r.setAdapter( ia );
 
         DB db = Trade.getWritableDatabase();
