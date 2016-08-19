@@ -223,7 +223,7 @@ public class SyncData extends IntentService {
                             getItems(websocket);
 
                             // Запрашиваем контрагентов
-                            //getCountragents(websocket);
+                            getCountragents(websocket);
 
                         }
 
@@ -416,7 +416,11 @@ public class SyncData extends IntentService {
             public void getCountragents(WebSocket websocket) throws Exception {
                 JSONObject r = new JSONObject();
                 r.put( "head", "getCountragents" );
-                r.put( "body", new JSONObject() );
+
+                JSONObject body = new JSONObject();
+                body.put( "countragents", "all" );
+
+                r.put( "body", body );
 
                 Log.i("getCountragent", r.toString() );
                 websocket.sendText( r.toString() );
