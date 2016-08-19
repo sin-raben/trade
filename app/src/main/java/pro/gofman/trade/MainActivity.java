@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
 
         /*
@@ -105,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         DrawerBuilder dwb = new DrawerBuilder(this);
+        dwb.withActivity(this);
+        dwb.withRootView(R.id.drawer_layout);
+        dwb.withToolbar(toolbar);
+        dwb.withActionBarDrawerToggle(true);
         dwb.withActionBarDrawerToggleAnimated(true);
 
         dwb.withAccountHeader( ah );
