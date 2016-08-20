@@ -8,8 +8,8 @@ public class Protocol {
 
     protected static final String ITEMS = "items";
 
-    protected static final String ITEM_GROUP_TYPES = "itemsGroupType";
+    protected static final String ITEM_GROUP_TYPES = "itemGroupTypes";
 
-    protected static final String ITEM_GROUPS = "itemsGroup";
+    protected static final String ITEM_GROUPS = "itemGroups";
 
 }

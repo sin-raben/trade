@@ -210,7 +210,7 @@ public class SyncData extends IntentService {
 
 
                 switch (head) {
-                    case "autchUser": {
+                    case "authUser": {
                         // успешная авторизация запуск процедуры обмена
                         mAuth = body.optBoolean("result", false);
 
@@ -235,38 +235,46 @@ public class SyncData extends IntentService {
                             {"items":[{Номенклатура}],"count":1000}
                          */
                         ContentValues cv;
-                        db.execSQL("DELETE FROM items");
+//
 
                         // Загрузка номенклатуры
-                        JSONArray items = body.getJSONArray(Protocol.ITEMS);
-                        for (int i = 0; i < items.length(); i++) {
-                            JSONObject t = items.getJSONObject(i);
+                        if ( body.has(Protocol.ITEMS) ) {
 
-                            cv = new ContentValues();
-                            cv.put( "i_id", t.getInt("i_id") );
-                            cv.put( "i_name", t.getString("i_name") );
+                            db.execSQL("DELETE FROM items");
+                            JSONArray items = body.getJSONArray(Protocol.ITEMS);
+                            for (int i = 0; i < items.length(); i++) {
+                                JSONObject t = items.getJSONObject(i);
 
-                            db.insert("items", cv);
-                            Log.i("TOV", cv.getAsString("i_name") );
+                                cv = new ContentValues();
+                                cv.put("i_id", t.getInt("i_id"));
+                                cv.put("i_name", t.getString("i_name"));
 
+                                db.insert("items", cv);
+                                Log.i("TOV", cv.getAsString("i_name"));
+
+                            }
+                            Log.i("SQL", "Всего записей: " + String.valueOf(db.getItemsCount()));
                         }
-                        Log.i("SQL", "Всего записей: " + String.valueOf( db.getItemsCount() ) );
 
-                        db.execSQL("DELETE FROM item_group_types");
-                        // Загрузка типы группировок
-                        JSONArray igt = body.getJSONArray(Protocol.ITEM_GROUP_TYPES);
-                        for (int i = 0; i < igt.length(); i++) {
-                            JSONObject t = igt.getJSONObject(i);
 
-                            cv = new ContentValues();
-                            cv.put( "igt_id", t.getInt("igt_id") );
-                            cv.put( "igt_name", t.getString("igt_name") );
+                        // Загрузка типов групп
+                        if ( body.has(Protocol.ITEM_GROUP_TYPES) ) {
+                            db.execSQL("DELETE FROM item_group_types");
+                            // Загрузка типы группировок
+                            JSONArray igt = body.getJSONArray(Protocol.ITEM_GROUP_TYPES);
+                            for (int i = 0; i < igt.length(); i++) {
+                                JSONObject t = igt.getJSONObject(i);
 
-                            db.insert("item_group_types", cv);
-                            Log.i("GROUPTYPES", cv.getAsString("igt_name") );
+                                cv = new ContentValues();
+                                cv.put("igt_id", t.getInt("igt_id"));
+                                cv.put("igt_name", t.getString("igt_name"));
 
+                                db.insert("item_group_types", cv);
+                                Log.i("GROUPTYPES", cv.getAsString("igt_name"));
+
+                            }
+                            //Log.i("SQL", "Всего записей: " + String.valueOf( db.getItemsCount() ) );
                         }
-                        //Log.i("SQL", "Всего записей: " + String.valueOf( db.getItemsCount() ) );
 
                         db.execSQL("DELETE FROM item_groups");
                         // Загрузка типы группировок
@@ -403,7 +411,7 @@ public class SyncData extends IntentService {
                 r.put( "head", "getItems" );
 
                 JSONObject body = new JSONObject();
-                body.put( Protocol.ITEMS, "all" );
+                //body.put( Protocol.ITEMS, "all" );
                 body.put( Protocol.ITEM_GROUP_TYPES, "all" );
                 body.put( Protocol.ITEM_GROUPS, "all" );
 
@@ -443,7 +451,7 @@ public class SyncData extends IntentService {
                 // Формирование и отправка команды авторизации
                 ws.sendText(
                         new JSONObject()
-                                .put("head", "autchUser")
+                                .put("head", "authUser")
                                 .put("body", p )
                                 .toString()
 

@@ -27,7 +27,7 @@
         {
           "o_id": 1,
           "o_info": "Авторизация",
-          "o_data": "{\"FullName\": \"Гофман Роман\",\"Email\": \"roman@gofman.pro\",\"idToken\": \"gofman-1\",\"criptoPass\": {\"login\": \"gofman\",\"pass\": \"1\"}}"
+          "o_data": "{\"FullName\": \"Гофман Роман\",\"Email\": \"roman@gofman.pro\",\"idToken\": \"gofman-1\",\"authData\": {\"login\": \"gofman\",\"password\": \"1\"}}"
         },
         {
           "o_id": 2,

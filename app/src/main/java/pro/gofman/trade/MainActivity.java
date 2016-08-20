@@ -81,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             // Берем с базы данных информацию о пользователе
             userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
+
+
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
