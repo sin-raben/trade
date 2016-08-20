@@ -26,11 +26,16 @@
       "values": [
         {
           "o_id": 1,
+          "o_info": "Сервер синхронизации",
+          "o_data": "{\"BeginConnection\":\"Protocol\":\"ws\",\"Host\":\"pol-ice.ru\",\"Port\":8890,\"Path\":\"/ws\",\"Description\":\"Начальное подключение к серверу который отдаст параметры подключения к серверам синхронизации прописывается жестко в программе\"}"
+        },
+        {
+          "o_id": 2,
           "o_info": "Авторизация",
           "o_data": "{\"FullName\": \"Гофман Роман\",\"Email\": \"roman@gofman.pro\",\"idToken\": \"gofman-1\",\"authData\": {\"login\": \"gofman\",\"password\": \"1\"}}"
         },
         {
-          "o_id": 2,
+          "o_id": 3,
           "o_info": "Геолокация",
           "o_data": "{\"mon\":{\"work\":true,\"t0\":\"8:00\",\"t1\":\"17:00\"},\"lm\":{\"minTime\":60000,\"minDistance\":0}}"
         }

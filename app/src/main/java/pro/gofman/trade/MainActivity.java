@@ -1,22 +1,25 @@
 package pro.gofman.trade;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
+
 
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -38,6 +41,7 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     private static final String GPS_MONITORING_STATUS = "GPSMonitoringStatus";
+    private int PERMISSION_REQUEST_CODE = 0;
 
     Drawer dw = null;
     int dwItemSelected = -1;
@@ -56,6 +60,22 @@ public class MainActivity extends AppCompatActivity {
         Log.i("GPSMonitoring", String.valueOf(bGPSMonitoringStatus));
         outState.putBoolean(GPS_MONITORING_STATUS, bGPSMonitoringStatus);
         super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if ( requestCode == PERMISSION_REQUEST_CODE && grantResults.length == 1 ) {
+            if ( grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
+
+                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                String imei = tm.getDeviceId();
+
+                Toast.makeText( this, "Доступ к телефону разрешен! " + imei, Toast.LENGTH_LONG ).show();
+            }
+        }
+
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -82,6 +102,12 @@ public class MainActivity extends AppCompatActivity {
             // Берем с базы данных информацию о пользователе
             userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
 
+            if ( ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED ) {
+
+                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_PHONE_STATE }, PERMISSION_REQUEST_CODE );
+
+
+            }
 
 
 
@@ -110,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerBuilder dwb = new DrawerBuilder(this);
         dwb.withActivity(this);
+        dwb.withDrawerLayout(R.layout.material_drawer_fits_not);
+        dwb.withDisplayBelowStatusBar(true);
         dwb.withRootView(R.id.drawer_layout);
         dwb.withToolbar(toolbar);
         dwb.withActionBarDrawerToggle(true);
