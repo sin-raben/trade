@@ -7,6 +7,8 @@ import android.widget.TextView;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.materialdrawer.holder.StringHolder;
 
+import java.util.List;
+
 /**
  * Created by roman on 14.07.16.
  */
@@ -36,9 +38,17 @@ public class Items extends AbstractItem<Items, Items.ViewHolder> {
         return this;
     }
 
-    @Override
+ /*   @Override
     public void bindView(ViewHolder holder) {
         super.bindView(holder);
+
+        holder.name.setText(name);
+        holder.description.setText(description);
+    }*/
+
+    @Override
+    public void bindView(ViewHolder holder, List payloads) {
+        super.bindView(holder, payloads);
 
         holder.name.setText(name);
         holder.description.setText(description);

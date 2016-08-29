@@ -259,6 +259,7 @@ public class SyncData extends IntentService {
 
                         // Загрузка типов групп
                         if ( body.has(Protocol.ITEM_GROUP_TYPES) ) {
+
                             db.execSQL("DELETE FROM item_group_types");
                             // Загрузка типы группировок
                             JSONArray igt = body.getJSONArray(Protocol.ITEM_GROUP_TYPES);
@@ -289,7 +290,7 @@ public class SyncData extends IntentService {
 
 
                             db.insert("item_groups", cv);
-                            Log.i("GROUPS", cv.getAsString("ig_name") );
+                            Log.i("GROUPS", cv.getAsString("igt_id") + " " + cv.getAsString("ig_name") );
 
                         }
                         //Log.i("SQL", "Всего записей: " + String.v
