@@ -223,7 +223,7 @@ public class SyncData extends IntentService {
                             getItems(websocket);
 
                             // Запрашиваем контрагентов
-                            getCountragents(websocket);
+                            //getCountragents(websocket);
 
                         }
 
@@ -277,23 +277,49 @@ public class SyncData extends IntentService {
                             //Log.i("SQL", "Всего записей: " + String.valueOf( db.getItemsCount() ) );
                         }
 
-                        db.execSQL("DELETE FROM item_groups");
-                        // Загрузка типы группировок
-                        JSONArray ig = body.getJSONArray(Protocol.ITEM_GROUPS);
-                        for (int i = 0; i < ig.length(); i++) {
-                            JSONObject t = ig.getJSONObject(i);
+                        // Загрузка групп
+                        if ( body.has(Protocol.ITEM_GROUPS) ) {
 
-                            cv = new ContentValues();
-                            cv.put( "ig_id", t.getInt("ig_id") );
-                            cv.put( "igt_id", t.getInt("igt_id") );
-                            cv.put( "ig_name", t.getString("ig_value") );
+                            db.execSQL("DELETE FROM item_groups");
+                            // Загрузка типы группировок
+                            JSONArray ig = body.getJSONArray(Protocol.ITEM_GROUPS);
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put("ig_id", t.getInt("ig_id"));
+                                cv.put("igt_id", t.getInt("igt_id"));
+                                cv.put("ig_name", t.getString("ig_value"));
 
 
-                            db.insert("item_groups", cv);
-                            Log.i("GROUPS", cv.getAsString("igt_id") + " " + cv.getAsString("ig_name") );
+                                db.insert("item_groups", cv);
+                                Log.i("GROUPS", cv.getAsString("igt_id") + " " + cv.getAsString("ig_name"));
 
+                            }
+
+                            //Log.i("SQL", "Всего записей: " + String.v
                         }
-                        //Log.i("SQL", "Всего записей: " + String.v
+
+                        // Загрузка связей групп и номенклатуры
+                        if ( body.has(Protocol.LINK_ITEM_GROUPS) ) {
+
+                            db.execSQL("DELETE FROM link_item_groups");
+
+                            JSONArray ig = body.getJSONArray(Protocol.LINK_ITEM_GROUPS);
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "lig_id", t.getInt("lig_id") );
+                                cv.put( "i_id", t.getInt("i_id") );
+                                cv.put( "igt_id", t.getInt("igt_id") );
+                                cv.put( "ig_id", t.getInt("ig_id") );
+
+                                db.insert("link_item_groups", cv);
+                                Log.i("LINK_GROUPS", cv.getAsString("lig_id") + " " + cv.getAsString("i_id"));
+                            }
+                        }
+
 
 
 
@@ -412,9 +438,10 @@ public class SyncData extends IntentService {
                 r.put( "head", "getItems" );
 
                 JSONObject body = new JSONObject();
-                //body.put( Protocol.ITEMS, "all" );
-                body.put( Protocol.ITEM_GROUP_TYPES, "all" );
-                body.put( Protocol.ITEM_GROUPS, "all" );
+                body.put( Protocol.ITEMS, "all" );
+                //body.put( Protocol.ITEM_GROUP_TYPES, "all" );
+                //body.put( Protocol.ITEM_GROUPS, "all" );
+                //body.put( Protocol.LINK_ITEM_GROUPS, "all" );
 
                 r.put( "body", body );
 

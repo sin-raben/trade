@@ -98,6 +98,32 @@
       ]
     },
     {
+      "table": "link_item_groups",
+      "description": "Связи номенклатуры и групп",
+      "fields": [
+        {
+          "field": "lig_id",
+          "type": "integer",
+          "description": "ID",
+          "primary_key": true
+        },{
+          "field": "i_id",
+          "type": "integer",
+          "description": "Ссылка на номенклатуру"
+        },
+        {
+          "field": "ig_id",
+          "type": "integer",
+          "description": "Ссылка на группу"
+        },
+        {
+          "field": "igt_id",
+          "type": "integer",
+          "description": "Ссылка на тип группы"
+        }
+      ]
+    },
+    {
       "table": "item_unit_types",
       "description": "Справочник типов единиц измерения",
       "fields": [

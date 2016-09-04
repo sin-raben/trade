@@ -12,4 +12,6 @@ public class Protocol {
 
     protected static final String ITEM_GROUPS = "itemGroups";
 
+    protected static final String LINK_ITEM_GROUPS = "linkItemGroups";
+
 }

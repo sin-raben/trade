@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "pro.gofman.trade"
-        minSdkVersion 21
+        minSdkVersion 22
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -27,16 +27,16 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile('com.mikepenz:fastadapter:1.7.0@aar') {
+    compile('com.mikepenz:fastadapter:1.8.1@aar') {
         transitive = true
     }
-    compile('com.mikepenz:materialdrawer:5.5.0@aar') {
+    compile('com.mikepenz:materialdrawer:5.6.0@aar') {
         transitive = true
     }
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
     compile 'com.android.support:design:24.2.0'
-    compile 'com.neovisionaries:nv-websocket-client:1.29'
+    compile 'com.neovisionaries:nv-websocket-client:1.30'
     compile 'com.android.support:support-v4:24.2.0'
     testCompile 'junit:junit:4.12'
 }
