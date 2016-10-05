@@ -217,7 +217,8 @@ public class DB {
                 for (int i = 0; i < tables.length(); i++) {
                     table = tables.getJSONObject(i);
 
-                    sql = SQLBuilderCreateTable(table.getString("table"), table.getJSONArray("fields"));
+                    sql = SQLBuilderCreateTable( table.getString("table"), table.getJSONArray("fields"), table.optBoolean("fts3") );
+
                     s.execSQL(sql);
                     Log.i("SQLCREATE", sql);
 
@@ -240,7 +241,10 @@ public class DB {
 
         }
 
-        private String SQLBuilderCreateTable(String t, JSONArray a) throws JSONException {
+        // t - Наименование таблицы
+        // a - Столбцы
+        // f - Свойства таблицы (пока одно)
+        private String SQLBuilderCreateTable(String t, JSONArray a, Boolean f) throws JSONException {
             int length = a.length();
 
             String result = "";
@@ -249,21 +253,27 @@ public class DB {
 
             if (length > 0) {
                 wr = false;
-                result = "CREATE TABLE " + t + " ( ";
+
+                if ( f ) {
+                    result = "CREATE VIRTUAL TABLE " + t + " USING fts3 ( ";
+                } else {
+                    result = "CREATE TABLE " + t + " ( ";
+                }
+
                 for (int i = 0; i < length; i++) {
 
                     pk = a.getJSONObject(i).optBoolean("primary_key");
                     result += a.getJSONObject(i).getString("field") + " ";
                     d = i == length - 1 ? " " : ", ";
                     result += a.getJSONObject(i).getString("type");
-                    if (pk) {
-                        result += " PRIMARY KEY";
+                    if ( pk ) {
+                        if ( !f ) result += " PRIMARY KEY";
                         wr = true;
                     }
                     result += d;
                 }
                 result += ")";
-                if (wr) result += " WITHOUT ROWID";
+                if (wr && !f) result += " WITHOUT ROWID";
                 result += ";";
             }
 

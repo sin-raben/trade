@@ -29,7 +29,6 @@
             android:name=".SyncData"
             android:exported="false"></service>
 
-        <activity android:name=".FilterActivity"></activity>
     </application>
 
 </manifest>
