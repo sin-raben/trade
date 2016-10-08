@@ -3,6 +3,8 @@
     <string name="app_name">Мобильная торговля</string>
     <string name="action_settings">Настройки</string>
     <string name="search_title">Поиск</string>
+    <string name="search_items">Поиск номенклатуры</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

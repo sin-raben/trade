@@ -236,27 +236,6 @@ public class SyncData extends IntentService {
                          */
                         ContentValues cv;
 
-                        // Загрузка поисковых строк
-                        if ( body.has(Protocol.ITEMS_SEARCH) ) {
-
-                            Log.d("Search", "2222");
-                            db.execSQL("DELETE FROM item_search");
-
-                            JSONArray ig = body.getJSONArray(Protocol.ITEMS_SEARCH);
-                            for (int i = 0; i < ig.length(); i++) {
-                                JSONObject t = ig.getJSONObject(i);
-
-                                cv = new ContentValues();
-                                cv.put( "i_id", t.getInt("i_id") );
-                                cv.put( "value", t.getString("search") );
-
-
-                                db.insert("item_search", cv);
-                                Log.i("ITEMS_SEARCH", cv.getAsString("i_id") );
-                            }
-                        }
-
-
                         // Загрузка номенклатуры
                         if ( body.has(Protocol.ITEMS) ) {
 
@@ -340,9 +319,25 @@ public class SyncData extends IntentService {
                             }
                         }
 
+                        // Загрузка поисковых строк
+                        if ( body.has(Protocol.ITEMS_SEARCH) ) {
+
+                            Log.d("Search", "2222");
+                            db.execSQL("DELETE FROM item_search");
+
+                            JSONArray ig = body.getJSONArray(Protocol.ITEMS_SEARCH);
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "i_id", t.getInt("i_id") );
+                                cv.put( "value", t.getString("search") );
 
 
-
+                                db.insert("item_search", cv);
+                                Log.i("ITEMS_SEARCH", cv.getAsString("i_id") );
+                            }
+                        }
 
                         break;
                     }

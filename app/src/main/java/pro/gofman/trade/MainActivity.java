@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
@@ -20,8 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Toast;
-
-
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -35,6 +35,7 @@ import com.mikepenz.materialdrawer.model.SecondarySwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private DB db;
 
     private JSONObject userData;
+
+    private SearchView sv;
 
 
 
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                 String imei = tm.getDeviceId();
 
-                Toast.makeText( this, "Доступ к телефону разрешен! " + imei, Toast.LENGTH_LONG ).show();
+                Toast.makeText( this, "Доступ к телефону разрешен! ", Toast.LENGTH_LONG ).show();
             }
         }
 
@@ -97,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
             и вытягиваем информацию о пользователе
          */
         db = Trade.getWritableDatabase();
+
+        sv = new SearchView( this );
 
 
         try {
@@ -176,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
                     switch ( id ) {
                         case 2000: {
                             Log.i("FRAGMENT", "2000");
+
+                            sv.setQueryHint( getString(R.string.search_items) );
                             ItemsFragment f2000 = new ItemsFragment();
 
                             getSupportFragmentManager().beginTransaction()
@@ -277,13 +284,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.search, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        final SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        menu.findItem(R.id.search).setIcon(new IconicsDrawable(this, MaterialDesignIconic.Icon.gmi_search).color(Color.WHITE).actionBar());
+
+        sv = (SearchView) menu.findItem(R.id.search).getActionView();
+        sv.setQueryHint( getString(R.string.search_title ) );
+
+
+
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-
+                Log.d("SearchSubmit", s );
                 return true;
             }
 
@@ -291,6 +304,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
                 Log.d("Search", s );
+                if ( s.length() > 2 ) {
+                    Trade.getFastItemAdapter().setNewList( db.getItemsSearch( s ) );
+                    Toast.makeText( Trade.getAppContext(), "Найдено: " + String.valueOf( Trade.getFastItemAdapter().getAdapterItemCount() ), Toast.LENGTH_SHORT ).show();
+                }
                 return true;
             }
         });

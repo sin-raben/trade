@@ -60,7 +60,7 @@ public class ItemsFragment extends Fragment {
 
 
 
-        FastItemAdapter ia = new FastItemAdapter();
+        FastItemAdapter ia = Trade.getFastItemAdapter();
         ia.withSelectable(false);
         ia.withOnClickListener(new FastAdapter.OnClickListener<Items>() {
             @Override
@@ -79,7 +79,9 @@ public class ItemsFragment extends Fragment {
 
 
 
-        ia.add( db.getItemsSearch("готовые") );
+        ia.add( db.getItems() );
+
+        //ia.setNewList( db.getItemsSearch( "готов* соси*" ) );
 
 
 
