@@ -215,6 +215,23 @@
           "description": "признак основной единицы измерения"
         }
       ]
+    },{
+        "table": "item_search",
+        "fts3": true,
+        "description": "Специальная таблица для поиска номенклатуры",
+        "fields": [
+          {
+            "field": "i_id",
+            "type": "integer",
+            "description": "ID справочника номенклатуры",
+            "primary_key": true
+          },
+          {
+            "field": "value",
+            "type": "text",
+            "description": "Собранная строка для поиска"
+          }
+        ]
     },
     {
       "table": "point",
