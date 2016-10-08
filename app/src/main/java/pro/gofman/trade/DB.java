@@ -105,6 +105,50 @@ public class DB {
         return r;
     }
 
+    public List<Items> getItemsSearch(String s) {
+        List<Items> r = new ArrayList<>();
+
+        /*
+
+        SELECT
+            s.i_id,
+            i.i_name
+        FROM
+            item_search s
+            JOIN items i ON ( s.i_id = i.i_id )
+        WHERE
+            s.value MATCH 'подстрока'
+
+
+         */
+
+        String sql = "";
+        sql = "SELECT " + "s.i_id,i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) " + " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+        //sql = "SELECT " + "s.i_id,i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) ";
+
+        Log.d("Search", sql);
+        Cursor c = mDatabase.rawQuery( sql, null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    Items i = new Items();
+                    i.withName( c.getString( c.getColumnIndex("i_name") ) );
+                    i.withDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("i_id") ) ) );
+
+                    r.add(i);
+
+                    Log.d("Search", c.getString( c.getColumnIndex("i_name") ));
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+
     public List<Items> getCoords() {
         List<Items> r = new ArrayList<>();
 

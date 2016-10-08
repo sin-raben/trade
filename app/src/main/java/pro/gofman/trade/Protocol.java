@@ -14,4 +14,6 @@ public class Protocol {
 
     protected static final String LINK_ITEM_GROUPS = "linkItemGroups";
 
+    protected static final String ITEMS_SEARCH = "itemsSearch";
+
 }

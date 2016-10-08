@@ -79,7 +79,7 @@ public class ItemsFragment extends Fragment {
 
 
 
-        ia.add( db.getItems() );
+        ia.add( db.getItemsSearch("готовые") );
 
 
 

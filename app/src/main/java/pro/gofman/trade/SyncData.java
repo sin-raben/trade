@@ -235,7 +235,27 @@ public class SyncData extends IntentService {
                             {"items":[{Номенклатура}],"count":1000}
                          */
                         ContentValues cv;
-//
+
+                        // Загрузка поисковых строк
+                        if ( body.has(Protocol.ITEMS_SEARCH) ) {
+
+                            Log.d("Search", "2222");
+                            db.execSQL("DELETE FROM item_search");
+
+                            JSONArray ig = body.getJSONArray(Protocol.ITEMS_SEARCH);
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "i_id", t.getInt("i_id") );
+                                cv.put( "value", t.getString("search") );
+
+
+                                db.insert("item_search", cv);
+                                Log.i("ITEMS_SEARCH", cv.getAsString("i_id") );
+                            }
+                        }
+
 
                         // Загрузка номенклатуры
                         if ( body.has(Protocol.ITEMS) ) {
@@ -319,6 +339,7 @@ public class SyncData extends IntentService {
                                 Log.i("LINK_GROUPS", cv.getAsString("lig_id") + " " + cv.getAsString("i_id"));
                             }
                         }
+
 
 
 
@@ -439,6 +460,7 @@ public class SyncData extends IntentService {
 
                 JSONObject body = new JSONObject();
                 body.put( Protocol.ITEMS, "all" );
+                body.put( Protocol.ITEMS_SEARCH, "all");
                 //body.put( Protocol.ITEM_GROUP_TYPES, "all" );
                 //body.put( Protocol.ITEM_GROUPS, "all" );
                 //body.put( Protocol.LINK_ITEM_GROUPS, "all" );
