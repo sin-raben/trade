@@ -530,11 +530,14 @@ public class SyncData extends IntentService {
 
 
         NotificationCompat.Builder mNB = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.worker)
-                .setContentTitle("Собираем координаты")
-                .setContentText("Необходимо чтобы датчик GPS был включен");
+                .setOngoing( true )
+                .setSmallIcon( R.drawable.worker )
+                .setContentTitle( "Собираем координаты" )
+                .setContentText( "Необходимо чтобы датчик GPS был включен" )
+                .setWhen( System.currentTimeMillis() );
 
         mNM.notify( 1, mNB.build() );
+        //startForeground(777, mNB.build() );
 
 
         if ( p.optLong("minTime") > 0 ) {
@@ -593,16 +596,16 @@ public class SyncData extends IntentService {
             }
         };
 
-        Log.i("LOG", "3");
+        //Log.i("LOG", "3");
 
         LocationManager lm = (LocationManager) getSystemService( LOCATION_SERVICE );
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.i("LOG", "4");
             return;
         }
-        Log.i("LOG", "5");
+        //Log.i("LOG", "5");
         lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, minTime, minDistance, ll, Looper.getMainLooper() );
-        Log.i("LOG", "6");
+        //Log.i("LOG", "6");
 
     }
 }

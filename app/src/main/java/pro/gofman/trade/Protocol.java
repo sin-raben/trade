@@ -4,6 +4,9 @@ package pro.gofman.trade;
  * Created by roman on 11.08.16.
  */
 
+
+
+
 public class Protocol {
 
     protected static final String ITEMS = "items";
