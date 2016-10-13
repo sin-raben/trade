@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.format.DateFormat;
+import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -15,9 +17,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Date;
+import java.util.List;;
 
 
 /**
@@ -169,15 +172,24 @@ public class DB {
 
     public List<Items> getCoords() {
         List<Items> r = new ArrayList<>();
+        String dt;
 
         Cursor c = mDatabase.rawQuery("SELECT * FROM coords", null);
         if ( c != null ) {
             if ( c.moveToFirst() ) {
                 do {
 
+
+                    //dt = new Date( c.getInt( c.getColumnIndex("atime")*1000 )).toString();
+
+                    SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+                    Date d = new Date( Long.valueOf( c.getLong(c.getColumnIndex("atime")) )*1000 );
+                    dt = df.format( d );
+
+
                     Items i = new Items();
                     i.withName( c.getString( c.getColumnIndex("lat") ) + "," + c.getString( c.getColumnIndex("lon") ) );
-                    i.withDescription( "Провайдер: " + c.getString( c.getColumnIndex("provider") ) + " Время: " + String.valueOf( c.getInt( c.getColumnIndex("atime") ) ) );
+                    i.withDescription( "Провайдер: " + c.getString( c.getColumnIndex("provider") ) + " Время: " + dt );
 
                     r.add(i);
 

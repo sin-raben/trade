@@ -322,7 +322,7 @@ public class SyncData extends IntentService {
                         // Загрузка поисковых строк
                         if ( body.has(Protocol.ITEMS_SEARCH) ) {
 
-                            Log.d("Search", "2222");
+                            // Log.d("Search", "2222");
                             db.execSQL("DELETE FROM item_search");
 
                             JSONArray ig = body.getJSONArray(Protocol.ITEMS_SEARCH);
@@ -333,9 +333,10 @@ public class SyncData extends IntentService {
                                 cv.put( "i_id", t.getInt("i_id") );
                                 cv.put( "value", t.getString("search") );
 
-
-                                db.insert("item_search", cv);
-                                Log.i("ITEMS_SEARCH", cv.getAsString("i_id") );
+                                if ( !cv.getAsString("search").isEmpty() ) {
+                                    db.insert("item_search", cv);
+                                    Log.i("ITEMS_SEARCH", cv.getAsString("i_id"));
+                                }
                             }
                         }
 
@@ -524,8 +525,8 @@ public class SyncData extends IntentService {
      */
     private void handleActionLogCoord(JSONObject p) {
 
-        //long minTime = 60 * 60 * 60 * 1000;  // 1 час
-        long minTime = 60 * 1000;  // 1 час
+        //long minTime = 60 * 60 * 1000;  // 1 час
+        long minTime = 60 * 1000;  // 1 минута
         float minDistance = 0;
 
 
