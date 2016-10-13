@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
@@ -60,12 +61,18 @@ public class ItemsFragment extends Fragment {
 
 
 
+
         FastItemAdapter ia = Trade.getFastItemAdapter();
         ia.withSelectable(false);
         ia.withOnClickListener(new FastAdapter.OnClickListener<Items>() {
             @Override
             public boolean onClick(View v, IAdapter<Items> adapter, Items item, int position) {
-                Log.i("CLICK", String.valueOf(position));
+                DB db = Trade.getWritableDatabase();
+                Log.i("CLICK", String.valueOf(position) + " " + String.valueOf(item.getID()) + " " + db.getSearchString( item.getID() ));
+
+
+
+                Toast.makeText( Trade.getAppContext(), db.getSearchString( item.getID() ), Toast.LENGTH_SHORT ).show();
                 return true;
             }
         });
@@ -75,9 +82,9 @@ public class ItemsFragment extends Fragment {
         r.addItemDecoration( new LineDividerItemDecoration( this.getContext() ) );
         r.setAdapter( ia );
 
+
+
         DB db = Trade.getWritableDatabase();
-
-
 
         ia.add( db.getItems() );
 

@@ -15,8 +15,10 @@ import java.util.List;
 
 public class Items extends AbstractItem<Items, Items.ViewHolder> {
 
+
     public String name = "";
     public String description = "";
+    private int i_id = 0;
 
     @Override
     public int getType() {
@@ -37,6 +39,14 @@ public class Items extends AbstractItem<Items, Items.ViewHolder> {
         this.description = new String(description);
         return this;
     }
+
+    public void setID(int id) {
+        this.i_id = id;
+    }
+    public int getID() {
+        return this.i_id;
+    }
+
 
  /*   @Override
     public void bindView(ViewHolder holder) {

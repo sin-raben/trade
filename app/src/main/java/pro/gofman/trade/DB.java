@@ -91,6 +91,7 @@ public class DB {
                 do {
 
                     Items i = new Items();
+                    i.setID( c.getInt( c.getColumnIndex("i_id") ));
                     i.withName( c.getString( c.getColumnIndex("i_name") ) );
                     i.withDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("i_id") ) ) );
 
@@ -133,6 +134,7 @@ public class DB {
                 do {
 
                     Items i = new Items();
+                    i.setID( c.getInt( c.getColumnIndex("i_id") ));
                     i.withName( c.getString( c.getColumnIndex("i_name") ) );
                     i.withDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("i_id") ) ) );
 
@@ -148,6 +150,22 @@ public class DB {
 
         return r;
     }
+
+    public String getSearchString(int id) {
+        String r = "";
+        Cursor c = mDatabase.rawQuery( "SELECT value FROM item_search WHERE i_id = " + String.valueOf(id), null );
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+
+                r = c.getString( c.getColumnIndex("value") );
+
+                c.close();
+            }
+        }
+        return r;
+
+    }
+
 
     public List<Items> getCoords() {
         List<Items> r = new ArrayList<>();
