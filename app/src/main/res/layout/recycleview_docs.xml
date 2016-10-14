@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/material_drawer_item_primary"
+    android:gravity="center_vertical|start"
+    android:paddingEnd="@dimen/material_drawer_vertical_padding"
+    android:paddingStart="@dimen/material_drawer_vertical_padding"
+    android:paddingRight="@dimen/material_drawer_vertical_padding"
+    android:paddingLeft="@dimen/material_drawer_vertical_padding">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/recycleview_doc_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical|start"
+            android:lines="1"
+            android:textDirection="anyRtl"
+            android:textSize="@dimen/material_drawer_item_primary_text"
+            tools:text="ГРС000001 "
+            tools:layout_constraintBottom_creator="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_constraintLeft_creator="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/recycleview_doc_date"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_bias="0.03" />
+
+        <TextView
+            android:id="@+id/recycleview_doc_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical|start"
+            android:lines="1"
+            android:textDirection="anyRtl"
+            android:textSize="@dimen/material_drawer_item_primary_text"
+            tools:text=" от 10.10.2016 "
+            app:layout_constraintRight_toLeftOf="@+id/recycleview_doc_sum"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintBottom_creator="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="104dp" />
+
+        <TextView
+            android:id="@+id/recycleview_doc_sum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical|end"
+            android:lines="1"
+            android:textDirection="anyRtl"
+            android:textSize="@dimen/material_drawer_item_primary_text"
+            tools:text="10 954,55"
+         />
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/recycleview_doc_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:gravity="center_vertical|start"
+        android:lines="1"
+        android:textDirection="anyRtl"
+        android:textSize="@dimen/material_drawer_item_primary_description"
+        tools:text="АССОРТИ Малиновского 56" />
+</LinearLayout>

@@ -2,6 +2,7 @@ package pro.gofman.trade;
 
 import android.Manifest;
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -239,10 +240,11 @@ public class SyncData extends IntentService {
                         // Загрузка номенклатуры
                         if ( body.has(Protocol.ITEMS) ) {
 
-                            db.execSQL("DELETE FROM items");
+                            db.execSQL("DELETE FROM item_unit_types");
                             JSONArray items = body.getJSONArray(Protocol.ITEMS);
                             for (int i = 0; i < items.length(); i++) {
                                 JSONObject t = items.getJSONObject(i);
+
 
                                 cv = new ContentValues();
                                 cv.put("i_id", t.getInt("i_id"));
@@ -253,6 +255,51 @@ public class SyncData extends IntentService {
 
                             }
                             Log.i("SQL", "Всего записей: " + String.valueOf(db.getItemsCount()));
+                        }
+
+                        // Загрузка типы единиц измерения
+                        if ( body.has(Protocol.ITEM_UNIT_TYPES) ) {
+
+                            db.execSQL("DELETE FROM item_unit_types");
+                            JSONArray items = body.getJSONArray(Protocol.ITEM_UNIT_TYPES);
+                            for (int i = 0; i < items.length(); i++) {
+                                JSONObject t = items.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put("iut_id", t.getInt("iut_id"));
+                                cv.put("iut_name", t.getString("iut_name"));
+
+                                db.insert("item_unit_types", cv);
+                                Log.i("UNIT_TYPES", cv.getAsString("i_name"));
+                            }
+                        }
+
+                        // Загрузка единиц измерения
+                        if ( body.has(Protocol.ITEM_UNITS) ) {
+
+                            db.execSQL("DELETE FROM item_units");
+                            JSONArray items = body.getJSONArray(Protocol.ITEM_UNITS);
+                            for (int i = 0; i < items.length(); i++) {
+                                JSONObject t = items.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put("i_id", t.getInt("i_id"));
+                                cv.put("iut_id", t.getInt("iut_id"));
+                                cv.put("iu_krat", t.getInt("iu_krat"));
+                                cv.put("iu_num", t.getInt("iu_num"));
+                                cv.put("iu_denum", t.getInt("iu_denum"));
+                                cv.put("iu_gros", t.getInt("iu_gros"));
+                                cv.put("iu_length", t.getInt("iu_length"));
+                                cv.put("iu_width", t.getInt("iu_width"));
+                                cv.put("iu_height", t.getInt("iu_height"));
+                                cv.put("iu_area", t.getInt("iu_area"));
+                                cv.put("iu_volume", t.getInt("iu_volume"));
+                                cv.put("iu_base", t.getBoolean("iu_base"));
+                                cv.put("iu_main", t.getBoolean("iu_main"));
+                                
+                                db.insert("item_units", cv);
+                                Log.i("UNITS", cv.getAsString("i_id"));
+                            }
                         }
 
 
@@ -537,8 +584,10 @@ public class SyncData extends IntentService {
                 .setContentText( "Необходимо чтобы датчик GPS был включен" )
                 .setWhen( System.currentTimeMillis() );
 
-        mNM.notify( 1, mNB.build() );
-        //startForeground(777, mNB.build() );
+        Notification n;
+        n = mNB.build();
+        mNM.notify( 1, n );
+        startForeground(777, n );
 
 
         if ( p.optLong("minTime") > 0 ) {

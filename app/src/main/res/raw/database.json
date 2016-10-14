@@ -329,7 +329,29 @@
         {
           "field": "provider",
           "type": "text",
-          "description": "Провайдер который зарегистрировал координаты"
+          "description": "Провайдер, который зарегистрировал координаты"
+        }
+      ]
+    },
+    {
+      "table": "docs",
+      "description": "Документов",
+      "fields": [
+        {
+          "field": "d_id",
+          "type": "integer",
+          "description": "ID Документа",
+          "primary_key": true
+        },
+        {
+          "field": "head",
+          "type": "text",
+          "description": "Заголовок документа"
+        },
+        {
+          "field": "body",
+          "type": "text",
+          "description": "Содержание документа"
         }
       ]
     }
