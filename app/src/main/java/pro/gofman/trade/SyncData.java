@@ -218,7 +218,7 @@ public class SyncData extends IntentService {
                         if ( mAuth ) {
                             Log.i("WS", "sendCoord");
                             // Отправляем координаты
-                            //sendCoord(websocket);
+                            sendCoord(websocket);
 
                             // Запрашиваем номенклатуру
                             getItems(websocket);
@@ -240,7 +240,7 @@ public class SyncData extends IntentService {
                         // Загрузка номенклатуры
                         if ( body.has(Protocol.ITEMS) ) {
 
-                            db.execSQL("DELETE FROM item_unit_types");
+                            db.execSQL("DELETE FROM items");
                             JSONArray items = body.getJSONArray(Protocol.ITEMS);
                             for (int i = 0; i < items.length(); i++) {
                                 JSONObject t = items.getJSONObject(i);
@@ -369,20 +369,24 @@ public class SyncData extends IntentService {
                         // Загрузка поисковых строк
                         if ( body.has(Protocol.ITEMS_SEARCH) ) {
 
-                            // Log.d("Search", "2222");
+                            Log.d("Search", "2222");
                             db.execSQL("DELETE FROM item_search");
 
                             JSONArray ig = body.getJSONArray(Protocol.ITEMS_SEARCH);
+
                             for (int i = 0; i < ig.length(); i++) {
                                 JSONObject t = ig.getJSONObject(i);
 
+
+
                                 cv = new ContentValues();
                                 cv.put( "i_id", t.getInt("i_id") );
-                                cv.put( "value", t.getString("search") );
+                                cv.put( "value", t.getString("value") );
 
-                                if ( !cv.getAsString("search").isEmpty() ) {
+                                if ( !cv.getAsString("value").isEmpty() ) {
+
                                     db.insert("item_search", cv);
-                                    Log.i("ITEMS_SEARCH", cv.getAsString("i_id"));
+                                    Log.i("ITEMS_SEARCH", cv.getAsString("value"));
                                 }
                             }
                         }

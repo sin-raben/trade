@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                 //Log.d("Search", s );
                 if ( s.length() > 2 && !TextUtils.isEmpty(s) ) {
                     fia.setNewList( db.getItemsSearch( s ) );
-                    Toast.makeText( Trade.getAppContext(), "Найдено: " + String.valueOf( fia.getAdapterItemCount() ), Toast.LENGTH_SHORT ).show();
+                    //Toast.makeText( Trade.getAppContext(), "Найдено: " + String.valueOf( fia.getAdapterItemCount() ), Toast.LENGTH_SHORT ).show();
                 } else {
                     if (TextUtils.isEmpty(s)) {
                         //Log.d("SearchClear", "33");

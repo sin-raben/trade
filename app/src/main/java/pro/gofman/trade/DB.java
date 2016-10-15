@@ -182,7 +182,7 @@ public class DB {
 
                     //dt = new Date( c.getInt( c.getColumnIndex("atime")*1000 )).toString();
 
-                    SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+                    SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                     Date d = new Date( Long.valueOf( c.getLong(c.getColumnIndex("atime")) )*1000 );
                     dt = df.format( d );
 

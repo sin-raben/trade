@@ -344,6 +344,11 @@
           "primary_key": true
         },
         {
+          "field": "d_date",
+          "type": "integer",
+          "description": "Дата документа"
+        },
+        {
           "field": "head",
           "type": "text",
           "description": "Заголовок документа"
@@ -353,6 +358,24 @@
           "type": "text",
           "description": "Содержание документа"
         }
+      ]
+    },
+    {
+      "table": "doc_search",
+      "description": "Специальная таблица для поиска документов",
+      "fts3": true,
+      "fields": [
+        {
+          "field": "d_id",
+          "type": "integer",
+          "description": "ID документа",
+          "primary_key": true
+        },{
+          "field": "value",
+          "type": "text",
+          "description": "Поискова строка"
+        }
+
       ]
     }
   ]
