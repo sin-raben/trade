@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 /**
@@ -18,6 +20,8 @@ public class Docs extends AbstractItem<Docs, Docs.ViewHolder> {
     private int d_id = 0;
     private int d_num = 0;
     private int d_date = 0;
+    private JSONObject head;
+    private JSONObject body;
 
 
     @Override
@@ -48,6 +52,16 @@ public class Docs extends AbstractItem<Docs, Docs.ViewHolder> {
         this.d_date = d_date;
     }
     public int getDate() { return this.d_date; }
+
+    public void setHead(JSONObject o) {
+        this.head = o;
+    }
+    public JSONObject getHead() { return this.head; }
+
+    public void setBody(JSONObject o) {
+        this.body = o;
+    }
+    public JSONObject getBody() { return this.body; }
 
 
 

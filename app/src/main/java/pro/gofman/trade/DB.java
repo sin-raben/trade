@@ -85,6 +85,36 @@ public class DB {
         return result;
     }
 
+    public List<Docs> getDocs() {
+        List<Docs> r = new ArrayList<>();
+
+        Cursor c = mDatabase.rawQuery( "SELECT * FROM docs", null );
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+                    Docs d = new Docs();
+                    try {
+
+                        d.setID( c.getInt( c.getColumnIndex( "d_id" ) ) );
+                        d.setNumber( c.getInt( c.getColumnIndex( "d_num" ) ) );
+                        d.setDate( c.getInt( c.getColumnIndex("d_date" ) ) );
+                        d.setHead( new JSONObject( c.getString( c.getColumnIndex( "head" ) ) ) );
+                        d.setBody( new JSONObject( c.getString( c.getColumnIndex( "body" ) ) ) );
+
+                        r.add(d);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } while ( c.moveToNext() );
+            }
+        }
+
+
+        return r;
+    }
+
     public List<Items> getItems() {
         List<Items> r = new ArrayList<>();
 

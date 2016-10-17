@@ -344,6 +344,11 @@
           "primary_key": true
         },
         {
+          "field": "d_num",
+          "type": "integer",
+          "description": "Номер документа"
+        },
+        {
           "field": "d_date",
           "type": "integer",
           "description": "Дата документа"
@@ -351,12 +356,14 @@
         {
           "field": "head",
           "type": "text",
-          "description": "Заголовок документа"
+          "description": "Заголовок документа",
+          "default": "{}"
         },
         {
           "field": "body",
           "type": "text",
-          "description": "Содержание документа"
+          "description": "Содержание документа",
+          "default": "{}"
         }
       ]
     },
