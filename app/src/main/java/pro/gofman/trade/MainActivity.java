@@ -1,6 +1,8 @@
 package pro.gofman.trade;
 
 import android.Manifest;
+import android.app.IntentService;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ServiceCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -63,21 +66,46 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
         Log.i("GPSMonitoring", String.valueOf(bGPSMonitoringStatus));
         outState.putBoolean(GPS_MONITORING_STATUS, bGPSMonitoringStatus);
-        super.onSaveInstanceState(outState, outPersistentState);
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState);
+
+        bGPSMonitoringStatus = savedInstanceState.getBoolean(GPS_MONITORING_STATUS, false);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if ( requestCode == PERMISSION_REQUEST_CODE && grantResults.length == 1 ) {
-            if ( grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
+        if ( requestCode == PERMISSION_REQUEST_CODE )  {
 
-                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                String imei = tm.getDeviceId();
+            for (int i = 0; i < permissions.length; i++ ) {
 
-                Toast.makeText( this, "Доступ к телефону разрешен! ", Toast.LENGTH_LONG ).show();
+                if ( permissions[i].equals(Manifest.permission.READ_PHONE_STATE) ) {
+
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+
+                        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                        String imei = tm.getDeviceId();
+
+                        Toast.makeText(this, "Доступ к телефону разрешен! ", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                if ( permissions[i].equals(Manifest.permission.ACCESS_FINE_LOCATION) ) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+
+                    }
+
+                }
+
+
             }
         }
 
@@ -113,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
 
             if ( ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED ) {
-                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_PHONE_STATE }, PERMISSION_REQUEST_CODE );
+                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION }, PERMISSION_REQUEST_CODE );
             }
 
 
@@ -207,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
                         case 2006: {
 
                             Log.i("FRAGMENT", "2006");
+                            sv.setQueryHint( getString(R.string.search_title) );
                             CoordsFragment f2000 = new CoordsFragment();
 
                             getSupportFragmentManager().beginTransaction()
@@ -237,13 +266,17 @@ public class MainActivity extends AppCompatActivity {
             bGPSMonitoringStatus = isChecked;
 
             Intent intent = new Intent(MainActivity.this, SyncData.class);
-            intent.setAction(SyncData.ACTION_LOGCOORD);
+
             intent.putExtra("pro.gofman.trade.extra.PARAM1", "{}");
 
             if ( isChecked ) {
+                intent.setAction(SyncData.ACTION_LOGCOORD);
+                //Trade.getAppContext().startService(intent);
                 startService(intent);
             } else {
-                stopService(intent);
+                //Trade.getAppContext().stopService(intent);
+                intent.setAction(SyncData.ACTION_LOGCOORD_STOP);
+                startService(intent);
             }
         }
     };
@@ -261,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
 
         sv = (SearchView) menu.findItem(R.id.search).getActionView();
         sv.setQueryHint( getString(R.string.search_title ) );
+        
         // Изменение текста в SearchView
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

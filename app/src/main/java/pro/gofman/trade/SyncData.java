@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
@@ -12,12 +13,14 @@ import android.database.DatabaseUtils;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.ServiceCompat;
 import android.support.v4.database.DatabaseUtilsCompat;
 import android.util.Log;
 
@@ -49,6 +52,8 @@ public class SyncData extends IntentService {
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     protected static final String ACTION_SYNCDATA = "pro.gofman.trade.action.syncdata";
     protected static final String ACTION_LOGCOORD = "pro.gofman.trade.action.logcoord";
+    protected static final String ACTION_LOGCOORD_STOP = "pro.gofman.trade.action.logcoord_stop";
+
 
     protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.PARAM1";
 
@@ -74,6 +79,11 @@ public class SyncData extends IntentService {
         super.onCreate();
         db = Trade.getWritableDatabase();
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     /**
@@ -105,10 +115,14 @@ public class SyncData extends IntentService {
         context.startService(intent);
     }
 
+
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
+
+
 
             if (ACTION_SYNCDATA.equals(action)) {
                 JSONObject p;
@@ -121,15 +135,38 @@ public class SyncData extends IntentService {
                     e.printStackTrace();
                 }
 
-            } else if (ACTION_LOGCOORD.equals(action)) {
-                JSONObject p;
-                try {
-                    p = new JSONObject( intent.getStringExtra(EXTRA_PARAM1) );
-                    handleActionLogCoord(p);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            } else {
 
+                if (ACTION_LOGCOORD.equals(action)) {
+                    JSONObject p;
+                    try {
+
+                        Notification n;
+                        NotificationCompat.Builder mNB = new NotificationCompat.Builder(this)
+                                .setOngoing(true)
+                                .setSmallIcon(R.drawable.worker)
+                                .setContentTitle("Собираем координаты")
+                                .setContentText("Необходимо чтобы датчик GPS был включен")
+                                .setWhen(System.currentTimeMillis());
+
+
+                        n = mNB.build();
+
+
+                        p = new JSONObject(intent.getStringExtra(EXTRA_PARAM1));
+                        handleActionLogCoord(p, n);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+
+                    if (ACTION_LOGCOORD_STOP.equals(action)) {
+                        Log.d("StopService", "123");
+                        stopForeground(true);
+                        stopSelf();
+                    }
+                }
             }
         }
     }
@@ -574,22 +611,13 @@ public class SyncData extends IntentService {
      * Handle action Baz in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionLogCoord(JSONObject p) {
+    private void handleActionLogCoord(JSONObject p, Notification n) {
 
         //long minTime = 60 * 60 * 1000;  // 1 час
         long minTime = 60 * 1000;  // 1 минута
         float minDistance = 0;
 
 
-        NotificationCompat.Builder mNB = new NotificationCompat.Builder(this)
-                .setOngoing( true )
-                .setSmallIcon( R.drawable.worker )
-                .setContentTitle( "Собираем координаты" )
-                .setContentText( "Необходимо чтобы датчик GPS был включен" )
-                .setWhen( System.currentTimeMillis() );
-
-        Notification n;
-        n = mNB.build();
         mNM.notify( 1, n );
         startForeground(777, n );
 
@@ -662,4 +690,6 @@ public class SyncData extends IntentService {
         //Log.i("LOG", "6");
 
     }
+
+
 }
