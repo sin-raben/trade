@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
@@ -12,12 +13,14 @@ import android.database.DatabaseUtils;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.ServiceCompat;
 import android.support.v4.database.DatabaseUtilsCompat;
 import android.util.Log;
 
@@ -49,6 +52,8 @@ public class SyncData extends IntentService {
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     protected static final String ACTION_SYNCDATA = "pro.gofman.trade.action.syncdata";
     protected static final String ACTION_LOGCOORD = "pro.gofman.trade.action.logcoord";
+    protected static final String ACTION_LOGCOORD_STOP = "pro.gofman.trade.action.logcoord_stop";
+
 
     protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.PARAM1";
 
@@ -74,6 +79,11 @@ public class SyncData extends IntentService {
         super.onCreate();
         db = Trade.getWritableDatabase();
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     /**
@@ -105,31 +115,72 @@ public class SyncData extends IntentService {
         context.startService(intent);
     }
 
+
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
 
+
+
             if (ACTION_SYNCDATA.equals(action)) {
+
+                Notification n;
+                NotificationCompat.Builder mNB = new NotificationCompat.Builder(Trade.getAppContext())
+                        .setOngoing(true)
+                        .setSmallIcon(R.drawable.worker)
+                        .setContentTitle("Синхронизация")
+                        .setContentText("Подождите окончания синхронизации")
+                        .setWhen(System.currentTimeMillis());
+
+
+                n = mNB.build();
+
                 JSONObject p;
                 try {
                     p = new JSONObject( intent.getStringExtra(EXTRA_PARAM1) );
-                    handleActionSyncData(p);
+
+                    handleActionSyncData(p, n);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-            } else if (ACTION_LOGCOORD.equals(action)) {
-                JSONObject p;
-                try {
-                    p = new JSONObject( intent.getStringExtra(EXTRA_PARAM1) );
-                    handleActionLogCoord(p);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            } else {
 
+                if (ACTION_LOGCOORD.equals(action)) {
+                    JSONObject p;
+                    try {
+
+                        Notification n;
+                        NotificationCompat.Builder mNB = new NotificationCompat.Builder(this)
+                                .setOngoing(true)
+                                .setSmallIcon(R.drawable.worker)
+                                .setContentTitle("Собираем координаты")
+                                .setContentText("Необходимо чтобы датчик GPS был включен")
+                                .setWhen(System.currentTimeMillis());
+
+
+                        n = mNB.build();
+
+
+                        p = new JSONObject(intent.getStringExtra(EXTRA_PARAM1));
+                        handleActionLogCoord(p, n);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+
+                    if (ACTION_LOGCOORD_STOP.equals(action)) {
+                        Log.d("StopService", "123");
+                        stopForeground(true);
+                        stopSelf();
+                    }
+                }
             }
         }
     }
@@ -138,10 +189,11 @@ public class SyncData extends IntentService {
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionSyncData(JSONObject p) throws IOException {
+    private void handleActionSyncData(JSONObject p, Notification n) throws IOException {
         // TODO: Handle action SyncData
         Log.i("SyncData", "SyncData стартанул");
 
+        startForeground(778, n);
 
 
         WebSocket ws = new WebSocketFactory().createSocket("ws://pol-ice.ru:8890/ws");
@@ -210,6 +262,7 @@ public class SyncData extends IntentService {
                 body = result.getJSONObject("body");
 
 
+
                 switch (head) {
                     case "authUser": {
                         // успешная авторизация запуск процедуры обмена
@@ -218,7 +271,7 @@ public class SyncData extends IntentService {
                         if ( mAuth ) {
                             Log.i("WS", "sendCoord");
                             // Отправляем координаты
-                            //sendCoord(websocket);
+                            sendCoord(websocket);
 
                             // Запрашиваем номенклатуру
                             getItems(websocket);
@@ -245,6 +298,7 @@ public class SyncData extends IntentService {
                             for (int i = 0; i < items.length(); i++) {
                                 JSONObject t = items.getJSONObject(i);
 
+
                                 cv = new ContentValues();
                                 cv.put("i_id", t.getInt("i_id"));
                                 cv.put("i_name", t.getString("i_name"));
@@ -254,6 +308,52 @@ public class SyncData extends IntentService {
 
                             }
                             Log.i("SQL", "Всего записей: " + String.valueOf(db.getItemsCount()));
+
+                        }
+
+                        // Загрузка типы единиц измерения
+                        if ( body.has(Protocol.ITEM_UNIT_TYPES) ) {
+
+                            db.execSQL("DELETE FROM item_unit_types");
+                            JSONArray items = body.getJSONArray(Protocol.ITEM_UNIT_TYPES);
+                            for (int i = 0; i < items.length(); i++) {
+                                JSONObject t = items.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put("iut_id", t.getInt("iut_id"));
+                                cv.put("iut_name", t.getString("iut_name"));
+
+                                db.insert("item_unit_types", cv);
+                                Log.i("UNIT_TYPES", cv.getAsString("i_name"));
+                            }
+                        }
+
+                        // Загрузка единиц измерения
+                        if ( body.has(Protocol.ITEM_UNITS) ) {
+
+                            db.execSQL("DELETE FROM item_units");
+                            JSONArray items = body.getJSONArray(Protocol.ITEM_UNITS);
+                            for (int i = 0; i < items.length(); i++) {
+                                JSONObject t = items.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put("i_id", t.getInt("i_id"));
+                                cv.put("iut_id", t.getInt("iut_id"));
+                                cv.put("iu_krat", t.getInt("iu_krat"));
+                                cv.put("iu_num", t.getInt("iu_num"));
+                                cv.put("iu_denum", t.getInt("iu_denum"));
+                                cv.put("iu_gros", t.getInt("iu_gros"));
+                                cv.put("iu_length", t.getInt("iu_length"));
+                                cv.put("iu_width", t.getInt("iu_width"));
+                                cv.put("iu_height", t.getInt("iu_height"));
+                                cv.put("iu_area", t.getInt("iu_area"));
+                                cv.put("iu_volume", t.getInt("iu_volume"));
+                                cv.put("iu_base", t.getBoolean("iu_base"));
+                                cv.put("iu_main", t.getBoolean("iu_main"));
+                                
+                                db.insert("item_units", cv);
+                                Log.i("UNITS", cv.getAsString("i_id"));
+                            }
                         }
 
 
@@ -323,20 +423,26 @@ public class SyncData extends IntentService {
                         // Загрузка поисковых строк
                         if ( body.has(Protocol.ITEMS_SEARCH) ) {
 
-                            // Log.d("Search", "2222");
+                            Log.d("Search", "2222");
                             db.execSQL("DELETE FROM item_search");
 
                             JSONArray ig = body.getJSONArray(Protocol.ITEMS_SEARCH);
+
                             for (int i = 0; i < ig.length(); i++) {
                                 JSONObject t = ig.getJSONObject(i);
 
+
+
                                 cv = new ContentValues();
                                 cv.put( "i_id", t.getInt("i_id") );
-                                cv.put( "value", t.getString("search") );
+                                cv.put( "value", t.getString("value") );
 
-                                if ( !cv.getAsString("search").isEmpty() ) {
+                                if ( !cv.getAsString("value").isEmpty() ) {
+
                                     db.insert("item_search", cv);
-                                    Log.i("ITEMS_SEARCH", cv.getAsString("i_id"));
+                                    Log.i("ITEMS_SEARCH", cv.getAsString("value"));
+
+                                    stopForeground(true);
                                 }
                             }
                         }
@@ -466,6 +572,7 @@ public class SyncData extends IntentService {
 
                 Log.i("getItems", r.toString() );
                 websocket.sendText( r.toString() );
+
             }
 
             public void getCountragents(WebSocket websocket) throws Exception {
@@ -524,21 +631,12 @@ public class SyncData extends IntentService {
      * Handle action Baz in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionLogCoord(JSONObject p) {
+    private void handleActionLogCoord(JSONObject p, Notification n) {
 
         //long minTime = 60 * 60 * 1000;  // 1 час
         long minTime = 60 * 1000;  // 1 минута
         float minDistance = 0;
 
-
-        NotificationCompat.Builder mNB = new NotificationCompat.Builder(this)
-                .setOngoing( true )
-                .setSmallIcon( R.drawable.worker )
-                .setContentTitle( "Собираем координаты" )
-                .setContentText( "Необходимо чтобы датчик GPS был включен" )
-                .setWhen( System.currentTimeMillis() );
-        Notification n;
-        n = mNB.build();
 
         mNM.notify( 1, n );
         startForeground(777, n );
@@ -552,6 +650,8 @@ public class SyncData extends IntentService {
         }
 
         Log.i("LOG", "1");
+
+        Log.i("LOG", "2");
 
         LocationListener ll = new LocationListener() {
 
@@ -575,7 +675,7 @@ public class SyncData extends IntentService {
                     sql += ");";
 
 
-                    //Log.i("TIME", String.valueOf( System.currentTimeMillis() ) + " -- " + String.valueOf(time) );
+                    Log.i("TIME", String.valueOf( System.currentTimeMillis() ) + " -- " + String.valueOf(time) );
 
                     Log.i("SQL", sql);
                     db.execSQL(sql);
@@ -610,4 +710,6 @@ public class SyncData extends IntentService {
         //Log.i("LOG", "6");
 
     }
+
+
 }

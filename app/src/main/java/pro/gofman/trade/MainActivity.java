@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
 
             if ( ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED ) {
-                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_FINE_LOCATION }, PERMISSION_REQUEST_CODE );
+                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_PHONE_STATE }, PERMISSION_REQUEST_CODE );
             }
 
 
@@ -220,6 +220,26 @@ public class MainActivity extends AppCompatActivity {
 
                             break;
                         }
+                        case 2001: {
+                            Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
+
+                            break;
+                        }
+                        case 2002: {
+                            Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
+
+                            break;
+                        }
+                        case 2003: {
+                            Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
+
+                            break;
+                        }
+                        case 2004: {
+                            Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
+
+                            break;
+                        }
 
                         case 2005: {
 
@@ -265,8 +285,11 @@ public class MainActivity extends AppCompatActivity {
 
             bGPSMonitoringStatus = isChecked;
 
-            Intent intent = new Intent(MainActivity.this, SyncData.class);
+            if ( ContextCompat.checkSelfPermission(buttonView.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED ) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, PERMISSION_REQUEST_CODE );
+            }
 
+            Intent intent = new Intent(Trade.getAppContext(), SyncData.class);
             intent.putExtra("pro.gofman.trade.extra.PARAM1", "{}");
 
             if ( isChecked ) {

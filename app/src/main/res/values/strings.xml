@@ -2,6 +2,7 @@
     <string name="database">trade</string>
     <string name="app_name">Мобильная торговля</string>
     <string name="action_settings">Настройки</string>
+    <string name="door">Заглушка</string>
 
     <string name="search_title">Поиск</string>
     <string name="search_items">Поиск номенклатуры</string>

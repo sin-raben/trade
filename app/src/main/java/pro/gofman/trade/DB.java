@@ -355,7 +355,7 @@ public class DB {
 
             String result = "";
             String d;
-            Boolean pk, wr;
+            Boolean pk, uk, wr;
 
             if (length > 0) {
                 wr = false;
@@ -368,13 +368,17 @@ public class DB {
 
                 for (int i = 0; i < length; i++) {
 
-                    pk = a.getJSONObject(i).optBoolean("primary_key");
+                    pk = a.getJSONObject(i).optBoolean("primary_key", false);
+                    uk = a.getJSONObject(i).optBoolean("unique_key", false);
                     result += a.getJSONObject(i).getString("field") + " ";
                     d = i == length - 1 ? " " : ", ";
                     result += a.getJSONObject(i).getString("type");
                     if ( pk ) {
                         if ( !f ) result += " PRIMARY KEY";
                         wr = true;
+                    }
+                    if ( uk ) {
+                        result += " UNIQUE KEY";
                     }
                     result += d;
                 }

@@ -215,7 +215,8 @@
           "description": "признак основной единицы измерения"
         }
       ]
-    },{
+    },
+    {
         "table": "item_search",
         "fts3": true,
         "description": "Специальная таблица для поиска номенклатуры",
@@ -232,6 +233,58 @@
             "description": "Собранная строка для поиска"
           }
         ]
+    },
+    {
+      "table": "countragents",
+      "description": "Справочник контрагентов",
+      "fields": [
+        {
+          "field": "ca_id",
+          "type": "integer",
+          "description": "ID контрагента",
+          "primary_key": true
+        },
+        {
+          "field": "ca_type",
+          "type": "integer",
+          "description": "Тип контрагента"
+        },
+        {
+          "field": "ca_head",
+          "type": "integer",
+          "description": "Головная организация"
+        },
+        {
+          "field": "ca_name",
+          "type": "text",
+          "description": "Рабочее наименование"
+        },
+        {
+          "field": "ca_prn",
+          "type": "text",
+          "description": "Наименование для печати"
+        },
+        {
+          "field": "ca_desc",
+          "type": "text",
+          "description": "Описание"
+        },
+        {
+          "field": "ca_inn",
+          "type": "text",
+          "description": "ИНН"
+        },
+        {
+          "field": "ca_kpp",
+          "type": "text",
+          "description": "КПП"
+        },
+        {
+          "field": "ca_ogrn",
+          "type": "text",
+          "description": "ОГРН"
+        }
+      ]
     },
     {
       "table": "point",
@@ -334,7 +387,7 @@
       ]
     },
     {
-      "table": "docs",
+      "table": "doc",
       "description": "Документов",
       "fields": [
         {
@@ -364,6 +417,43 @@
           "type": "text",
           "description": "Содержание документа",
           "default": "{}"
+        }
+      ]
+    },
+    {
+      "table": "doc_items",
+      "description": "Содержимое документов",
+      "fields": [
+        {
+          "field": "d_id",
+          "type": "integer",
+          "decription": "ID Документа",
+          "unique_key": true
+        },
+        {
+          "field": "i_id",
+          "type": "integer",
+          "description": "ID номенклатуры"
+        },
+        {
+          "field": "iut_id",
+          "type": "integer",
+          "description": "Единица измерения"
+        },
+        {
+          "field": "kol",
+          "type": "integer",
+          "description": "Количество в документе"
+        },
+        {
+          "field": "price",
+          "type": "integer",
+          "description": "Цена"
+        },
+        {
+          "field": "store",
+          "type": "integer",
+          "description": "Склад"
         }
       ]
     },
