@@ -85,6 +85,7 @@ public class DB {
         return result;
     }
 
+    // Список всех документов
     public List<Docs> getDocs() {
         List<Docs> r = new ArrayList<>();
 
@@ -115,6 +116,7 @@ public class DB {
         return r;
     }
 
+    // Список всей номенклатуры
     public List<Items> getItems() {
         List<Items> r = new ArrayList<>();
 
