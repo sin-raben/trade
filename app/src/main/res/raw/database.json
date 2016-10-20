@@ -217,10 +217,10 @@
       ]
     },
     {
-        "table": "item_search",
-        "fts3": true,
-        "description": "Специальная таблица для поиска номенклатуры",
-        "fields": [
+      "table": "item_search",
+      "fts3": true,
+      "description": "Специальная таблица для поиска номенклатуры",
+      "fields": [
           {
             "field": "i_id",
             "type": "integer",
@@ -287,17 +287,50 @@
       ]
     },
     {
-      "table": "point",
+      "table": "point_delivery",
       "description": "Точки доставки",
       "fields": [
         {
-          "field": "p_id",
+          "field": "pd_id",
           "type": "integer",
-          "description": "ID точки"
-        }, {
-          "field": "p_name",
+          "description": "ID точки",
+          "primary_key": true
+        },
+        {
+          "field": "pd_name",
+          "type": "text",
+          "description": "Рабочее наименование"
+        },
+        {
+          "field": "pd_prn",
+          "type": "text",
+          "description": "Наименование для печати"
+        },
+        {
+          "field": "adr_id",
           "type": "integer",
-          "description": "Наименование"
+          "description": "ID Фактического адреса"
+        }
+      ]
+    },
+    {
+      "table": "ca_pd_link",
+      "description": "Связи Контрагенттов с Точками доставки",
+      "fields": [
+        {
+          "field": "ca_id",
+          "type": "integer",
+          "description": "ID контрагента"
+        },
+        {
+          "field": "pd_id",
+          "type": "integer",
+          "description": "ID контрагента"
+        },
+        {
+          "field": "active",
+          "type": "integer",
+          "description": "Статус связи"
         }
       ]
     },
@@ -407,6 +440,22 @@
           "description": "Дата документа"
         },
         {
+          "field": "d_delivery_date",
+          "type": "integer",
+          "description": "Дата доставки"
+        },
+        {
+          "field": "ca_id",
+          "type": "integer",
+          "description": "ID контрагента"
+        },
+        {
+          "field": "pd_id",
+          "type": "integer",
+          "description": "ID точки доставки"
+        },
+
+        {
           "field": "head",
           "type": "text",
           "description": "Заголовок документа",
@@ -427,8 +476,7 @@
         {
           "field": "d_id",
           "type": "integer",
-          "decription": "ID Документа",
-          "unique_key": true
+          "decription": "ID Документа"
         },
         {
           "field": "i_id",
@@ -472,7 +520,6 @@
           "type": "text",
           "description": "Поискова строка"
         }
-
       ]
     }
   ]
