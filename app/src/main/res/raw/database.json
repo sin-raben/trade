@@ -328,7 +328,7 @@
           "description": "ID контрагента"
         },
         {
-          "field": "active",
+          "field": "pd_active",
           "type": "integer",
           "description": "Статус связи"
         }
@@ -339,19 +339,29 @@
       "description": "Цены",
       "fields": [
         {
-          "field": "id_pl",
+          "field": "pl_id",
           "type": "integer",
           "description": "ID прайс-листа"
         },
         {
-          "field": "id_i",
+          "field": "i_id",
           "type": "integer",
           "description": "ID номенклатуры"
         },
         {
-          "field": "cn",
+          "field": "p_cn",
           "type": "integer",
           "description": "Цена номенклатуры"
+        },
+        {
+          "field": "p_date_b",
+          "type": "integer",
+          "description": "Дата начала действия цены"
+        },
+        {
+          "field": "p_date_e",
+          "type": "integer",
+          "description": "Дата окончания действия цены"
         }
       ]
     },
@@ -360,13 +370,13 @@
       "description": "Справочник прайс-листов",
       "fields": [
         {
-          "field": "id_pl",
+          "field": "pl_id",
           "type": "integer",
           "description": "ID прайс-листа",
           "primary_key": true
         },
         {
-          "field": "name",
+          "field": "pl_name",
           "type": "text",
           "description": "Наименование прайс-листа"
         }
@@ -377,17 +387,17 @@
       "description": "Связи Составного прайс-листа и Базового прайс-листа",
       "fields": [
         {
-          "field": "parent",
+          "field": "pll_parent",
           "type": "integer",
           "description": "ID составного прайс-листа"
         },
         {
-          "field": "child",
+          "field": "pll_child",
           "type": "integer",
           "description": "ID базового прайс-листа"
         },
         {
-          "field": "prior",
+          "field": "pll_prior",
           "type": "integer",
           "description": "Чем больше число тем выше приоритет прайс-листа"
         }

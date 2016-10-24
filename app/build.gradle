@@ -40,7 +40,7 @@ dependencies {
     //compile 'com.mikepenz:fontawesome-typeface:4.6.0.3@aar'
 
     compile 'com.android.support:appcompat-v7:25.0.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta1'
     compile 'com.android.support:design:25.0.0'
     compile 'com.neovisionaries:nv-websocket-client:1.30'
     compile 'com.android.support:support-v4:25.0.0'

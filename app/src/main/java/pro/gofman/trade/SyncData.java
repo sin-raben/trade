@@ -261,6 +261,7 @@ public class SyncData extends IntentService {
                 head = result.getString("head");
                 body = result.getJSONObject("body");
 
+                ContentValues cv;
 
 
                 switch (head) {
@@ -277,7 +278,10 @@ public class SyncData extends IntentService {
                             getItems(websocket);
 
                             // Запрашиваем контрагентов
-                            //getCountragents(websocket);
+                            getCountragents(websocket);
+
+                            // Запрашиваем цены
+                            getPrices(websocket);
 
                         }
 
@@ -288,7 +292,6 @@ public class SyncData extends IntentService {
                         /*
                             {"items":[{Номенклатура}],"count":1000}
                          */
-                        ContentValues cv;
 
                         // Загрузка номенклатуры
                         if ( body.has(Protocol.ITEMS) ) {
@@ -455,15 +458,151 @@ public class SyncData extends IntentService {
                             {"items":[{Торговая точка}],"count":600}
                          */
 
-                        Log.i("returnCountragent", body.toString() );
+                        // Загрузка контрагентов
+                        if ( body.has(Protocol.COUNTERAGENTS) ) {
+
+                            db.execSQL("DELETE FROM countragents");
+
+                            JSONArray ig = body.getJSONArray(Protocol.COUNTERAGENTS);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "ca_id", t.getInt("ca_id") );
+                                cv.put( "ca_type", t.getInt("ca_type") );
+                                cv.put( "ca_name", t.getString("ca_name") );
+                                cv.put( "ca_head", t.getInt("ca_head") );
+                                cv.put( "ca_inn", t.getString("ca_inn") );
+                                cv.put( "ca_kpp", t.getString("ca_kpp") );
+                                cv.put( "ca_ogrn", t.getString("ca_ogrn") );
+
+                                if ( !cv.getAsString("ca_name").isEmpty() ) {
+
+                                    db.insert("countragents", cv);
+                                    Log.i("COUNTERAGENTS", cv.getAsString("ca_name"));
+                                }
+                            }
+                        }
+
+                        // Загрузка точек доставки
+                        if ( body.has(Protocol.POINTS_DELIVERY) ) {
+
+                            db.execSQL("DELETE FROM point_delivery");
+
+                            JSONArray ig = body.getJSONArray(Protocol.POINTS_DELIVERY);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "pd_id", t.getInt("pd_id") );
+                                cv.put( "pd_name", t.getString("pd_name") );
+                                cv.put( "adr_id", t.getInt("adr_id") );
+
+                                if ( !cv.getAsString("pd_name").isEmpty() ) {
+
+                                    db.insert("point_delivery", cv);
+                                    Log.i("POINTS_DELIVERY", cv.getAsString("pd_name"));
+                                }
+                            }
+                        }
+
+                        // Загрузка связей контрагентов и точек доставки
+                        if ( body.has(Protocol.LINK_POINTS_DELIVERY) ) {
+
+                            db.execSQL("DELETE FROM ca_pd_link");
+
+                            JSONArray ig = body.getJSONArray(Protocol.LINK_POINTS_DELIVERY);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "ca_id", t.getInt("ca_id") );
+                                cv.put( "pd_id", t.getInt("pd_id") );
+                                cv.put( "pd_active", t.getInt("pd_active") );
+
+                                if ( cv.getAsBoolean("pd_active") ) {
+
+                                    db.insert("ca_pd_link", cv);
+                                    Log.i("LINK_POINTS_DELIVERY", cv.getAsString("ca_id"));
+                                }
+                            }
+                        }
 
                         break;
                     }
 
-                    case "getMbClient": {
+                    case "getPrices": {
                         /*
                             {"items":[{Контрагент}],"count":600}
                          */
+
+                        // Загрузка цен
+                        if ( body.has(Protocol.PRICE) ) {
+
+                            db.execSQL("DELETE FROM price");
+                            JSONArray ig = body.getJSONArray(Protocol.PRICE);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "pl_id", t.getInt("pl_id") );
+                                cv.put( "i_id", t.getInt("i_id") );
+                                cv.put( "p_date_b", t.getInt("p_date_b") );
+                                cv.put( "p_date_e", t.getInt("p_date_e") );
+                                cv.put( "p_cn", t.getInt("p_cn") );
+
+                                if ( cv.getAsInteger("p_cn") > 0 ) {
+                                    db.insert("price", cv);
+                                    Log.i("PRICE", cv.getAsString("p_cn"));
+                                }
+                            }
+                        }
+
+                        // Загрузка прайслистов
+                        if ( body.has(Protocol.PRICELISTS) ) {
+
+                            db.execSQL("DELETE FROM pricelists");
+                            JSONArray ig = body.getJSONArray(Protocol.PRICELISTS);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "pl_id", t.getInt("pl_id") );
+                                cv.put( "pl_name", t.getString("pl_name") );
+
+                                if ( !cv.getAsString("pl_name").isEmpty() ) {
+                                    db.insert("pricelists", cv);
+                                    Log.i("PRICELISTS", cv.getAsString("pl_name"));
+                                }
+                            }
+                        }
+
+
+                        // Загрузка связей прайслистов
+                        if ( body.has(Protocol.LINK_PRICELISTS) ) {
+
+                            db.execSQL("DELETE FROM pricelist_link");
+                            JSONArray ig = body.getJSONArray(Protocol.LINK_PRICELISTS);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "pll_parent", t.getInt("pl_parent") );
+                                cv.put( "pll_child", t.getInt("pl_child") );
+                                cv.put( "pll_prior", t.getInt("pl_prior") );
+
+                                db.insert("pricelist_link", cv);
+                                Log.i("LINK_PRICELISTS", cv.getAsString("pll_parent"));
+
+                            }
+                        }
+
                         break;
                     }
 
@@ -564,9 +703,9 @@ public class SyncData extends IntentService {
                 JSONObject body = new JSONObject();
                 body.put( Protocol.ITEMS, "all" );
                 body.put( Protocol.ITEMS_SEARCH, "all");
-                //body.put( Protocol.ITEM_GROUP_TYPES, "all" );
-                //body.put( Protocol.ITEM_GROUPS, "all" );
-                //body.put( Protocol.LINK_ITEM_GROUPS, "all" );
+                body.put( Protocol.ITEM_GROUP_TYPES, "all" );
+                body.put( Protocol.ITEM_GROUPS, "all" );
+                body.put( Protocol.LINK_ITEM_GROUPS, "all" );
 
                 r.put( "body", body );
 
@@ -580,11 +719,28 @@ public class SyncData extends IntentService {
                 r.put( "head", "getCountragents" );
 
                 JSONObject body = new JSONObject();
-                body.put( "countragents", "all" );
+                body.put( Protocol.COUNTERAGENTS, "all" );
+                body.put( Protocol.POINTS_DELIVERY, "all" );
+                body.put( Protocol.LINK_POINTS_DELIVERY, "all" );
 
                 r.put( "body", body );
 
-                Log.i("getCountragent", r.toString() );
+                //Log.i("getCountragent", r.toString() );
+                websocket.sendText( r.toString() );
+            }
+
+            public void getPrices(WebSocket websocket) throws Exception {
+                JSONObject r = new JSONObject();
+                r.put( "head", "getPrices" );
+
+                JSONObject body = new JSONObject();
+                body.put( Protocol.PRICE, "all" );
+                body.put( Protocol.PRICELISTS, "all" );
+                body.put( Protocol.LINK_PRICELISTS, "all" );
+
+                r.put( "body", body );
+
+                //Log.i("getCountragent", r.toString() );
                 websocket.sendText( r.toString() );
             }
 

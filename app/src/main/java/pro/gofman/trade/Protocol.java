@@ -29,4 +29,16 @@ public class Protocol {
 
     protected static final String ITEM_UNITS = "itemUnits";
 
+    protected static final String COUNTERAGENTS = "countragents";
+
+    protected static final String POINTS_DELIVERY = "deliveryPoints";
+
+    protected static final String LINK_POINTS_DELIVERY = "linksCountragentDeliveryPoint";
+
+    protected static final String PRICE = "price";
+
+    protected static final String PRICELISTS = "pricelists";
+
+    protected static final String LINK_PRICELISTS = "pricelistLink";
+
 }
