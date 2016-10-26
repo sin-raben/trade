@@ -37,7 +37,7 @@ public class Protocol {
 
     protected static final String PRICE = "price";
 
-    protected static final String PRICELISTS = "pricelists";
+    protected static final String PRICELISTS = "pricelist";
 
     protected static final String LINK_PRICELISTS = "pricelistLink";
 

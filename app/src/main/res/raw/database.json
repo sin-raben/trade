@@ -366,7 +366,7 @@
       ]
     },
     {
-      "table": "pricelist",
+      "table": "pricelists",
       "description": "Справочник прайс-листов",
       "fields": [
         {

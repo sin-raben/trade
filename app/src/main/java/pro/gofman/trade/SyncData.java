@@ -263,7 +263,7 @@ public class SyncData extends IntentService {
 
                 ContentValues cv;
 
-
+                Log.i("HEAD", head);
                 switch (head) {
                     case "authUser": {
                         // успешная авторизация запуск процедуры обмена
@@ -275,13 +275,13 @@ public class SyncData extends IntentService {
                             sendCoord(websocket);
 
                             // Запрашиваем номенклатуру
-                            getItems(websocket);
+                            //getItems(websocket);
 
                             // Запрашиваем контрагентов
                             getCountragents(websocket);
 
                             // Запрашиваем цены
-                            getPrices(websocket);
+                            //getPrices(websocket);
 
                         }
 
@@ -468,19 +468,21 @@ public class SyncData extends IntentService {
                             for (int i = 0; i < ig.length(); i++) {
                                 JSONObject t = ig.getJSONObject(i);
 
+                                Log.i("getCountragent", t.toString());
+
                                 cv = new ContentValues();
                                 cv.put( "ca_id", t.getInt("ca_id") );
                                 cv.put( "ca_type", t.getInt("ca_type") );
-                                cv.put( "ca_name", t.getString("ca_name") );
-                                cv.put( "ca_head", t.getInt("ca_head") );
+                                //cv.put( "ca_name", t.getString("ca_prn") );
+                                //cv.put( "ca_head", t.getInt("ca_head") );
                                 cv.put( "ca_inn", t.getString("ca_inn") );
                                 cv.put( "ca_kpp", t.getString("ca_kpp") );
-                                cv.put( "ca_ogrn", t.getString("ca_ogrn") );
+                                //cv.put( "ca_ogrn", t.optString("ca_ogrn", "") );
 
-                                if ( !cv.getAsString("ca_name").isEmpty() ) {
+                                if ( cv.getAsInteger("ca_id") > 0 ) {
 
                                     db.insert("countragents", cv);
-                                    Log.i("COUNTERAGENTS", cv.getAsString("ca_name"));
+                                    Log.i("COUNTERAGENTS", cv.getAsString("ca_id"));
                                 }
                             }
                         }
@@ -539,6 +541,7 @@ public class SyncData extends IntentService {
                             {"items":[{Контрагент}],"count":600}
                          */
 
+                        //Log.i("getPrices", Boolean.toString(body.has(Protocol.PRICE)) );
                         // Загрузка цен
                         if ( body.has(Protocol.PRICE) ) {
 
@@ -551,8 +554,8 @@ public class SyncData extends IntentService {
                                 cv = new ContentValues();
                                 cv.put( "pl_id", t.getInt("pl_id") );
                                 cv.put( "i_id", t.getInt("i_id") );
-                                cv.put( "p_date_b", t.getInt("p_date_b") );
-                                cv.put( "p_date_e", t.getInt("p_date_e") );
+                                //cv.put( "p_date_b", t.getInt("p_date_b") );
+                                //cv.put( "p_date_e", t.getInt("p_date_e") );
                                 cv.put( "p_cn", t.getInt("p_cn") );
 
                                 if ( cv.getAsInteger("p_cn") > 0 ) {
@@ -562,14 +565,19 @@ public class SyncData extends IntentService {
                             }
                         }
 
+                        Log.i("getPrices", Boolean.toString(body.has(Protocol.PRICELISTS)) );
                         // Загрузка прайслистов
                         if ( body.has(Protocol.PRICELISTS) ) {
+
+
 
                             db.execSQL("DELETE FROM pricelists");
                             JSONArray ig = body.getJSONArray(Protocol.PRICELISTS);
 
                             for (int i = 0; i < ig.length(); i++) {
                                 JSONObject t = ig.getJSONObject(i);
+
+                                Log.i("getPrices", t.toString());
 
                                 cv = new ContentValues();
                                 cv.put( "pl_id", t.getInt("pl_id") );
@@ -595,7 +603,7 @@ public class SyncData extends IntentService {
                                 cv = new ContentValues();
                                 cv.put( "pll_parent", t.getInt("pl_parent") );
                                 cv.put( "pll_child", t.getInt("pl_child") );
-                                cv.put( "pll_prior", t.getInt("pl_prior") );
+                                cv.put( "pll_prior", t.getInt("pll_prior") );
 
                                 db.insert("pricelist_link", cv);
                                 Log.i("LINK_PRICELISTS", cv.getAsString("pll_parent"));
