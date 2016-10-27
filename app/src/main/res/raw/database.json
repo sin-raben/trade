@@ -335,6 +335,24 @@
       ]
     },
     {
+      "table": "ca_search",
+      "description": "Поисковая строка",
+      "fts3": true,
+      "fields": [
+        {
+          "field": "ca_id",
+          "type": "integer",
+          "description": "ID контрагента",
+          "primary_key": true
+        },
+        {
+          "field": "cs_value",
+          "type": "text",
+          "decription": "Поисковая строка"
+        }
+      ]
+    },
+    {
       "table": "price",
       "description": "Цены",
       "fields": [
