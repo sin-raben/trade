@@ -468,21 +468,19 @@ public class SyncData extends IntentService {
                             for (int i = 0; i < ig.length(); i++) {
                                 JSONObject t = ig.getJSONObject(i);
 
-                                Log.i("getCountragent", t.toString());
-
                                 cv = new ContentValues();
                                 cv.put( "ca_id", t.getInt("ca_id") );
                                 cv.put( "ca_type", t.getInt("ca_type") );
-                                //cv.put( "ca_name", t.getString("ca_prn") );
+                                cv.put( "ca_name", t.getString("ca_name") );
                                 //cv.put( "ca_head", t.getInt("ca_head") );
                                 cv.put( "ca_inn", t.getString("ca_inn") );
                                 cv.put( "ca_kpp", t.getString("ca_kpp") );
                                 //cv.put( "ca_ogrn", t.optString("ca_ogrn", "") );
 
-                                if ( cv.getAsInteger("ca_id") > 0 ) {
+                                if ( t.getInt("ca_id") > 0 ) {
 
                                     db.insert("countragents", cv);
-                                    Log.i("COUNTERAGENTS", cv.getAsString("ca_id"));
+                                    Log.i("COUNTERAGENTS", t.getString("ca_name") );
                                 }
                             }
                         }
@@ -498,19 +496,21 @@ public class SyncData extends IntentService {
                                 JSONObject t = ig.getJSONObject(i);
 
                                 cv = new ContentValues();
-                                cv.put( "pd_id", t.getInt("pd_id") );
-                                cv.put( "pd_name", t.getString("pd_name") );
+                                cv.put( "pd_id", t.getInt("dp_id") );
+                                cv.put( "pd_name", t.getString("dp_name") );
                                 cv.put( "adr_id", t.getInt("adr_id") );
 
-                                if ( !cv.getAsString("pd_name").isEmpty() ) {
+                                if ( !t.getString("pd_name").isEmpty() ) {
 
                                     db.insert("point_delivery", cv);
-                                    Log.i("POINTS_DELIVERY", cv.getAsString("pd_name"));
+                                    Log.i("POINTS_DELIVERY", t.getString("pd_name") );
                                 }
                             }
                         }
 
                         // Загрузка связей контрагентов и точек доставки
+
+                        Log.i("POINT", String.valueOf( body.has(Protocol.LINK_POINTS_DELIVERY) ) );
                         if ( body.has(Protocol.LINK_POINTS_DELIVERY) ) {
 
                             db.execSQL("DELETE FROM ca_pd_link");
@@ -522,13 +522,13 @@ public class SyncData extends IntentService {
 
                                 cv = new ContentValues();
                                 cv.put( "ca_id", t.getInt("ca_id") );
-                                cv.put( "pd_id", t.getInt("pd_id") );
-                                cv.put( "pd_active", t.getInt("pd_active") );
+                                cv.put( "pd_id", t.getInt("dp_id") );
+                                cv.put( "pd_active", t.getBoolean("lcp_active") );
 
-                                if ( cv.getAsBoolean("pd_active") ) {
+                                if ( t.getBoolean("lcp_active") ) {
 
                                     db.insert("ca_pd_link", cv);
-                                    Log.i("LINK_POINTS_DELIVERY", cv.getAsString("ca_id"));
+                                    Log.i("LINK_POINTS_DELIVERY", String.valueOf(t.getInt("ca_id")) );
                                 }
                             }
                         }
@@ -733,7 +733,7 @@ public class SyncData extends IntentService {
 
                 r.put( "body", body );
 
-                //Log.i("getCountragent", r.toString() );
+                Log.i("getCountragent", r.toString() );
                 websocket.sendText( r.toString() );
             }
 
