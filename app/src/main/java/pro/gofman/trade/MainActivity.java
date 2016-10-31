@@ -182,8 +182,10 @@ public class MainActivity extends AppCompatActivity {
 
         dwb.addDrawerItems(
                 new ExpandableDrawerItem().withName("Справочники").withIcon(R.drawable.items).withIdentifier(19).withSelectable(false).withSubItems(
+                        new SecondaryDrawerItem().withName("Контрагенты").withLevel(2).withIcon(R.drawable.document).withIdentifier(2007),
                         new SecondaryDrawerItem().withName("Номенклатура").withLevel(2).withIcon(R.drawable.document).withIdentifier(2000),
                         new SecondaryDrawerItem().withName("Прайс-листы").withLevel(2).withIcon(R.drawable.document).withIdentifier(2001)
+
                 ),
                 new ExpandableDrawerItem().withName("Документы").withIcon(R.drawable.items).withIdentifier(20).withSelectable(false).withSubItems(
                         new SecondaryDrawerItem().withName("Заказ покупателя").withLevel(2).withIcon(R.drawable.document).withIdentifier(2002),
@@ -261,6 +263,11 @@ public class MainActivity extends AppCompatActivity {
                             getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.fragment, f2000)
                                     .commit();
+
+                            break;
+                        }
+
+                        case 2007: {
 
                             break;
                         }

@@ -275,13 +275,13 @@ public class SyncData extends IntentService {
                             sendCoord(websocket);
 
                             // Запрашиваем номенклатуру
-                            //getItems(websocket);
+                            getItems(websocket);
 
                             // Запрашиваем контрагентов
                             getCountragents(websocket);
 
                             // Запрашиваем цены
-                            //getPrices(websocket);
+                            getPrices(websocket);
 
                         }
 
@@ -486,24 +486,26 @@ public class SyncData extends IntentService {
                         }
 
                         // Загрузка точек доставки
+                        Log.i("POINT", String.valueOf(body.has(Protocol.POINTS_DELIVERY)));
                         if ( body.has(Protocol.POINTS_DELIVERY) ) {
 
                             db.execSQL("DELETE FROM point_delivery");
 
                             JSONArray ig = body.getJSONArray(Protocol.POINTS_DELIVERY);
 
+                            Log.i("POINT", String.valueOf(ig.length()));
                             for (int i = 0; i < ig.length(); i++) {
                                 JSONObject t = ig.getJSONObject(i);
 
                                 cv = new ContentValues();
                                 cv.put( "pd_id", t.getInt("dp_id") );
                                 cv.put( "pd_name", t.getString("dp_name") );
-                                cv.put( "adr_id", t.getInt("adr_id") );
+                                //cv.put( "adr_id", t.getInt("adr_id") );
 
-                                if ( !t.getString("pd_name").isEmpty() ) {
+                                if (!t.getString("dp_name").isEmpty()) {
 
                                     db.insert("point_delivery", cv);
-                                    Log.i("POINTS_DELIVERY", t.getString("pd_name") );
+                                    Log.i("POINTS_DELIVERY", t.getString("dp_name"));
                                 }
                             }
                         }
@@ -554,9 +556,11 @@ public class SyncData extends IntentService {
                                 cv = new ContentValues();
                                 cv.put( "pl_id", t.getInt("pl_id") );
                                 cv.put( "i_id", t.getInt("i_id") );
-                                //cv.put( "p_date_b", t.getInt("p_date_b") );
-                                //cv.put( "p_date_e", t.getInt("p_date_e") );
+                                cv.put("p_date_b", t.getLong("p_date_b"));
+                                cv.put("p_date_e", t.getLong("p_date_e"));
                                 cv.put( "p_cn", t.getInt("p_cn") );
+
+                                //t.getDouble()
 
                                 if ( cv.getAsInteger("p_cn") > 0 ) {
                                     db.insert("price", cv);

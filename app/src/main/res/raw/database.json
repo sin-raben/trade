@@ -527,7 +527,7 @@
           "description": "Цена"
         },
         {
-          "field": "store",
+          "field": "s_id",
           "type": "integer",
           "description": "Склад"
         }
