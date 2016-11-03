@@ -28,7 +28,16 @@
 
         <service
             android:name=".SyncData"
-            android:exported="false"></service>
+            android:exported="false">
+
+        </service>
+        <receiver android:name=".CallCRM">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE"/>
+            </intent-filter>
+        </receiver>
+
+
 
     </application>
 
