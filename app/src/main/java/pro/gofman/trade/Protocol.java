@@ -41,4 +41,10 @@ public class Protocol {
 
     protected static final String LINK_PRICELISTS = "pricelistLink";
 
+    protected static final String STORES = "stores";
+
+    protected static final String LINK_STORES = "storeLink";
+
+    protected static final String STOCKS = "stocks";
+
 }

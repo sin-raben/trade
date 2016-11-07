@@ -283,6 +283,9 @@ public class SyncData extends IntentService {
                             // Запрашиваем цены
                             getPrices(websocket);
 
+                            // Запрашиваем остатки
+                            getAmounts(websocket);
+
                         }
 
                         break;
@@ -538,6 +541,75 @@ public class SyncData extends IntentService {
                         break;
                     }
 
+                    case "getStocks": {
+
+                        if (body.has(Protocol.STORES)) {
+
+                            db.execSQL("DELETE FROM stores");
+                            JSONArray ig = body.getJSONArray(Protocol.STORES);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put("sr_id", t.getInt("sr_id"));
+                                cv.put("sr_type", t.getInt("sr_type"));
+                                cv.put("sr_name", t.getString("sr_name"));
+
+
+                                if (t.getInt("sr_id") > 0) {
+                                    db.insert("stores", cv);
+                                    Log.i("STORES", t.getString("sr_name"));
+                                }
+                            }
+                        }
+
+                        if (body.has(Protocol.LINK_STORES)) {
+
+                            db.execSQL("DELETE FROM store_link");
+                            JSONArray ig = body.getJSONArray(Protocol.LINK_STORES);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put("srl_parent", t.getInt("sr_id"));
+                                cv.put("srl_child", t.getInt("sr_type"));
+                                cv.put("srl_prior", t.getInt("sr_name"));
+
+
+                                if (t.getInt("sr_id") > 0) {
+                                    db.insert("store_link", cv);
+                                    Log.i("LINK STORES", t.getString("sr_name"));
+                                }
+                            }
+                        }
+
+
+                        if (body.has(Protocol.STOCKS)) {
+
+                            db.execSQL("DELETE FROM stocks");
+                            JSONArray ig = body.getJSONArray(Protocol.STOCKS);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put("i_id", t.getInt("i_id"));
+                                cv.put("sr_id", t.getInt("sr_id"));
+                                cv.put("sc_amount", t.getInt("sc_amount"));
+
+
+                                if (t.getInt("sc_amount") > 0) {
+                                    db.insert("stocks", cv);
+                                    Log.i("STOCKS", t.getString("sr_name"));
+                                }
+                            }
+                        }
+
+
+                    }
+
                     case "getPrices": {
                         /*
                             {"items":[{Контрагент}],"count":600}
@@ -749,6 +821,21 @@ public class SyncData extends IntentService {
                 body.put( Protocol.PRICE, "all" );
                 body.put( Protocol.PRICELISTS, "all" );
                 body.put( Protocol.LINK_PRICELISTS, "all" );
+
+                r.put("body", body);
+
+                //Log.i("getCountragent", r.toString() );
+                websocket.sendText(r.toString());
+            }
+
+            public void getAmounts(WebSocket websocket) throws Exception {
+                JSONObject r = new JSONObject();
+                r.put("head", "getStocks");
+
+                JSONObject body = new JSONObject();
+                body.put(Protocol.STORES, "all");
+                body.put(Protocol.LINK_STORES, "all");
+                body.put(Protocol.STOCKS, "all");
 
                 r.put( "body", body );
 

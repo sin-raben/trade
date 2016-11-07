@@ -394,6 +394,11 @@
           "primary_key": true
         },
         {
+          "field": "pl_type",
+          "type": "integer",
+          "description": "Тип прайслиста (Составной или простой)"
+        },
+        {
           "field": "pl_name",
           "type": "text",
           "description": "Наименование прайс-листа"
@@ -549,6 +554,71 @@
           "description": "Поискова строка"
         }
       ]
+    },
+    {
+      "table": "stores",
+      "description": "Склады",
+      "fields": [
+        {
+          "field": "sr_id",
+          "type": "integer",
+          "description": "ID склада",
+          "primary_key": true
+        },
+        {
+          "field": "sr_type",
+          "type": "integer",
+          "description": "Тип склада (Составной или простой)"
+        },
+        {
+          "field": "sr_name",
+          "type": "text",
+          "description": "Наименование"
+        }
+      ]
+    },
+    {
+      "table": "store_link",
+      "description": "Связи Составного склада с простыми",
+      "fields": [
+        {
+          "field": "srl_parent",
+          "type": "integer",
+          "description": "ID составного склада"
+        },
+        {
+          "field": "srl_child",
+          "type": "integer",
+          "description": "ID простого склада"
+        },
+        {
+          "field": "srl_prior",
+          "type": "integer",
+          "description": "Приоритет простого склада"
+        }
+      ]
+    },
+    {
+      "table": "stocks",
+      "description": "Остатки",
+      "fields": [
+        {
+          "field": "i_id",
+          "type": "integer",
+          "description": "ID номенклатуры"
+        },
+        {
+          "field": "sr_id",
+          "type": "integer",
+          "description": "ID склада"
+        },
+        {
+          "field": "sc_amount",
+          "type": "inetger",
+          "description": "Остаток номенклатуры на складе"
+        }
+      ]
+
     }
   ]
 }
