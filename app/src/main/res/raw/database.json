@@ -453,7 +453,7 @@
       ]
     },
     {
-      "table": "doc",
+      "table": "docs",
       "description": "Документов",
       "fields": [
         {
@@ -486,19 +486,72 @@
           "field": "pd_id",
           "type": "integer",
           "description": "ID точки доставки"
-        },
-
+        }
+      ],
+      "values": [
         {
-          "field": "head",
-          "type": "text",
-          "description": "Заголовок документа",
-          "default": "{}"
+          "d_id": 1,
+          "d_num": 11,
+          "d_date": 1478944410,
+          "d_delivery_date": 1476403200,
+          "ca_id": 339,
+          "pd_id": 500
         },
         {
-          "field": "body",
-          "type": "text",
-          "description": "Содержание документа",
-          "default": "{}"
+          "d_id": 2,
+          "d_num": 12,
+          "d_date": 1478932410,
+          "d_delivery_date": 1476489600,
+          "ca_id": 343,
+          "pd_id": 767
+        },
+        {
+          "d_id": 3,
+          "d_num": 10,
+          "d_date": 1478944410,
+          "d_delivery_date": 1476403200,
+          "ca_id": 339,
+          "pd_id": 500
+        },
+        {
+          "d_id": 4,
+          "d_num": 14,
+          "d_date": 1478932410,
+          "d_delivery_date": 1476489600,
+          "ca_id": 343,
+          "pd_id": 767
+        },
+        {
+          "d_id": 5,
+          "d_num": 11,
+          "d_date": 1478944410,
+          "d_delivery_date": 1476403200,
+          "ca_id": 339,
+          "pd_id": 500
+        },
+        {
+          "d_id": 6,
+          "d_num": 15,
+          "d_date": 1478932410,
+          "d_delivery_date": 1476489600,
+          "ca_id": 343,
+          "pd_id": 767
+        },
+        {
+          "d_id": 7,
+          "d_num": 16,
+          "d_date": 1478944410,
+          "d_delivery_date": 1476403200,
+          "ca_id": 339,
+          "pd_id": 500
+        },
+        {
+          "d_id": 8,
+          "d_num": 17,
+          "d_date": 1478932410,
+          "d_delivery_date": 1476489600,
+          "ca_id": 343,
+          "pd_id": 767
         }
       ]
     },

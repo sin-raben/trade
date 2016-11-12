@@ -31,6 +31,7 @@ public class DB {
 
     private dbHelper mHelper;
     private SQLiteDatabase mDatabase;
+    private SimpleDateFormat df;
 
     protected static final int OPTION_CONNECTION = 1;
     protected static final int OPTION_AUTH = 2;
@@ -40,6 +41,8 @@ public class DB {
     public DB(Context context) {
         mHelper = new dbHelper(context);
         mDatabase = mHelper.getWritableDatabase();
+
+        df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     }
 
     public String getOptions(int o_id) {
@@ -94,22 +97,22 @@ public class DB {
             if ( c.moveToFirst() ) {
                 do {
                     Docs d = new Docs();
-                    try {
 
-                        d.setID( c.getInt( c.getColumnIndex( "d_id" ) ) );
-                        d.setNumber( c.getInt( c.getColumnIndex( "d_num" ) ) );
-                        d.setDate( c.getInt( c.getColumnIndex("d_date" ) ) );
-                        d.setHead( new JSONObject( c.getString( c.getColumnIndex( "head" ) ) ) );
-                        d.setBody( new JSONObject( c.getString( c.getColumnIndex( "body" ) ) ) );
+                    Date d_date = new Date(c.getLong(c.getColumnIndex("d_date")) * 1000);
 
-                        r.add(d);
+                    d.setID(c.getInt(c.getColumnIndex("d_id")));
+                    d.setNumber(c.getInt(c.getColumnIndex("d_num")));
+                    d.setDate(df.format(d_date));
+                    d.setPointDelivery("Блять крутая точка доставки");
+                    d.setPointAdr("Блять шикарный адрес в три девятом царстве три десятом государстве");
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+
+                    r.add(d);
 
                 } while ( c.moveToNext() );
             }
+
+            c.close();
         }
 
 
@@ -214,7 +217,6 @@ public class DB {
 
                     //dt = new Date( c.getInt( c.getColumnIndex("atime")*1000 )).toString();
 
-                    SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                     Date d = new Date( Long.valueOf( c.getLong(c.getColumnIndex("atime")) )*1000 );
                     dt = df.format( d );
 

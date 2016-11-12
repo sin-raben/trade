@@ -19,10 +19,12 @@ public class Docs extends AbstractItem<Docs, Docs.ViewHolder> {
 
     private int d_id = 0;
     private int d_num = 0;
-    private int d_date = 0;
-    private int d_delivery_date = 0;
-    private int ca_id = 0;
-    private int pd_id = 0;
+    private String d_date = "";
+    private String d_delivery_date = "";
+    private String ca_name = "";
+    private String pd_name = "";
+    private String pd_adr = "";
+
 
 
 
@@ -54,25 +56,46 @@ public class Docs extends AbstractItem<Docs, Docs.ViewHolder> {
         return this.d_num;
     }
 
-    public void setDate(int d_date) {
+    public void setDate(String d_date) {
         this.d_date = d_date;
     }
-    public int getDate() { return this.d_date; }
 
-    public void setDateDelivery(int d_date) {
+    public String getDate() {
+        return this.d_date;
+    }
+
+    public void setDateDelivery(String d_date) {
         this.d_delivery_date = d_date;
     }
-    public int getDateDelivery() { return this.d_delivery_date; }
 
-    public void setCountragent(int ca_id) {
-        this.ca_id = ca_id;
+    public String getDateDelivery() {
+        return this.d_delivery_date;
     }
-    public int getCountragent() { return this.ca_id; }
 
-    public void setPointDelivery(int pd_id) {
-        this.pd_id = pd_id;
+    public void setCountragent(String ca_name) {
+        this.ca_name = ca_name;
     }
-    public int getPointDelivery() { return this.pd_id; }
+
+    public String getCountragent() {
+        return this.ca_name;
+    }
+
+    public void setPointDelivery(String pd_name) {
+        this.pd_name = pd_name;
+    }
+
+    public String getPointDelivery() {
+        return this.pd_name;
+    }
+
+    public void setPointAdr(String pd_adr) {
+        this.pd_adr = pd_adr;
+    }
+
+    public String getPointAdr() {
+        return this.pd_adr;
+    }
+
 
 
 
@@ -93,18 +116,27 @@ public class Docs extends AbstractItem<Docs, Docs.ViewHolder> {
     public void bindView(Docs.ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        //holder.name.setText(name);
-        //holder.description.setText(description);
+        holder.doc_num.setText("ГРС" + String.valueOf(d_num) + " от " + d_date);
+        holder.doc_desc.setText(pd_name);
+        holder.pd_adr.setText(pd_adr);
+        holder.items_amount.setText("Позиций: " + String.valueOf(d_id * 2 + 10));
+        holder.doc_summa.setText("Сумма: " + String.valueOf(d_id * d_num * 43) + " руб.");
+
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
-        protected TextView name;
-        protected TextView description;
+        protected TextView doc_num;
+        protected TextView doc_desc;
+        protected TextView pd_adr;
+        protected TextView items_amount, doc_summa;
 
         public ViewHolder(View view) {
             super(view);
-            this.name = (TextView) view.findViewById(R.id.recycleview_item_name);
-            this.description = (TextView) view.findViewById(R.id.recycleview_item_desc);
+            this.doc_num = (TextView) view.findViewById(R.id.recycleview_doc_num);
+            this.doc_desc = (TextView) view.findViewById(R.id.recycleview_doc_desc);
+            this.pd_adr = (TextView) view.findViewById(R.id.recycleview_pd_adr);
+            this.items_amount = (TextView) view.findViewById(R.id.recycleview_items_postion);
+            this.doc_summa = (TextView) view.findViewById(R.id.recycleview_doc_summa);
         }
     }
 

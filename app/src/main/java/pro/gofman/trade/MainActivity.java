@@ -228,7 +228,12 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         }
                         case 2002: {
-                            Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
+                            sv.setQueryHint("Поиск документа");
+                            DocsFragment f2002 = new DocsFragment();
+
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment, f2002)
+                                    .commit();
 
                             break;
                         }

@@ -10,7 +10,9 @@
     android:paddingEnd="@dimen/material_drawer_vertical_padding"
     android:paddingStart="@dimen/material_drawer_vertical_padding"
     android:paddingRight="@dimen/material_drawer_vertical_padding"
-    android:paddingLeft="@dimen/material_drawer_vertical_padding">
+    android:paddingLeft="@dimen/material_drawer_vertical_padding"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
 
 
     <TextView
@@ -40,7 +42,7 @@
         android:text="344002, Ростов-на-Дону г. Ульяновская ул. д. 44/10 кв. 15"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/recycler_view_adr"
+        android:id="@+id/recycleview_pd_adr"
         android:textSize="12sp"
         android:lines="2"
         android:maxLines="2"
@@ -55,7 +57,7 @@
         android:text="Позиций: 5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/recycler_view_postion"
+        android:id="@+id/recycleview_items_postion"
         android:textSize="12sp"
         android:lines="1"
         android:maxLines="1"
@@ -68,7 +70,7 @@
             android:text="Сумма: 3 664,00 руб."
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/recycler_view_summa"
+            android:id="@+id/recycleview_doc_summa"
             android:textSize="12sp"
             android:lines="1"
             android:maxLines="1"

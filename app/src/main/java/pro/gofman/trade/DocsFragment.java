@@ -87,7 +87,7 @@ public class DocsFragment extends Fragment {
 
         DB db = Trade.getWritableDatabase();
 
-        ia.add( db.getItems() );
+        ia.add(db.getDocs());
 
         //ia.setNewList( db.getItemsSearch( "готов* соси*" ) );
 
