@@ -23,8 +23,7 @@ public class CallCRM extends BroadcastReceiver {
             Log.i("CRM", "2");
             Log.i("CRM", ":" + phoneState+":"+TelephonyManager.EXTRA_STATE_RINGING+":");
             //Log.i("CRM", TelephonyManager.EXTRA_STATE_RINGING);
-
-
+            
             if ( phoneState.equals( TelephonyManager.EXTRA_STATE_RINGING ) ) {
                 Log.i("CRM", "3");
                 //Трубка не поднята, телефон звонит

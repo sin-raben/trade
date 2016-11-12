@@ -5,34 +5,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/material_drawer_item_primary"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical|start"
     android:paddingEnd="@dimen/material_drawer_vertical_padding"
     android:paddingStart="@dimen/material_drawer_vertical_padding"
     android:paddingRight="@dimen/material_drawer_vertical_padding"
     android:paddingLeft="@dimen/material_drawer_vertical_padding">
 
-    <android.support.constraint.ConstraintLayout
+
+    <TextView
+        android:id="@+id/recycleview_doc_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:lines="1"
+        android:textDirection="anyRtl"
+        android:textSize="@dimen/material_drawer_item_secondary_description"
+        tools:text="Заказ покупателя №ГРС000123 от 21.12.2016"
 
-        <TextView
-            android:id="@+id/recycleview_doc_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:lines="1"
-            android:textDirection="anyRtl"
-            android:textSize="@dimen/material_drawer_item_secondary_description"
-            tools:text="Заказ покупателя №ГРС000123 от 21.12.2016"
-            tools:layout_constraintBottom_creator="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:textStyle="normal|bold"
-            tools:layout_editor_absoluteX="0dp" />
-
-
-    </android.support.constraint.ConstraintLayout>
+        android:textStyle="normal|bold" />
 
 
     <TextView
@@ -41,21 +31,51 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical|start"
         android:lines="1"
-        android:textDirection="anyRtl"
         android:textSize="@dimen/material_drawer_item_secondary_extra_text"
         tools:text="АССОРТИ Малиновского 56"
         android:layout_marginTop="5dp"
         android:elevation="1dp" />
+
     <TextView
         android:text="344002, Ростов-на-Дону г. Ульяновская ул. д. 44/10 кв. 15"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
+        android:id="@+id/recycler_view_adr"
         android:textSize="12sp"
         android:lines="2"
         android:maxLines="2"
-        android:minLines="2"
-        android:autoText="true" />
+        android:minLines="2" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <TextView
+        android:text="Позиций: 5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/recycler_view_postion"
+        android:textSize="12sp"
+        android:lines="1"
+        android:maxLines="1"
+        android:minLines="1"
+        android:textStyle="normal|bold"
+        android:layout_weight="40"/>
+
+
+        <TextView
+            android:text="Сумма: 3 664,00 руб."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler_view_summa"
+            android:textSize="12sp"
+            android:lines="1"
+            android:maxLines="1"
+            android:minLines="1"
+            android:textStyle="normal|bold"
+            android:layout_weight="60"/>
+
+    </LinearLayout>
 
 </LinearLayout>
