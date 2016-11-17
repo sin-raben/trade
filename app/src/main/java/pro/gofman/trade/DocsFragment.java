@@ -73,7 +73,7 @@ public class DocsFragment extends Fragment {
 
 
 
-                Toast.makeText( Trade.getAppContext(), db.getSearchString( doc.getID() ), Toast.LENGTH_SHORT ).show();
+                Toast.makeText( Trade.getAppContext(), "Открываем документ №" + String.valueOf( doc.getID() ), Toast.LENGTH_SHORT ).show();
                 return true;
             }
         });

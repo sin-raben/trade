@@ -103,8 +103,8 @@ public class DB {
                     d.setID(c.getInt(c.getColumnIndex("d_id")));
                     d.setNumber(c.getInt(c.getColumnIndex("d_num")));
                     d.setDate(df.format(d_date));
-                    d.setPointDelivery("Блять крутая точка доставки");
-                    d.setPointAdr("Блять шикарный адрес в три девятом царстве три десятом государстве");
+                    d.setPointDelivery("Солнечный круг №135, Ворошиловский, 50");
+                    d.setPointAdr("344003, Ростов-на-Дону г., Ворошиловский пр-кт, д. 50");
 
 
                     r.add(d);
