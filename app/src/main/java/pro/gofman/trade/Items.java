@@ -1,6 +1,7 @@
 package pro.gofman.trade;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -60,8 +61,12 @@ public class Items extends AbstractItem<Items, Items.ViewHolder> {
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
+        Log.i("ia", "010");
+
         holder.name.setText(name);
         holder.description.setText(description);
+
+
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
@@ -70,6 +75,9 @@ public class Items extends AbstractItem<Items, Items.ViewHolder> {
 
         public ViewHolder(View view) {
             super(view);
+
+            Log.i("ia", "010");
+
             this.name = (TextView) view.findViewById(R.id.recycleview_item_name);
             this.description = (TextView) view.findViewById(R.id.recycleview_item_desc);
         }

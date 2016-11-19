@@ -27,11 +27,6 @@ public class Docs extends AbstractItem<Docs, Docs.ViewHolder> {
 
 
 
-
-    private JSONObject head;
-    private JSONObject body;
-
-
     @Override
     public int getType() {
         return 0;
@@ -95,21 +90,6 @@ public class Docs extends AbstractItem<Docs, Docs.ViewHolder> {
     public String getPointAdr() {
         return this.pd_adr;
     }
-
-
-
-
-
-    public void setHead(JSONObject o) {
-        this.head = o;
-    }
-    public JSONObject getHead() { return this.head; }
-
-    public void setBody(JSONObject o) {
-        this.body = o;
-    }
-    public JSONObject getBody() { return this.body; }
-
 
 
     @Override

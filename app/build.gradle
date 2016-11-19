@@ -27,6 +27,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    //compile 'com.mikepenz:fastadapter-commons:2.0.0@aar'
+
     compile('com.mikepenz:fastadapter:2.0.0@aar') {
         transitive = true
     }

@@ -1,6 +1,7 @@
 package pro.gofman.trade;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,14 +56,21 @@ public class ItemsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_items, container, false);
         RecyclerView r = (RecyclerView) v.findViewById(R.id.recycler_view);
 
-        // FastAdapter
 
         r.setLayoutManager( new LinearLayoutManager( v.getContext() ) );
 
 
 
+        Log.i("ia", "001");
 
         FastItemAdapter ia = Trade.getFastItemAdapter();
+        //FastItemAdapter ia = new FastItemAdapter();
+
+        DB db = Trade.getWritableDatabase();
+        ia.setNewList( db.getItems() );
+
+
+        Log.i("ia", "002");
         ia.withSelectable(false);
         ia.withOnClickListener(new FastAdapter.OnClickListener<Items>() {
             @Override
@@ -70,26 +78,27 @@ public class ItemsFragment extends Fragment {
                 DB db = Trade.getWritableDatabase();
                 Log.i("CLICK", String.valueOf(position) + " " + String.valueOf(item.getID()) + " " + db.getSearchString( item.getID() ));
 
-
-
                 Toast.makeText( Trade.getAppContext(), db.getSearchString( item.getID() ), Toast.LENGTH_SHORT ).show();
                 return true;
             }
         });
 
-
+        Log.i("ia", "003");
         r.setLayoutManager( new LinearLayoutManager( v.getContext() ) );
         r.addItemDecoration( new LineDividerItemDecoration( this.getContext() ) );
         r.setAdapter( ia );
 
 
+        Log.i("ia", "004");
 
-        DB db = Trade.getWritableDatabase();
 
-        ia.add( db.getItems() );
 
+        Log.i("ia", "005");
+
+
+
+        Log.i("ia", "006");
         //ia.setNewList( db.getItemsSearch( "готов* соси*" ) );
-
 
 
 

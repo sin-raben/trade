@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ServiceCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -45,9 +46,17 @@ import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String GPS_MONITORING_STATUS = "GPSMonitoringStatus";
+    private static final String FT1 = "СправочникНоменклатуры";
+    private static final String FT2 = "ДанныеGPS";
+    private static final String FT3 = "ДокументыЗаказы";
+
+
+
     private int PERMISSION_REQUEST_CODE = 0;
 
     Drawer dw = null;
@@ -60,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SearchView sv;
     private FastItemAdapter fia;
+
 
 
 
@@ -209,16 +219,23 @@ public class MainActivity extends AppCompatActivity {
 
                 if ( drawerItem.isSelectable() ) {
 
+                    //fia = Trade.getFastItemAdapter();
+
                     switch ( id ) {
                         case 2000: {
                             Log.i("FRAGMENT", "2000");
 
                             sv.setQueryHint( getString(R.string.search_items) );
-                            ItemsFragment f2000 = new ItemsFragment();
+                            fia.clear();
+                            Log.i("ia", "000");
+
 
                             getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment, f2000)
+                                    //.replace(R.id.fragment, new ItemsFragment(), FT1)
+                                    .add(R.id.fragment, new ItemsFragment(), FT1)
                                     .commit();
+
+                            Log.i("ia", "008");
 
                             break;
                         }
@@ -228,11 +245,16 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         }
                         case 2002: {
+
+
                             sv.setQueryHint("Поиск документа");
-                            DocsFragment f2002 = new DocsFragment();
+                            fia.clear();
+
 
                             getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment, f2002)
+
+                                    //.replace(R.id.fragment, new DocsFragment(), FT3)
+                                    .add(R.id.fragment, new DocsFragment(), FT3)
                                     .commit();
 
                             break;
@@ -263,10 +285,11 @@ public class MainActivity extends AppCompatActivity {
 
                             Log.i("FRAGMENT", "2006");
                             sv.setQueryHint( getString(R.string.search_title) );
-                            CoordsFragment f2000 = new CoordsFragment();
+                            fia.clear();
 
                             getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment, f2000)
+                                    //.replace(R.id.fragment, new CoordsFragment(), FT2)
+                                    .add(R.id.fragment, new CoordsFragment(), FT2)
                                     .commit();
 
                             break;
@@ -339,6 +362,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
+
                 //Log.d("Search", s );
                 if ( s.length() > 2 && !TextUtils.isEmpty(s) ) {
                     fia.setNewList( db.getItemsSearch( s ) );
@@ -353,6 +377,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
         // Закрытие SearchView
         MenuItem si = menu.findItem(R.id.search);
         MenuItemCompat.setOnActionExpandListener(si, new MenuItemCompat.OnActionExpandListener() {

@@ -10,8 +10,18 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recycler_view">
+        android:id="@+id/recycler_view_docs">
     </android.support.v7.widget.RecyclerView>
 
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/doc_add"
+        android:src="@drawable/worker"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/recycler_view_docs"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_behavior="pro.gofman.trade.ScrollAwareFABBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

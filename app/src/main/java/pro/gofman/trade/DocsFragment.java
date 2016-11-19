@@ -53,10 +53,8 @@ public class DocsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_items, container, false);
-        RecyclerView r = (RecyclerView) v.findViewById(R.id.recycler_view);
-
-        // FastAdapter
+        View v = inflater.inflate(R.layout.fragment_docs, container, false);
+        RecyclerView r = (RecyclerView) v.findViewById(R.id.recycler_view_docs);
 
         r.setLayoutManager( new LinearLayoutManager( v.getContext() ) );
 
@@ -64,6 +62,7 @@ public class DocsFragment extends Fragment {
 
 
         FastItemAdapter ia = Trade.getFastItemAdapter();
+        //FastItemAdapter ia = new FastItemAdapter();
         ia.withSelectable(false);
         ia.withOnClickListener(new FastAdapter.OnClickListener<Docs>() {
             @Override
@@ -87,7 +86,7 @@ public class DocsFragment extends Fragment {
 
         DB db = Trade.getWritableDatabase();
 
-        ia.add(db.getDocs());
+        ia.setNewList( db.getDocs() );
 
         //ia.setNewList( db.getItemsSearch( "готов* соси*" ) );
 

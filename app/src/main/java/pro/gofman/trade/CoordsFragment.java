@@ -1,6 +1,7 @@
 package pro.gofman.trade;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,7 +56,8 @@ public class CoordsFragment extends Fragment {
         RecyclerView r = (RecyclerView) v.findViewById(R.id.recycler_view);
 
 
-        FastItemAdapter ia = new FastItemAdapter();
+        FastItemAdapter ia = Trade.getFastItemAdapter();
+        //FastItemAdapter ia = new FastItemAdapter();
         ia.withSelectable(false);
         ia.withOnClickListener(new FastAdapter.OnClickListener<Items>() {
             @Override
@@ -73,7 +75,7 @@ public class CoordsFragment extends Fragment {
 
 
 
-        ia.add( db.getCoords() );
+        ia.setNewList( db.getCoords() );
 
 
 
