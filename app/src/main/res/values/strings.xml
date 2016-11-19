@@ -12,4 +12,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_items">Номенклатура</string>
+    <string name="title_activity_coords">Координаты</string>
+    <string name="title_activity_docs">Документы</string>
 </resources>

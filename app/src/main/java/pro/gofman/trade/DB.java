@@ -5,8 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.format.DateFormat;
-import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -20,7 +18,8 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;;
+import java.util.List;;import pro.gofman.trade.Docs.Docs;
+import pro.gofman.trade.Items.Items;
 
 
 /**

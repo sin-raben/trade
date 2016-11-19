@@ -27,12 +27,6 @@
         android:layout_height="match_parent"
         android:paddingTop="?attr/actionBarSize">
 
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/fragment" />
-
     </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

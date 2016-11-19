@@ -1,8 +1,6 @@
 package pro.gofman.trade;
 
 import android.Manifest;
-import android.app.IntentService;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,8 +9,6 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.ServiceCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +23,6 @@ import android.view.Menu;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -46,7 +41,9 @@ import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
+import pro.gofman.trade.Coords.CoordsActivity;
+import pro.gofman.trade.Docs.DocsActivity;
+import pro.gofman.trade.Items.ItemsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,11 +61,8 @@ public class MainActivity extends AppCompatActivity {
     boolean bGPSMonitoringStatus = false;
 
     private DB db;
-
     private JSONObject userData;
 
-    private SearchView sv;
-    private FastItemAdapter fia;
 
 
 
@@ -142,9 +136,6 @@ public class MainActivity extends AppCompatActivity {
          */
         db = Trade.getWritableDatabase();
 
-        sv = new SearchView( this );
-        fia = Trade.getFastItemAdapter();
-
 
         try {
             // Берем с базы данных информацию о пользователе
@@ -183,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         dwb.withActivity(this);
         dwb.withDrawerLayout(R.layout.material_drawer_fits_not);
         dwb.withDisplayBelowStatusBar(true);
-        dwb.withRootView(R.id.drawer_layout);
+        //wb.withRootView(R.id.drawer_layout);
         dwb.withToolbar(toolbar);
         dwb.withActionBarDrawerToggle(true);
         dwb.withActionBarDrawerToggleAnimated(true);
@@ -219,23 +210,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if ( drawerItem.isSelectable() ) {
 
-                    //fia = Trade.getFastItemAdapter();
-
                     switch ( id ) {
                         case 2000: {
-                            Log.i("FRAGMENT", "2000");
 
-                            sv.setQueryHint( getString(R.string.search_items) );
-                            fia.clear();
-                            Log.i("ia", "000");
-
-
-                            getSupportFragmentManager().beginTransaction()
-                                    //.replace(R.id.fragment, new ItemsFragment(), FT1)
-                                    .add(R.id.fragment, new ItemsFragment(), FT1)
-                                    .commit();
-
-                            Log.i("ia", "008");
+                            Intent i = new Intent( MainActivity.this, ItemsActivity.class );
+                            startActivity( i );
 
                             break;
                         }
@@ -246,16 +225,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         case 2002: {
 
-
-                            sv.setQueryHint("Поиск документа");
-                            fia.clear();
-
-
-                            getSupportFragmentManager().beginTransaction()
-
-                                    //.replace(R.id.fragment, new DocsFragment(), FT3)
-                                    .add(R.id.fragment, new DocsFragment(), FT3)
-                                    .commit();
+                            Intent i = new Intent( MainActivity.this, DocsActivity.class);
+                            startActivity( i );
 
                             break;
                         }
@@ -284,13 +255,8 @@ public class MainActivity extends AppCompatActivity {
                         case 2006: {
 
                             Log.i("FRAGMENT", "2006");
-                            sv.setQueryHint( getString(R.string.search_title) );
-                            fia.clear();
-
-                            getSupportFragmentManager().beginTransaction()
-                                    //.replace(R.id.fragment, new CoordsFragment(), FT2)
-                                    .add(R.id.fragment, new CoordsFragment(), FT2)
-                                    .commit();
+                            Intent i = new Intent(MainActivity.this, CoordsActivity.class);
+                            startActivity( i );
 
                             break;
                         }
@@ -329,10 +295,8 @@ public class MainActivity extends AppCompatActivity {
 
             if ( isChecked ) {
                 intent.setAction(SyncData.ACTION_LOGCOORD);
-                //Trade.getAppContext().startService(intent);
                 startService(intent);
             } else {
-                //Trade.getAppContext().stopService(intent);
                 intent.setAction(SyncData.ACTION_LOGCOORD_STOP);
                 startService(intent);
             }
@@ -344,73 +308,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        menu.findItem(R.id.search).setIcon(new IconicsDrawable(this, MaterialDesignIconic.Icon.gmi_search).color(Color.WHITE).actionBar());
-
-        sv = (SearchView) menu.findItem(R.id.search).getActionView();
-        sv.setQueryHint( getString(R.string.search_title ) );
-        
-        // Изменение текста в SearchView
-        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-
-                //Log.d("Search", s );
-                if ( s.length() > 2 && !TextUtils.isEmpty(s) ) {
-                    fia.setNewList( db.getItemsSearch( s ) );
-                    //Toast.makeText( Trade.getAppContext(), "Найдено: " + String.valueOf( fia.getAdapterItemCount() ), Toast.LENGTH_SHORT ).show();
-                } else {
-                    if (TextUtils.isEmpty(s)) {
-                        //Log.d("SearchClear", "33");
-                        fia.setNewList( db.getItems() );
-                        Toast.makeText(Trade.getAppContext(), "Всего: " + String.valueOf( fia.getAdapterItemCount()), Toast.LENGTH_SHORT).show();
-                    }
-                }
-                return true;
-            }
-        });
-
-        // Закрытие SearchView
-        MenuItem si = menu.findItem(R.id.search);
-        MenuItemCompat.setOnActionExpandListener(si, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                //Log.d("SearchClose", "22");
-                fia.setNewList( db.getItems() );
-                Toast.makeText( Trade.getAppContext(), "Всего: " + String.valueOf( fia.getAdapterItemCount() ), Toast.LENGTH_SHORT ).show();
-                return true;
-            }
-        });
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch ( item.getItemId() ) {
-            case android.R.id.home:
-                //Log.d("SearchClose", "11");
-                onBackPressed();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     public void onBackPressed() {

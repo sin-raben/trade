@@ -22,23 +22,33 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
 
         <service
             android:name=".SyncData"
-            android:exported="false">
+            android:exported="false" />
 
-        </service>
         <receiver android:name=".CallCRM">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE"/>
+                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
 
-
-
+        <activity
+            android:name=".Items.ItemsActivity"
+            android:label="@string/title_activity_items"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Coords.CoordsActivity"
+            android:label="@string/title_activity_coords"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Docs.DocsActivity"
+            android:label="@string/title_activity_docs"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
