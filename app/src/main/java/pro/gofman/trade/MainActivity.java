@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             Intent intent = new Intent(Trade.getAppContext(), SyncData.class);
-            intent.putExtra("pro.gofman.trade.extra.PARAM1", "{}");
+            intent.putExtra( Trade.SERVICE_PARAM, "{}");
 
             if ( isChecked ) {
                 intent.setAction(SyncData.ACTION_LOGCOORD);

@@ -895,7 +895,7 @@ public class SyncData extends IntentService {
             // Проверка соединения
             if ( ws.isOpen() ) {
 
-                Log.i("auth", p.toString());
+                // Log.i("auth", p.toString());
                 // Формирование и отправка команды авторизации
                 ws.sendText(
                         new JSONObject()
