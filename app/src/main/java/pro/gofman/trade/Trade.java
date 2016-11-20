@@ -14,9 +14,16 @@ import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
 public class Trade extends Application {
 
+    protected static final String SERVICE_SYNCDATA = "pro.gofman.trade.action.syncdata";
+    protected static final String SERVICE_LOGCOORD = "pro.gofman.trade.action.logcoord";
+    protected static final String SERVICE_PARAM = "pro.gofman.trade.extra.param";
+
+
+
     private static Trade sInstance;
     private static DB db;
     private static FastItemAdapter fia;
+
 
     public static Trade getInstance() {
         return sInstance;

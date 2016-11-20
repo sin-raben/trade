@@ -48,12 +48,6 @@ import pro.gofman.trade.Items.ItemsActivity;
 public class MainActivity extends AppCompatActivity {
 
     private static final String GPS_MONITORING_STATUS = "GPSMonitoringStatus";
-    private static final String FT1 = "СправочникНоменклатуры";
-    private static final String FT2 = "ДанныеGPS";
-    private static final String FT3 = "ДокументыЗаказы";
-
-
-
     private int PERMISSION_REQUEST_CODE = 0;
 
     Drawer dw = null;
@@ -61,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     boolean bGPSMonitoringStatus = false;
 
     private DB db;
+    private JSONObject connectionData;
     private JSONObject userData;
 
 
@@ -138,7 +133,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         try {
-            // Берем с базы данных информацию о пользователе
+            // Берем с базы данных информацию подключения к серверу и пользователе
+            connectionData = new JSONObject( db.getOptions( DB.OPTION_CONNECTION ) );
             userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
 
             if ( ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED ) {
@@ -174,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         dwb.withActivity(this);
         dwb.withDrawerLayout(R.layout.material_drawer_fits_not);
         dwb.withDisplayBelowStatusBar(true);
-        //wb.withRootView(R.id.drawer_layout);
+        dwb.withRootView(R.id.drawer_layout);
         dwb.withToolbar(toolbar);
         dwb.withActionBarDrawerToggle(true);
         dwb.withActionBarDrawerToggleAnimated(true);
@@ -183,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
         dwb.addDrawerItems(
                 new ExpandableDrawerItem().withName("Справочники").withIcon(R.drawable.items).withIdentifier(19).withSelectable(false).withSubItems(
-                        new SecondaryDrawerItem().withName("Контрагенты").withLevel(2).withIcon(R.drawable.document).withIdentifier(2007),
+                        new SecondaryDrawerItem().withName("Точки доставки").withLevel(2).withIcon(R.drawable.document).withIdentifier(2007),
                         new SecondaryDrawerItem().withName("Номенклатура").withLevel(2).withIcon(R.drawable.document).withIdentifier(2000),
                         new SecondaryDrawerItem().withName("Прайс-листы").withLevel(2).withIcon(R.drawable.document).withIdentifier(2001)
 
@@ -212,49 +208,58 @@ public class MainActivity extends AppCompatActivity {
 
                     switch ( id ) {
                         case 2000: {
-
+                            // Номенклатура
                             Intent i = new Intent( MainActivity.this, ItemsActivity.class );
                             startActivity( i );
 
                             break;
                         }
                         case 2001: {
+                            // Прайс-листы
                             Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
 
                             break;
                         }
                         case 2002: {
-
+                            // Заказ покупателя
                             Intent i = new Intent( MainActivity.this, DocsActivity.class);
                             startActivity( i );
 
                             break;
                         }
                         case 2003: {
+                            // Оплаты покупателя
                             Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
 
                             break;
                         }
                         case 2004: {
+                            // Фотографии
                             Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
 
                             break;
                         }
 
                         case 2005: {
+                            // Синхронизация полная
+                            try {
+                                connectionData.put( Protocol.USER_DATA, userData );
+                                connectionData.put( Protocol.COMMAND_SYNC, Protocol.FULL_SYNC );
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
                             Intent intent = new Intent(MainActivity.this, SyncData.class);
-                            intent.setAction( "pro.gofman.trade.action.syncdata" );
-                            intent.putExtra( "pro.gofman.trade.extra.PARAM1", userData.toString() );
+                            intent.setAction( Trade.SERVICE_SYNCDATA );
+                            intent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
 
                             startService( intent );
-
                             break;
                         }
 
                         case 2006: {
-
-                            Log.i("FRAGMENT", "2006");
+                            // Координаты
+                            Log.i("DRAWER", "2006");
                             Intent i = new Intent(MainActivity.this, CoordsActivity.class);
                             startActivity( i );
 
@@ -262,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         case 2007: {
+                            // Точки доставки
 
                             break;
                         }

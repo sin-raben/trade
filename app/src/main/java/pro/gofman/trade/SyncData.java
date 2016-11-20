@@ -55,7 +55,7 @@ public class SyncData extends IntentService {
     protected static final String ACTION_LOGCOORD_STOP = "pro.gofman.trade.action.logcoord_stop";
 
 
-    protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.PARAM1";
+    protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.param";
 
 
     private DB db; //;
@@ -95,8 +95,9 @@ public class SyncData extends IntentService {
     // TODO: Customize helper method
     public static void startActionSyncData(Context context, JSONObject j) {
         Intent intent = new Intent(context, SyncData.class);
-        intent.setAction(ACTION_SYNCDATA);
-        intent.putExtra(EXTRA_PARAM1, j.toString() );
+        intent.setAction( Trade.SERVICE_SYNCDATA );
+        intent.putExtra( Trade.SERVICE_PARAM, j.toString() );
+
         context.startService(intent);
     }
 
@@ -109,9 +110,9 @@ public class SyncData extends IntentService {
     // TODO: Customize helper method
     public static void startActionLogCoord(Context context, JSONObject j) {
         Intent intent = new Intent(context, SyncData.class);
-        intent.setAction(ACTION_LOGCOORD);
-        Log.i("LOG", j.toString() );
-        intent.putExtra(EXTRA_PARAM1, j.toString());
+        intent.setAction( Trade.SERVICE_LOGCOORD );
+        intent.putExtra( Trade.SERVICE_PARAM, j.toString());
+
         context.startService(intent);
     }
 
@@ -122,9 +123,7 @@ public class SyncData extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
 
-
-
-            if (ACTION_SYNCDATA.equals(action)) {
+            if ( Trade.SERVICE_SYNCDATA.equals(action) ) {
 
                 Notification n;
                 NotificationCompat.Builder mNB = new NotificationCompat.Builder(Trade.getAppContext())
@@ -139,7 +138,7 @@ public class SyncData extends IntentService {
 
                 JSONObject p;
                 try {
-                    p = new JSONObject( intent.getStringExtra(EXTRA_PARAM1) );
+                    p = new JSONObject( intent.getStringExtra( Trade.SERVICE_PARAM ) );
 
                     handleActionSyncData(p, n);
 
@@ -151,7 +150,7 @@ public class SyncData extends IntentService {
 
             } else {
 
-                if (ACTION_LOGCOORD.equals(action)) {
+                if ( Trade.SERVICE_LOGCOORD.equals(action) ) {
                     JSONObject p;
                     try {
 
@@ -167,7 +166,7 @@ public class SyncData extends IntentService {
                         n = mNB.build();
 
 
-                        p = new JSONObject(intent.getStringExtra(EXTRA_PARAM1));
+                        p = new JSONObject(intent.getStringExtra( Trade.SERVICE_PARAM ));
                         handleActionLogCoord(p, n);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -185,18 +184,40 @@ public class SyncData extends IntentService {
         }
     }
 
+
+    private String getConnectionUrl(JSONObject c) {
+        String r = "";
+
+        try {
+            r = c.getString("Protocol") + "://" + c.getString("Host") + ":" + String.valueOf( c.getInt("Port") ) + c.getString("Path");
+        } catch (JSONException e) {
+            return r;
+        }
+
+        return r;
+    }
+
     /**
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionSyncData(JSONObject p, Notification n) throws IOException {
+    private void handleActionSyncData(final JSONObject p, Notification n) throws IOException {
         // TODO: Handle action SyncData
         Log.i("SyncData", "SyncData стартанул");
 
+
         startForeground(778, n);
 
+        String url = "";
+        try {
+            url = getConnectionUrl( p.getJSONObject( Protocol.CONNECTION_BEGIN ) );
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        WebSocket ws = new WebSocketFactory().createSocket("ws://pol-ice.ru:8890/ws");
+        Log.i("SyncData", url);
+
+        WebSocket ws = new WebSocketFactory().createSocket( url );
         WebSocket webSocket = ws.addListener(new WebSocketListener() {
             @Override
             public void onStateChanged(WebSocket websocket, WebSocketState newState) throws Exception {
@@ -258,33 +279,42 @@ public class SyncData extends IntentService {
                 Log.i("WS", "Text: " + text);
 
                 result = new JSONObject(text);
-                head = result.getString("head");
-                body = result.getJSONObject("body");
+                head = result.getString( Protocol.HEAD );
+                body = result.getJSONObject( Protocol.BODY );
 
                 ContentValues cv;
-
-                Log.i("HEAD", head);
                 switch (head) {
-                    case "authUser": {
-                        // успешная авторизация запуск процедуры обмена
+                    case Protocol.AUTH_USER: {
+                        // Успешная авторизация запуск процедуры обмена
                         mAuth = body.optBoolean("result", false);
 
                         if ( mAuth ) {
-                            Log.i("WS", "sendCoord");
-                            // Отправляем координаты
-                            sendCoord(websocket);
 
-                            // Запрашиваем номенклатуру
-                            getItems(websocket);
+                            // Делаем полную синхронизацию
+                            if ( p.getString( Protocol.COMMAND_SYNC ).equals( Protocol.FULL_SYNC ) ) {
 
-                            // Запрашиваем контрагентов
-                            getCountragents(websocket);
+                                Log.i("WS", "sendCoord");
+                                // Отправляем координаты
+                                sendCoord(websocket);
 
-                            // Запрашиваем цены
-                            getPrices(websocket);
+                                // Запрашиваем номенклатуру
+                                getItems(websocket);
 
-                            // Запрашиваем остатки
-                            getAmounts(websocket);
+                                // Запрашиваем контрагентов
+                                getCountragents(websocket);
+
+                                // Запрашиваем цены
+                                getPrices(websocket);
+
+                                // Запрашиваем остатки
+                                getAmounts(websocket);
+                            }
+
+                            // Получаем только новости
+                            if ( p.getString( Protocol.COMMAND_SYNC ).equals( Protocol.MESSAGE_SYNC ) ) {
+                                // sendNews();
+                                getNews(websocket);
+                            }
 
                         }
 
@@ -782,7 +812,7 @@ public class SyncData extends IntentService {
             */
 
                 JSONObject r = new JSONObject();
-                r.put( "head", "getItems" );
+                r.put( Protocol.HEAD, "getItems" );
 
                 JSONObject body = new JSONObject();
                 body.put( Protocol.ITEMS, "all" );
@@ -791,7 +821,7 @@ public class SyncData extends IntentService {
                 body.put( Protocol.ITEM_GROUPS, "all" );
                 body.put( Protocol.LINK_ITEM_GROUPS, "all" );
 
-                r.put( "body", body );
+                r.put( Protocol.BODY, body );
 
                 Log.i("getItems", r.toString() );
                 websocket.sendText( r.toString() );
@@ -800,14 +830,14 @@ public class SyncData extends IntentService {
 
             public void getCountragents(WebSocket websocket) throws Exception {
                 JSONObject r = new JSONObject();
-                r.put( "head", "getCountragents" );
+                r.put( Protocol.HEAD, "getCountragents" );
 
                 JSONObject body = new JSONObject();
                 body.put( Protocol.COUNTERAGENTS, "all" );
                 body.put( Protocol.POINTS_DELIVERY, "all" );
                 body.put( Protocol.LINK_POINTS_DELIVERY, "all" );
 
-                r.put( "body", body );
+                r.put( Protocol.BODY, body );
 
                 Log.i("getCountragent", r.toString() );
                 websocket.sendText( r.toString() );
@@ -815,14 +845,14 @@ public class SyncData extends IntentService {
 
             public void getPrices(WebSocket websocket) throws Exception {
                 JSONObject r = new JSONObject();
-                r.put( "head", "getPrices" );
+                r.put( Protocol.HEAD, "getPrices" );
 
                 JSONObject body = new JSONObject();
                 body.put( Protocol.PRICE, "all" );
                 body.put( Protocol.PRICELISTS, "all" );
                 body.put( Protocol.LINK_PRICELISTS, "all" );
 
-                r.put("body", body);
+                r.put(Protocol.BODY, body);
 
                 //Log.i("getCountragent", r.toString() );
                 websocket.sendText(r.toString());
@@ -830,25 +860,34 @@ public class SyncData extends IntentService {
 
             public void getAmounts(WebSocket websocket) throws Exception {
                 JSONObject r = new JSONObject();
-                r.put("head", "getStocks");
+                r.put( Protocol.HEAD, "getStocks" );
 
                 JSONObject body = new JSONObject();
                 body.put(Protocol.STORES, "all");
                 body.put(Protocol.LINK_STORES, "all");
                 body.put(Protocol.STOCKS, "all");
 
-                r.put( "body", body );
+                r.put( Protocol.BODY, body );
 
                 //Log.i("getCountragent", r.toString() );
                 websocket.sendText( r.toString() );
             }
 
+            private void getNews(WebSocket w) throws Exception {
+                JSONObject r = new JSONObject();
+                r.put( Protocol.HEAD, "getNews" );
+
+                JSONObject body = new JSONObject();
+                body.put( Protocol.NEWS, "all" );
+
+                r.put( Protocol.BODY, body );
+                w.sendText( r.toString() );
+            }
+
 
         });
 
-        try
-        {
-
+        try {
 
             // Соединение с сервером
             ws.connect();
@@ -860,8 +899,8 @@ public class SyncData extends IntentService {
                 // Формирование и отправка команды авторизации
                 ws.sendText(
                         new JSONObject()
-                                .put("head", "authUser")
-                                .put("body", p )
+                                .put( Protocol.HEAD, Protocol.AUTH_USER )
+                                .put( Protocol.BODY, p.getJSONObject( Protocol.USER_DATA ) )
                                 .toString()
 
                 );
