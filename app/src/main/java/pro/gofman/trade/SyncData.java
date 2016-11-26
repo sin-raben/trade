@@ -316,6 +316,11 @@ public class SyncData extends IntentService {
                                 getNews(websocket);
                             }
 
+                            if ( p.getString( Protocol.COMMAND_SYNC ).equals( Protocol.SUPPORT_SYNC ) ) {
+                                // sendNews();
+                                // getSupportMessage(websocket);
+                            }
+
                         }
 
                         break;

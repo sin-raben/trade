@@ -27,7 +27,7 @@ public class Protocol {
     protected static final String MESSAGE_SYNC = "messageSync";
     protected static final String FULL_SYNC = "fullSync";
     protected static final String NORMAL_SYNC = "normalSync";
-
+    protected static final String SUPPORT_SYNC = "supportSync";
 
 
     // Объекты синхронизации
