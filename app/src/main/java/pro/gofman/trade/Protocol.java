@@ -18,8 +18,8 @@ public class Protocol {
     protected static final String HEAD = "head";
     protected static final String BODY = "body";
 
+
     protected static final String CONNECTION_BEGIN = "BeginConnection";
-    protected static final String CONNECTION_WORK = "WorkConnection";
 
     protected static final String USER_DATA = "userData";
     protected static final String COMMAND_SYNC = "commandSync";
@@ -27,6 +27,8 @@ public class Protocol {
     protected static final String MESSAGE_SYNC = "messageSync";
     protected static final String FULL_SYNC = "fullSync";
     protected static final String NORMAL_SYNC = "normalSync";
+    protected static final String SUPPORT_SYNC = "supportSync";
+
 
     // Объекты синхронизации
     protected static final String AUTH_USER = "authUser";
