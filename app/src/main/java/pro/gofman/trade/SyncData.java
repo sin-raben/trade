@@ -54,7 +54,6 @@ public class SyncData extends IntentService {
     protected static final String ACTION_LOGCOORD = "pro.gofman.trade.action.logcoord";
     protected static final String ACTION_LOGCOORD_STOP = "pro.gofman.trade.action.logcoord_stop";
 
-
     protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.param";
 
 

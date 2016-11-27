@@ -36,7 +36,6 @@ public class DB {
     protected static final int OPTION_AUTH = 2;
     protected static final int OPTION_COORD = 3;
 
-
     public DB(Context context) {
         mHelper = new dbHelper(context);
         mDatabase = mHelper.getWritableDatabase();

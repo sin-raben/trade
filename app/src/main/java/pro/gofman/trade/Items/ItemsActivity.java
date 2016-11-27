@@ -24,8 +24,9 @@ import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic
 import pro.gofman.trade.DB;
 import pro.gofman.trade.Items.Items;
 import pro.gofman.trade.LineDividerItemDecoration;
-import pro.gofman.trade.R;
 import pro.gofman.trade.Trade;
+
+import pro.gofman.trade.R;
 
 public class ItemsActivity extends AppCompatActivity {
 
@@ -34,6 +35,7 @@ public class ItemsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppThemeBlue);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

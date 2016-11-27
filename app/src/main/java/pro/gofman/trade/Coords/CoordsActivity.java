@@ -26,6 +26,7 @@ public class CoordsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppThemeBlue);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coords);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

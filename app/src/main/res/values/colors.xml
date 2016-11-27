@@ -23,4 +23,13 @@
     <color name="material_drawer_selected">#E8E8E8</color>
     <color name="material_drawer_selected_text">#2196F3</color>
     <color name="material_drawer_header_selection_text">#FFF</color>
+
+    <color name="color_primary_red">#f44336</color>
+    <color name="color_primary_red_dark">#d32f2f</color>
+    <color name="color_primary_green"> #4caf50</color>
+    <color name="color_primary_green_dark">#388e3c</color>
+    <color name="color_primary_blue">#2196f3</color>
+    <color name="color_primary_blue_dark">#1976d2</color>
+    <color name="color_accent_pink">#ff4081</color>
+    <color name="color_shadow">#44000000</color>
 </resources>

@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,11 @@ import pro.gofman.trade.R;
 
 public class DocActivity extends AppCompatActivity {
 
+    private int doc_id = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppThemeBlue);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doc);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -29,10 +33,22 @@ public class DocActivity extends AppCompatActivity {
         PagerAdapter2 pa = new PagerAdapter2( getSupportFragmentManager() );
         pa.addFragment( DocsFragment.newInstance(" ", " "), "Шапка" );
         pa.addFragment( DocsFragment.newInstance(" ", " "), "Товары" );
+        pa.addFragment( DocsFragment.newInstance(" ", " "), "Подбор" );
+        pa.addFragment( DocsFragment.newInstance(" ", " "), "Галерея" );
+
+
+
         vp.setAdapter( pa );
 
         TabLayout tl = (TabLayout) findViewById(R.id.tabLayout);
         tl.setupWithViewPager(vp);
+
+
+
+        doc_id = getIntent().getIntExtra("PARAM", 0);
+        vp.setCurrentItem(0);
+
+
 
     }
 

@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        setTheme(R.style.AppThemeBlue);
         super.onSaveInstanceState(outState);
 
         Log.i("GPSMonitoring", String.valueOf(bGPSMonitoringStatus));

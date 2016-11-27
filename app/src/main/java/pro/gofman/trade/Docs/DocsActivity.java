@@ -1,5 +1,6 @@
 package pro.gofman.trade.Docs;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -44,8 +45,10 @@ public class DocsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppThemeBlue);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_docs);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.drawable.worker);
@@ -74,6 +77,11 @@ public class DocsActivity extends AppCompatActivity {
                 Log.i("CLICK", String.valueOf(position) + " " + String.valueOf(doc.getID()) + " " + db.getSearchString( doc.getID() ));
 
                 Toast.makeText( Trade.getAppContext(), "Открываем документ №" + String.valueOf( doc.getID() ), Toast.LENGTH_SHORT ).show();
+                Intent i = new Intent(v.getContext(), DocActivity.class);
+                i.putExtra( "PARAM", doc.getID() );
+
+                startActivity( i );
+
                 return true;
             }
         });

@@ -20,7 +20,7 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:titleMarginStart="36dp"
-            />
+            app:layout_scrollFlags="scroll|enterAlways"/>
 
     </android.support.design.widget.AppBarLayout>
 
