@@ -59,11 +59,6 @@ public class MainActivity extends AppCompatActivity {
     private JSONObject userData;
 
 
-
-
-
-
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

@@ -4,7 +4,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +28,9 @@ import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import pro.gofman.trade.DB;
 import pro.gofman.trade.LineDividerItemDecoration;
@@ -76,10 +85,8 @@ public class DocsActivity extends AppCompatActivity {
         ia.setNewList( db.getDocs() );
     }
 
-
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menu.findItem(R.id.search).setIcon(new IconicsDrawable(this, MaterialDesignIconic.Icon.gmi_search).color(Color.WHITE).actionBar());

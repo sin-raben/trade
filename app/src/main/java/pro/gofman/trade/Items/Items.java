@@ -17,7 +17,6 @@ import pro.gofman.trade.R;
 
 public class Items extends AbstractItem<Items, Items.ViewHolder> {
 
-
     public String name = "";
     public String description = "";
     private int i_id = 0;
@@ -62,13 +61,10 @@ public class Items extends AbstractItem<Items, Items.ViewHolder> {
     @Override
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
-
         Log.i("ia", "010");
 
         holder.name.setText(name);
         holder.description.setText(description);
-
-
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
@@ -77,7 +73,6 @@ public class Items extends AbstractItem<Items, Items.ViewHolder> {
 
         public ViewHolder(View view) {
             super(view);
-
             Log.i("ia", "010");
 
             this.name = (TextView) view.findViewById(R.id.recycleview_item_name);

@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.1"
     defaultConfig {
         applicationId "pro.gofman.trade"
         minSdkVersion 21
@@ -37,11 +37,11 @@ dependencies {
         transitive = true
     }
     //compile 'com.mikepenz:iconics-core:2.8.0@aar'
-    compile 'com.mikepenz:material-design-iconic-typeface:2.2.0.1@aar'
     //compile 'com.mikepenz:community-material-typeface:1.3.41.1@aar'
     //compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar'
     //compile 'com.mikepenz:fontawesome-typeface:4.6.0.3@aar'
 
+    compile 'com.mikepenz:material-design-iconic-typeface:2.2.0.1@aar'
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.android.support:design:25.0.1'

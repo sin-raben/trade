@@ -98,7 +98,6 @@ public class Docs extends AbstractItem<Docs, Docs.ViewHolder> {
         holder.pd_adr.setText(pd_adr);
         holder.items_amount.setText("Позиций: " + String.valueOf(d_id * 2 + 10));
         holder.doc_summa.setText("Сумма: " + String.valueOf(d_id * d_num * 43) + " руб.");
-
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {

@@ -3,6 +3,7 @@
     package="pro.gofman.trade">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -31,9 +32,14 @@
             android:name=".SyncData"
             android:exported="false" />
 
-        <receiver android:name=".CallCRM">
-            <intent-filter>
+        <receiver
+            android:name=".CallCRM"
+            android:enabled="true">
+            <intent-filter
+                android:autoVerify="true"
+                android:priority="1000">
                 <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
 
@@ -48,7 +54,8 @@
         <activity
             android:name=".Docs.DocsActivity"
             android:label="@string/title_activity_docs"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Docs.DocActivity"></activity>
     </application>
 
 </manifest>
