@@ -31,10 +31,10 @@ public class DocActivity extends AppCompatActivity {
 
         ViewPager vp = (ViewPager) findViewById(R.id.viewPager);
         PagerAdapter2 pa = new PagerAdapter2( getSupportFragmentManager() );
-        pa.addFragment( DocsFragment.newInstance(" ", " "), "Шапка" );
-        pa.addFragment( DocsFragment.newInstance(" ", " "), "Товары" );
-        pa.addFragment( DocsFragment.newInstance(" ", " "), "Подбор" );
-        pa.addFragment( DocsFragment.newInstance(" ", " "), "Галерея" );
+        pa.addFragment( DocShapkaFragment.newInstance(" ", " "), "Шапка" );
+        pa.addFragment( DocShapkaFragment.newInstance(" ", " "), "Товары" );
+        pa.addFragment( DocShapkaFragment.newInstance(" ", " "), "Подбор" );
+        pa.addFragment( DocShapkaFragment.newInstance(" ", " "), "Галерея" );
 
 
 
