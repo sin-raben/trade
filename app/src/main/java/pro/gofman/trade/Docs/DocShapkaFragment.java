@@ -4,10 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 
+import pro.gofman.trade.Items.ItemsAutoCompleteAdapter;
 import pro.gofman.trade.R;
 
 /**
@@ -56,8 +59,16 @@ public class DocShapkaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        AutoCompleteTextView countragent = (AutoCompleteTextView) container.findViewById(R.id.countragent_view);
+        ItemsAutoCompleteAdapter adapter = new ItemsAutoCompleteAdapter( container.getContext() );
+        //Log.i("hi", String.valueOf(adapter.getCount()));
+        countragent.setAdapter( adapter );
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_docs, container, false);
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
