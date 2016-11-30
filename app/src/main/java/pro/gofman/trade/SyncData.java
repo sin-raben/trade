@@ -571,6 +571,56 @@ public class SyncData extends IntentService {
                                 }
                             }
                         }
+                        // загрузка поисковых строк
+                        Log.i("POINT", String.valueOf( body.has(Protocol.COUNTRAGENT_SEARCH) ) );
+                        if ( body.has(Protocol.COUNTRAGENT_SEARCH) ) {
+
+                            db.execSQL("DELETE FROM countragent_search");
+
+                            JSONArray ig = body.getJSONArray(Protocol.COUNTRAGENT_SEARCH);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "ca_id", t.getInt("ca_id") );
+                                cv.put( "value", t.getString("value") );
+
+
+                                if ( !cv.getAsString("value").isEmpty() ) {
+
+                                    db.insert("countragent_search", cv);
+                                    Log.i("COUNTRAGENT_SEARCH", cv.getAsString("value") );
+                                }
+                            }
+                        }
+
+                        // загрузка поисковых строк
+                        Log.i("POINT", String.valueOf( body.has(Protocol.COUNTRAGENT_ADDRESSES) ) );
+                        if ( body.has(Protocol.COUNTRAGENT_ADDRESSES) ) {
+
+                            db.execSQL("DELETE FROM addresses");
+
+                            JSONArray ig = body.getJSONArray(Protocol.COUNTRAGENT_ADDRESSES);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "adr_id", t.getInt("adr_id") );
+                                cv.put( "any_id", t.getInt("any_id") );
+                                cv.put( "adrt_id", t.getInt("adrt_id") );
+                                cv.put( "adr_str", t.getString("adr_str") );
+
+                                if ( !cv.getAsString("adr_str").isEmpty() ) {
+
+                                    db.insert("addresses", cv);
+                                    Log.i("ADDRESSES", cv.getAsString("adr_str") );
+                                }
+                            }
+                        }
+
+
 
                         break;
                     }
@@ -840,6 +890,8 @@ public class SyncData extends IntentService {
                 body.put( Protocol.COUNTERAGENTS, "all" );
                 body.put( Protocol.POINTS_DELIVERY, "all" );
                 body.put( Protocol.LINK_POINTS_DELIVERY, "all" );
+                body.put( Protocol.COUNTRAGENT_SEARCH, "all" );
+                body.put( Protocol.COUNTRAGENT_ADDRESSES, "all" );
 
                 r.put( Protocol.BODY, body );
 

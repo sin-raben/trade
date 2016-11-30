@@ -287,6 +287,23 @@
       ]
     },
     {
+      "table": "countragent_search",
+      "description": "Специальная таблица для поиска контрагента",
+      "fts3": true,
+      "fields": [
+        {
+          "field": "ca_id",
+          "type": "integer",
+          "description": "ID контрагента",
+          "primary_key": true
+        },{
+          "field": "value",
+          "type": "text",
+          "description": "Поискова строка"
+        }
+      ]
+    },
+    {
       "table": "point_delivery",
       "description": "Точки доставки",
       "fields": [
@@ -672,7 +689,36 @@
         }
       ]
 
+    },
+    {
+      "table": "addresses",
+      "description": "Адреса",
+      "fields": [
+        {
+          "field": "adr_id",
+          "type": "integer",
+          "description": "ID адреса",
+          "primary_key": true
+        },
+        {
+          "field": "any_id",
+          "type": "integer",
+          "description": "ID владельца адреса"
+        },
+        {
+          "field": "adrt_id",
+          "type": "integer",
+          "description": "Тип адреса"
+        },
+        {
+          "field": "adr_str",
+          "type": "text",
+          "description": "Строка адреса"
+        }
+      ]
+
     }
+
   ]
 }
 
