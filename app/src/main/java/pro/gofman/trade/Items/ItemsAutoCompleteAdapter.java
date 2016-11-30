@@ -23,7 +23,7 @@ import pro.gofman.trade.Trade;
 /**
  * Created by roman on 29.11.16.
  */
-
+/*
 public class ItemsAutoCompleteAdapter extends CursorAdapter implements android.widget.AdapterView.OnItemClickListener {
 
     private DB mDB;
@@ -64,10 +64,12 @@ public class ItemsAutoCompleteAdapter extends CursorAdapter implements android.w
     }
 }
 
-/*
+*/
+
+
 public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
-    private final Context mContext;
+    private Context mContext;
     private List<Items> mItems;
 
     public ItemsAutoCompleteAdapter(Context context) {
@@ -143,4 +145,5 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
         DB mdb = Trade.getWritableDatabase();
         return mdb.getItemsSearch( i );
     }
-}*/
+}
+
