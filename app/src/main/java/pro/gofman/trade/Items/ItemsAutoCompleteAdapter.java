@@ -1,11 +1,14 @@
 package pro.gofman.trade.Items;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.CursorAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
@@ -21,6 +24,47 @@ import pro.gofman.trade.Trade;
  * Created by roman on 29.11.16.
  */
 
+public class ItemsAutoCompleteAdapter extends CursorAdapter implements android.widget.AdapterView.OnItemClickListener {
+
+    private DB mDB;
+    private Context mContext;
+
+    public ItemsAutoCompleteAdapter(Context context, DB db, int flags) {
+        super(context);
+        mContext = context;
+        mDB = db;
+
+    }
+
+    @Override
+    public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
+        if ( getFilterQueryProvider() != null ) {
+            return getFilterQueryProvider().runQuery(constraint);
+        }
+
+        Cursor c = null; // mDB.getItemsSearch( constraint.toString() );
+
+
+        return c;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+        return null;
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+
+    }
+}
+
+/*
 public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
     private final Context mContext;
@@ -99,4 +143,4 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
         DB mdb = Trade.getWritableDatabase();
         return mdb.getItemsSearch( i );
     }
-}
+}*/
