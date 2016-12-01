@@ -70,11 +70,13 @@ public class ItemsAutoCompleteAdapter extends CursorAdapter implements android.w
 public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
     private Context mContext;
-    private List<Items> mItems;
+    private List<ItemObject> mItems;
+    private DB mdb;
 
-    public ItemsAutoCompleteAdapter(Context context) {
+    public ItemsAutoCompleteAdapter(Context context, DB db) {
         mContext = context;
-        mItems = new ArrayList<Items>();
+        mItems = new ArrayList<ItemObject>();
+        mdb = db;
 
     }
 
@@ -85,13 +87,13 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
     }
 
     @Override
-    public Items getItem(int i) {
+    public ItemObject getItem(int i) {
         return mItems.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return mItems.get(i).getID();
+        return i;
     }
 
     @Override
@@ -101,9 +103,9 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
             view = inflater.inflate(R.layout.items_dropdown_autocomplete, viewGroup, false);
         }
 
-        Items items = getItem( i );
-        ((TextView) view.findViewById(R.id.textItems)).setText(items.name);
-        ((TextView) view.findViewById(R.id.textGroup)).setText(items.description);
+        ItemObject item = getItem( i );
+        ((TextView) view.findViewById(R.id.textItems)).setText(item.getName());
+        ((TextView) view.findViewById(R.id.textGroup)).setText(item.getDescription());
 
         return view;
     }
@@ -118,7 +120,7 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
                 FilterResults filterResults = new FilterResults();
                 if (charSequence != null) {
 
-                    List<Items> items = findItems( charSequence.toString() );
+                    List<ItemObject> items = findItems( charSequence.toString() );
 
                     filterResults.values = items;
                     filterResults.count = items.size();
@@ -130,7 +132,7 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 if (filterResults != null && filterResults.count > 0) {
-                    mItems = (List<Items>) filterResults.values;
+                    mItems = (List<ItemObject>) filterResults.values;
                     notifyDataSetChanged();
                 } else {
                     notifyDataSetInvalidated();
@@ -140,10 +142,10 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
 
         return f;
     }
-    private List<Items> findItems(String i) {
+    private List<ItemObject> findItems(String i) {
 
-        DB mdb = Trade.getWritableDatabase();
-        return mdb.getItemsSearch( i );
+
+        return mdb.getItemSearch( i );
     }
 }
 

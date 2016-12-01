@@ -12,6 +12,7 @@ import android.widget.AutoCompleteTextView;
 
 import pro.gofman.trade.Items.ItemsAutoCompleteAdapter;
 import pro.gofman.trade.R;
+import pro.gofman.trade.Trade;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,8 +62,8 @@ public class DocShapkaFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         AutoCompleteTextView countragent = (AutoCompleteTextView) container.findViewById(R.id.countragent_view);
-        ItemsAutoCompleteAdapter adapter = new ItemsAutoCompleteAdapter( container.getContext() );
-        //Log.i("hi", String.valueOf(adapter.getCount()));
+        ItemsAutoCompleteAdapter adapter = new ItemsAutoCompleteAdapter( container.getContext(), Trade.getWritableDatabase() );
+        Log.i("DocShapka", String.valueOf(adapter.getCount()));
         countragent.setAdapter( adapter );
 
         // Inflate the layout for this fragment
