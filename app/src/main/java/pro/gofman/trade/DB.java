@@ -205,10 +205,10 @@ public class DB {
          */
 
         String sql = "";
-        sql = "SELECT " + "s.i_id,i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) " + " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+        sql = "SELECT " + "s.i_id, i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) " + " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
         //sql = "SELECT " + "s.i_id,i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) ";
 
-        Log.d("Search", sql);
+        Log.i("Search", sql);
         Cursor c = mDatabase.rawQuery( sql, null);
         if ( c != null ) {
             if ( c.moveToFirst() ) {
@@ -221,7 +221,7 @@ public class DB {
 
                     r.add(i);
 
-                    Log.d("Search", c.getString( c.getColumnIndex("i_name") ));
+                    Log.i("Search", c.getString( c.getColumnIndex("i_name") ));
 
                 } while ( c.moveToNext() );
 

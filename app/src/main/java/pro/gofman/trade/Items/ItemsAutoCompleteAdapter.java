@@ -76,8 +76,10 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
     public ItemsAutoCompleteAdapter(Context context, DB db) {
         mContext = context;
         mItems = new ArrayList<ItemObject>();
-        mdb = db;
 
+        mItems.add( new ItemObject() );
+        mdb = db;
+        Log.i("ADAPTER", "3");
     }
 
 
@@ -98,6 +100,7 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        Log.i("ADAPTER", "1");
         if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             view = inflater.inflate(R.layout.items_dropdown_autocomplete, viewGroup, false);
@@ -112,11 +115,12 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
 
     @Override
     public Filter getFilter() {
+        Log.i("ADAPTER", "2");
         Filter f = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
 
-                Log.i("FILTER", "performFiltering: " + charSequence.toString() );
+                Log.i("ADAPTER", "performFiltering: " + charSequence.toString() );
                 FilterResults filterResults = new FilterResults();
                 if (charSequence != null) {
 
@@ -124,6 +128,8 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
 
                     filterResults.values = items;
                     filterResults.count = items.size();
+
+                    Log.i("ADAPTER", "Count: " + String.valueOf(items.size()) );
 
                 }
                 return filterResults;
@@ -143,7 +149,7 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
         return f;
     }
     private List<ItemObject> findItems(String i) {
-
+        Log.i("ADAPTER", "4");
 
         return mdb.getItemSearch( i );
     }

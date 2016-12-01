@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
+import pro.gofman.trade.Items.ItemObject;
 import pro.gofman.trade.Items.ItemsAutoCompleteAdapter;
 import pro.gofman.trade.R;
 import pro.gofman.trade.Trade;
@@ -61,13 +63,31 @@ public class DocShapkaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        AutoCompleteTextView countragent = (AutoCompleteTextView) container.findViewById(R.id.countragent_view);
-        ItemsAutoCompleteAdapter adapter = new ItemsAutoCompleteAdapter( container.getContext(), Trade.getWritableDatabase() );
+        View view = inflater.inflate(R.layout.fragment_docs, container, false);
+
+        final AutoCompleteTextView countragent = (AutoCompleteTextView) view.findViewById(R.id.countragent_view);
+        ItemsAutoCompleteAdapter adapter = new ItemsAutoCompleteAdapter( view.getContext(), Trade.getWritableDatabase() );
         Log.i("DocShapka", String.valueOf(adapter.getCount()));
+        //Log.i("ADAPTER", adapter.getFilter().toString());
+
+        //adapter.getFilter().filter("МАКАРОНЫ");
         countragent.setAdapter( adapter );
 
+        AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                ItemObject io = (ItemObject) adapterView.getItemAtPosition(i);
+                countragent.setText( io.getName(), true );
+
+            }
+
+        };
+
+        countragent.setOnItemClickListener( clickListener );
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_docs, container, false);
+        return view;
 
 
     }
