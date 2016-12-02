@@ -18,7 +18,9 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;;import pro.gofman.trade.Docs.Docs;
+import java.util.List;;import pro.gofman.trade.Countragents.DeliveryPointAbstractItem;
+import pro.gofman.trade.Countragents.DeliveryPointObject;
+import pro.gofman.trade.Docs.Docs;
 import pro.gofman.trade.Items.ItemObject;
 import pro.gofman.trade.Items.Items;
 
@@ -142,7 +144,6 @@ public class DB {
 
         return r;
     }
-
     public List<Items> getItemsSearch(String s) {
         List<Items> r = new ArrayList<>();
 
@@ -247,6 +248,174 @@ public class DB {
         return r;
 
     }
+
+    // Список всей номенклатуры
+    public List<DeliveryPointObject> getDeliveryPointObj() {
+        List<DeliveryPointObject> r = new ArrayList<>();
+
+        Cursor c = mDatabase.rawQuery("SELECT " +
+                "dp.dp_name, " +
+                "dp.dp_id, " +
+                "a.adr_str " +
+                "FROM " +
+                "  point_delivery dp " +
+                "  JOIN addresses a ON (dp.dp_id = a.any_id AND a.adrt_id = 3)", null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    DeliveryPointObject i = new DeliveryPointObject();
+                    i.setID( c.getInt( c.getColumnIndex("dp_id") ));
+                    i.setName( c.getString( c.getColumnIndex("dp_name") ) );
+                    i.setAdr( c.getString( c.getColumnIndex("adr_str") ) );
+
+                    r.add(i);
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+    // Список всей номенклатуры
+    public List<DeliveryPointAbstractItem> getDeliveryPoint() {
+        List<DeliveryPointAbstractItem> r = new ArrayList<>();
+
+        Cursor c = mDatabase.rawQuery("SELECT " +
+                "dp.dp_name, " +
+                "dp.dp_id, " +
+                "a.adr_str " +
+                "FROM " +
+                "  point_delivery dp " +
+                "  JOIN addresses a ON (dp.dp_id = a.any_id AND a.adrt_id = 3) " +
+                "ORDER BY dp.dp_name", null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    DeliveryPointAbstractItem i = new DeliveryPointAbstractItem();
+                    DeliveryPointObject o = new DeliveryPointObject();
+
+                    o.setID( c.getInt( c.getColumnIndex("dp_id") ));
+                    o.setName( c.getString( c.getColumnIndex("dp_name") ) );
+                    o.setAdr( c.getString( c.getColumnIndex("adr_str") ) );
+
+                    i.setObj(o);
+                    r.add(i);
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+
+    public List<DeliveryPointObject> getDPSearchObj(String s) {
+        List<DeliveryPointObject> r = new ArrayList<>();
+
+        /*
+
+        SELECT
+            s.i_id,
+            i.i_name
+        FROM
+            item_search s
+            JOIN items i ON ( s.i_id = i.i_id )
+        WHERE
+            s.value MATCH 'подстрока'
+
+
+         */
+
+        String sql = "";
+        sql = "SELECT " +
+                "s.dp_id, dp.dp_name, a.adr_str" +
+                " FROM " +
+                "dp_search s JOIN point_delivery dp ON ( s.dp_id = dp.dp_id ) " +
+                "JOIN addresses a ON ( s.dp_id = a.any_id AND a.adrt_id = 3) " +
+                " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+        //sql = "SELECT " + "s.i_id,i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) ";
+
+        Log.i("Search", sql);
+        Cursor c = mDatabase.rawQuery( sql, null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    DeliveryPointObject i = new DeliveryPointObject();
+
+                    i.setID( c.getInt( c.getColumnIndex("dp_id") ));
+                    i.setName( c.getString( c.getColumnIndex("dp_name") ) );
+                    i.setAdr( c.getString( c.getColumnIndex("adr_str") ) );
+
+                    r.add(i);
+
+                    //Log.i("Search", c.getString( c.getColumnIndex("i_name") ));
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+
+    public List<DeliveryPointAbstractItem> getDPSearch(String s) {
+        List<DeliveryPointAbstractItem> r = new ArrayList<>();
+
+        /*
+
+        SELECT
+            s.i_id,
+            i.i_name
+        FROM
+            item_search s
+            JOIN items i ON ( s.i_id = i.i_id )
+        WHERE
+            s.value MATCH 'подстрока'
+
+
+         */
+
+        String sql = "";
+        sql = "SELECT " +
+                "s.dp_id, dp.dp_name, a.adr_str" +
+                " FROM " +
+                "dp_search s JOIN point_delivery dp ON ( s.dp_id = dp.dp_id ) " +
+                "JOIN addresses a ON ( s.dp_id = a.any_id AND a.adrt_id = 3) " +
+                " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+        //sql = "SELECT " + "s.i_id,i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) ";
+
+        Log.i("Search", sql);
+        Cursor c = mDatabase.rawQuery( sql, null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    DeliveryPointAbstractItem i = new DeliveryPointAbstractItem();
+                    i.setObj( new DeliveryPointObject() );
+                    i.getObj().setID( c.getInt( c.getColumnIndex("dp_id") ));
+                    i.getObj().setName( c.getString( c.getColumnIndex("dp_name") ) );
+                    i.getObj().setAdr( c.getString( c.getColumnIndex("adr_str") ) );
+
+                    r.add(i);
+
+                    //Log.i("Search", c.getString( c.getColumnIndex("i_name") ));
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+
 
 
     public List<Items> getCoords() {

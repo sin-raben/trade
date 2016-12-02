@@ -55,7 +55,8 @@
             android:name=".Docs.DocsActivity"
             android:label="@string/title_activity_docs"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Docs.DocActivity"></activity>
+        <activity android:name=".Docs.DocActivity" />
+        <activity android:name=".Countragents.DeliveryPointActivity"></activity>
     </application>
 
 </manifest>

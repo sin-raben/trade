@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
+import pro.gofman.trade.Countragents.DeliveryPointAutoCompleteAdapter;
+import pro.gofman.trade.Countragents.DeliveryPointObject;
 import pro.gofman.trade.Items.ItemObject;
 import pro.gofman.trade.Items.ItemsAutoCompleteAdapter;
 import pro.gofman.trade.R;
@@ -66,22 +68,17 @@ public class DocShapkaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_docs, container, false);
 
         final AutoCompleteTextView countragent = (AutoCompleteTextView) view.findViewById(R.id.countragent_view);
-        ItemsAutoCompleteAdapter adapter = new ItemsAutoCompleteAdapter( view.getContext(), Trade.getWritableDatabase() );
-        Log.i("DocShapka", String.valueOf(adapter.getCount()));
-        //Log.i("ADAPTER", adapter.getFilter().toString());
-
-        //adapter.getFilter().filter("МАКАРОНЫ");
+        DeliveryPointAutoCompleteAdapter adapter = new DeliveryPointAutoCompleteAdapter( view.getContext(), Trade.getWritableDatabase() );
         countragent.setAdapter( adapter );
 
         AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                ItemObject io = (ItemObject) adapterView.getItemAtPosition(i);
+                DeliveryPointObject io = (DeliveryPointObject) adapterView.getItemAtPosition(i);
                 countragent.setText( io.getName(), true );
 
             }
-
         };
 
         countragent.setOnItemClickListener( clickListener );

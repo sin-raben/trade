@@ -308,18 +308,18 @@
       "description": "Точки доставки",
       "fields": [
         {
-          "field": "pd_id",
+          "field": "dp_id",
           "type": "integer",
           "description": "ID точки",
           "primary_key": true
         },
         {
-          "field": "pd_name",
+          "field": "dp_name",
           "type": "text",
           "description": "Рабочее наименование"
         },
         {
-          "field": "pd_prn",
+          "field": "dp_prn",
           "type": "text",
           "description": "Наименование для печати"
         },
@@ -331,7 +331,7 @@
       ]
     },
     {
-      "table": "ca_pd_link",
+      "table": "ca_dp_link",
       "description": "Связи Контрагенттов с Точками доставки",
       "fields": [
         {
@@ -340,12 +340,12 @@
           "description": "ID контрагента"
         },
         {
-          "field": "pd_id",
+          "field": "dp_id",
           "type": "integer",
           "description": "ID контрагента"
         },
         {
-          "field": "pd_active",
+          "field": "dp_active",
           "type": "integer",
           "description": "Статус связи"
         }
@@ -364,6 +364,24 @@
         },
         {
           "field": "cs_value",
+          "type": "text",
+          "decription": "Поисковая строка"
+        }
+      ]
+    },
+    {
+      "table": "dp_search",
+      "description": "Поисковая строка справочника Точки доставки",
+      "fts3": true,
+      "fields": [
+        {
+          "field": "dp_id",
+          "type": "integer",
+          "description": "ID точки доставки",
+          "primary_key": true
+        },
+        {
+          "field": "value",
           "type": "text",
           "decription": "Поисковая строка"
         }

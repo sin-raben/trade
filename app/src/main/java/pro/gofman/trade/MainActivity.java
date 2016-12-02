@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import pro.gofman.trade.Coords.CoordsActivity;
+import pro.gofman.trade.Countragents.DeliveryPointActivity;
 import pro.gofman.trade.Docs.DocsActivity;
 import pro.gofman.trade.Items.ItemsActivity;
 
@@ -264,6 +265,8 @@ public class MainActivity extends AppCompatActivity {
 
                         case 2007: {
                             // Точки доставки
+                            Intent i = new Intent(MainActivity.this, DeliveryPointActivity.class);
+                            startActivity( i );
 
                             break;
                         }

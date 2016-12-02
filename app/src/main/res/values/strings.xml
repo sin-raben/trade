@@ -7,6 +7,7 @@
     <string name="search_title">Поиск</string>
     <string name="search_items">Поиск номенклатуры</string>
     <string name="search_countragents">Поиск клиента</string>
+    <string name="search_dp">Поиск точки доставки</string>
     <string name="search_docs">Поиск документов</string>
 
 
@@ -15,4 +16,5 @@
     <string name="title_activity_items">Номенклатура</string>
     <string name="title_activity_coords">Координаты</string>
     <string name="title_activity_docs">Документы</string>
+    <string name="title_activity_dp">Точки доставки</string>
 </resources>

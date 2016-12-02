@@ -297,16 +297,16 @@ public class SyncData extends IntentService {
                                 sendCoord(websocket);
 
                                 // Запрашиваем номенклатуру
-                                getItems(websocket);
+                                //getItems(websocket);
 
                                 // Запрашиваем контрагентов
                                 getCountragents(websocket);
 
                                 // Запрашиваем цены
-                                getPrices(websocket);
+                                //getPrices(websocket);
 
                                 // Запрашиваем остатки
-                                getAmounts(websocket);
+                                //getAmounts(websocket);
                             }
 
                             // Получаем только новости
@@ -497,17 +497,19 @@ public class SyncData extends IntentService {
 
                         // Загрузка контрагентов
                         if ( body.has(Protocol.COUNTERAGENTS) ) {
+                            Log.i("COUNTRAGENTS", "Вошли");
 
                             db.execSQL("DELETE FROM countragents");
 
                             JSONArray ig = body.getJSONArray(Protocol.COUNTERAGENTS);
 
+                            Log.i("COUNTRAGENTS", String.valueOf(ig.length()));
                             for (int i = 0; i < ig.length(); i++) {
                                 JSONObject t = ig.getJSONObject(i);
 
                                 cv = new ContentValues();
                                 cv.put( "ca_id", t.getInt("ca_id") );
-                                cv.put( "ca_type", t.getInt("ca_type") );
+                                cv.put( "ca_type", t.getInt("cat_id") );
                                 cv.put( "ca_name", t.getString("ca_name") );
                                 //cv.put( "ca_head", t.getInt("ca_head") );
                                 cv.put( "ca_inn", t.getString("ca_inn") );
@@ -535,8 +537,8 @@ public class SyncData extends IntentService {
                                 JSONObject t = ig.getJSONObject(i);
 
                                 cv = new ContentValues();
-                                cv.put( "pd_id", t.getInt("dp_id") );
-                                cv.put( "pd_name", t.getString("dp_name") );
+                                cv.put( "dp_id", t.getInt("dp_id") );
+                                cv.put( "dp_name", t.getString("dp_name") );
                                 //cv.put( "adr_id", t.getInt("adr_id") );
 
                                 if (!t.getString("dp_name").isEmpty()) {
@@ -552,7 +554,7 @@ public class SyncData extends IntentService {
                         Log.i("POINT", String.valueOf( body.has(Protocol.LINK_POINTS_DELIVERY) ) );
                         if ( body.has(Protocol.LINK_POINTS_DELIVERY) ) {
 
-                            db.execSQL("DELETE FROM ca_pd_link");
+                            db.execSQL("DELETE FROM ca_dp_link");
 
                             JSONArray ig = body.getJSONArray(Protocol.LINK_POINTS_DELIVERY);
 
@@ -561,39 +563,38 @@ public class SyncData extends IntentService {
 
                                 cv = new ContentValues();
                                 cv.put( "ca_id", t.getInt("ca_id") );
-                                cv.put( "pd_id", t.getInt("dp_id") );
-                                cv.put( "pd_active", t.getBoolean("lcp_active") );
+                                cv.put( "dp_id", t.getInt("dp_id") );
+                                cv.put( "dp_active", t.getBoolean("lcp_active") );
 
                                 if ( t.getBoolean("lcp_active") ) {
 
-                                    db.insert("ca_pd_link", cv);
+                                    db.insert("ca_dp_link", cv);
                                     Log.i("LINK_POINTS_DELIVERY", String.valueOf(t.getInt("ca_id")) );
                                 }
                             }
                         }
                         // загрузка поисковых строк
-                        Log.i("POINT", String.valueOf( body.has(Protocol.COUNTRAGENT_SEARCH) ) );
-                        if ( body.has(Protocol.COUNTRAGENT_SEARCH) ) {
-
-                            db.execSQL("DELETE FROM countragent_search");
-
-                            JSONArray ig = body.getJSONArray(Protocol.COUNTRAGENT_SEARCH);
-
-                            for (int i = 0; i < ig.length(); i++) {
-                                JSONObject t = ig.getJSONObject(i);
-
-                                cv = new ContentValues();
-                                cv.put( "ca_id", t.getInt("ca_id") );
-                                cv.put( "value", t.getString("value") );
-
-
-                                if ( !cv.getAsString("value").isEmpty() ) {
-
-                                    db.insert("countragent_search", cv);
-                                    Log.i("COUNTRAGENT_SEARCH", cv.getAsString("value") );
-                                }
-                            }
-                        }
+//                        if ( body.has(Protocol.COUNTRAGENT_SEARCH) ) {
+//
+//                            db.execSQL("DELETE FROM ca_search");
+//
+//                            JSONArray ig = body.getJSONArray(Protocol.COUNTRAGENT_SEARCH);
+//
+//                            for (int i = 0; i < ig.length(); i++) {
+//                                JSONObject t = ig.getJSONObject(i);
+//
+//                                cv = new ContentValues();
+//                                cv.put( "ca_id", t.getInt("ca_id") );
+//                                cv.put( "value", t.getString("value") );
+//
+//
+//                                if ( !cv.getAsString("value").isEmpty() ) {
+//
+//                                    db.insert("ca_search", cv);
+//                                    Log.i("COUNTRAGENT_SEARCH", cv.getAsString("value") );
+//                                }
+//                            }
+//                        }
 
                         // загрузка поисковых строк
                         Log.i("POINT", String.valueOf( body.has(Protocol.COUNTRAGENT_ADDRESSES) ) );
@@ -612,15 +613,36 @@ public class SyncData extends IntentService {
                                 cv.put( "adrt_id", t.getInt("adrt_id") );
                                 cv.put( "adr_str", t.getString("adr_str") );
 
-                                if ( !cv.getAsString("adr_str").isEmpty() ) {
+                                if ( !t.getString("adr_str").isEmpty() ) {
 
                                     db.insert("addresses", cv);
-                                    Log.i("ADDRESSES", cv.getAsString("adr_str") );
+                                    Log.i("ADDRESSES", t.getString("adr_str") );
                                 }
                             }
                         }
 
+                        // загрузка поисковых строк
+                        if ( body.has(Protocol.DELIVERY_POINT_SEARCH) ) {
 
+                            db.execSQL("DELETE FROM dp_search");
+
+                            JSONArray ig = body.getJSONArray(Protocol.DELIVERY_POINT_SEARCH);
+
+                            for (int i = 0; i < ig.length(); i++) {
+                                JSONObject t = ig.getJSONObject(i);
+
+                                cv = new ContentValues();
+                                cv.put( "dp_id", t.getInt("dp_id") );
+                                cv.put( "value", t.getString("value") );
+
+
+                                if ( !t.getString("value").isEmpty() ) {
+
+                                    db.insert("dp_search", cv);
+                                    Log.i("DELIVERY_POINT_SEARCH", t.getString("value") );
+                                }
+                            }
+                        }
 
                         break;
                     }
@@ -887,9 +909,9 @@ public class SyncData extends IntentService {
                 r.put( Protocol.HEAD, "getCountragents" );
 
                 JSONObject body = new JSONObject();
-                body.put( Protocol.COUNTERAGENTS, "all" );
-                body.put( Protocol.POINTS_DELIVERY, "all" );
-                body.put( Protocol.LINK_POINTS_DELIVERY, "all" );
+                //body.put( Protocol.COUNTERAGENTS, "all" );
+                //body.put( Protocol.POINTS_DELIVERY, "all" );
+                //body.put( Protocol.LINK_POINTS_DELIVERY, "all" );
                 body.put( Protocol.COUNTRAGENT_SEARCH, "all" );
                 body.put( Protocol.COUNTRAGENT_ADDRESSES, "all" );
 

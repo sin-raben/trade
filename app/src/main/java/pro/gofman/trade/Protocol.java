@@ -42,6 +42,7 @@ public class Protocol {
     protected static final String LINK_POINTS_DELIVERY = "linksCountragentDeliveryPoint";
     protected static final String COUNTRAGENT_SEARCH = "CountragentsSearch";
     protected static final String COUNTRAGENT_ADDRESSES = "address";
+    protected static final String DELIVERY_POINT_SEARCH = "CountragentsSearch";
     protected static final String PRICE = "price";
     protected static final String PRICELISTS = "pricelist";
     protected static final String LINK_PRICELISTS = "pricelistLink";
