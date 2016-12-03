@@ -92,14 +92,14 @@ public class DeliveryPointAutoCompleteAdapter extends BaseAdapter implements Fil
 
     private Context mContext;
     private List<DeliveryPointObject> mItems;
-    private DB mdb;
+    private DB mDB;
 
     public DeliveryPointAutoCompleteAdapter(Context context, DB db) {
         mContext = context;
         mItems = new ArrayList<DeliveryPointObject>();
 
         mItems.add( new DeliveryPointObject() );
-        mdb = db;
+        mDB = db;
         Log.i("ADAPTER", "3");
     }
 
@@ -145,13 +145,12 @@ public class DeliveryPointAutoCompleteAdapter extends BaseAdapter implements Fil
                 FilterResults filterResults = new FilterResults();
                 if (charSequence != null) {
 
-                    List<DeliveryPointObject> items = findItems( charSequence.toString() );
+                    List<DeliveryPointObject> items = findDeliverPoints( charSequence.toString() );
 
                     filterResults.values = items;
                     filterResults.count = items.size();
 
                     Log.i("ADAPTER", "Count: " + String.valueOf(items.size()) );
-
                 }
                 return filterResults;
             }
@@ -169,10 +168,43 @@ public class DeliveryPointAutoCompleteAdapter extends BaseAdapter implements Fil
 
         return f;
     }
-    private List<DeliveryPointObject> findItems(String i) {
-        Log.i("ADAPTER", "4");
 
-        return mdb.getDPSearchObj( i );
+    private List<DeliveryPointObject> findDeliverPoints(String s) {
+        Log.i("ADAPTER", "4");
+        List<DeliveryPointObject> r = new ArrayList<>();
+
+        String sql = "";
+        sql = "SELECT " +
+                "s.dp_id, dp.dp_name, a.adr_str" +
+                " FROM " +
+                "dp_search s JOIN point_delivery dp ON ( s.dp_id = dp.dp_id ) " +
+                "JOIN addresses a ON ( s.dp_id = a.any_id AND a.adrt_id = 3) " +
+                " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+        //sql = "SELECT " + "s.i_id,i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) ";
+
+        Log.i("Search", sql);
+        Cursor c = mDB.rawQuery( sql, null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    DeliveryPointObject i = new DeliveryPointObject();
+
+                    i.setID( c.getInt( c.getColumnIndex("dp_id") ));
+                    i.setName( c.getString( c.getColumnIndex("dp_name") ) );
+                    i.setAdr( c.getString( c.getColumnIndex("adr_str") ) );
+
+                    r.add(i);
+
+                    //Log.i("Search", c.getString( c.getColumnIndex("i_name") ));
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
     }
 }
 

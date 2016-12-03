@@ -463,7 +463,6 @@ public class SyncData extends IntentService {
                         // Загрузка поисковых строк
                         if ( body.has(Protocol.ITEMS_SEARCH) ) {
 
-                            Log.d("Search", "2222");
                             db.execSQL("DELETE FROM item_search");
 
                             JSONArray ig = body.getJSONArray(Protocol.ITEMS_SEARCH);
@@ -475,14 +474,12 @@ public class SyncData extends IntentService {
 
                                 cv = new ContentValues();
                                 cv.put( "i_id", t.getInt("i_id") );
-                                cv.put( "value", t.getString("value") );
+                                cv.put( "value", t.getString("value").toUpperCase() );
 
                                 if ( !cv.getAsString("value").isEmpty() ) {
 
                                     db.insert("item_search", cv);
                                     Log.i("ITEMS_SEARCH", cv.getAsString("value"));
-
-                                    stopForeground(true);
                                 }
                             }
                         }
@@ -633,7 +630,7 @@ public class SyncData extends IntentService {
 
                                 cv = new ContentValues();
                                 cv.put( "dp_id", t.getInt("dp_id") );
-                                cv.put( "value", t.getString("value") );
+                                cv.put( "value", t.getString("value").toUpperCase() );
 
 
                                 if ( !t.getString("value").isEmpty() ) {

@@ -1,5 +1,6 @@
 package pro.gofman.trade.Countragents;
 
+import android.database.Cursor;
 import android.graphics.Color;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,8 +22,10 @@ import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pro.gofman.trade.DB;
-import pro.gofman.trade.Items.Items;
 import pro.gofman.trade.LineDividerItemDecoration;
 import pro.gofman.trade.R;
 import pro.gofman.trade.Trade;
@@ -51,14 +54,12 @@ public class DeliveryPointActivity extends AppCompatActivity {
         ia = new FastItemAdapter();
 
         DB db = Trade.getWritableDatabase();
-        ia.setNewList( db.getDeliveryPoint() );
+        ia.setNewList( getDeliveryPoint() );
 
         ia.withSelectable(false);
         ia.withOnClickListener(new FastAdapter.OnClickListener<DeliveryPointAbstractItem>() {
             @Override
             public boolean onClick(View v, IAdapter<DeliveryPointAbstractItem> adapter, DeliveryPointAbstractItem item, int position) {
-                DB db = Trade.getWritableDatabase();
-                Log.i("CLICK", String.valueOf(position) + " " + String.valueOf(item.getObj().getID()) );
 
                 Toast.makeText( Trade.getAppContext(), String.valueOf( item.getObj().getID() ), Toast.LENGTH_SHORT ).show();
                 return true;
@@ -69,6 +70,80 @@ public class DeliveryPointActivity extends AppCompatActivity {
         r.addItemDecoration( new LineDividerItemDecoration( this ) );
         r.setAdapter( ia );
     }
+
+    // Получаем из базы весь список Точек доставки
+    private List<DeliveryPointAbstractItem> getDeliveryPoint() {
+        List<DeliveryPointAbstractItem> r = new ArrayList<>();
+
+        Cursor c = db.rawQuery("SELECT " +
+                "dp.dp_name, " +
+                "dp.dp_id, " +
+                "a.adr_str " +
+                "FROM " +
+                "  point_delivery dp " +
+                "  JOIN addresses a ON (dp.dp_id = a.any_id AND a.adrt_id = 3) " +
+                "ORDER BY dp.dp_name", null);
+
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    DeliveryPointAbstractItem i = new DeliveryPointAbstractItem();
+                    DeliveryPointObject o = new DeliveryPointObject();
+
+                    o.setID( c.getInt( c.getColumnIndex("dp_id") ));
+                    o.setName( c.getString( c.getColumnIndex("dp_name") ) );
+                    o.setAdr( c.getString( c.getColumnIndex("adr_str") ) );
+
+                    i.setObj(o);
+                    r.add(i);
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+    public List<DeliveryPointAbstractItem> getDPSearch(String s) {
+        List<DeliveryPointAbstractItem> r = new ArrayList<>();
+
+        String sql = "";
+        sql = "SELECT " +
+                "s.dp_id, dp.dp_name, a.adr_str" +
+                " FROM " +
+                "dp_search s JOIN point_delivery dp ON ( s.dp_id = dp.dp_id ) " +
+                "JOIN addresses a ON ( s.dp_id = a.any_id AND a.adrt_id = 3) " +
+                " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+
+
+        Log.i("Search", sql);
+        Cursor c = db.rawQuery( sql, null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    DeliveryPointAbstractItem i = new DeliveryPointAbstractItem();
+                    i.setObj( new DeliveryPointObject() );
+                    i.getObj().setID( c.getInt( c.getColumnIndex("dp_id") ));
+                    i.getObj().setName( c.getString( c.getColumnIndex("dp_name") ) );
+                    i.getObj().setAdr( c.getString( c.getColumnIndex("adr_str") ) );
+
+                    r.add(i);
+
+                    //Log.i("Search", c.getString( c.getColumnIndex("i_name") ));
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -88,14 +163,13 @@ public class DeliveryPointActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String s) {
 
-                //Log.d("Search", s );
                 if ( s.length() > 2 && !TextUtils.isEmpty(s) ) {
-                    ia.setNewList( db.getDPSearch( s ) );
+                    ia.setNewList( getDPSearch( s ) );
                     //Toast.makeText( Trade.getAppContext(), "Найдено: " + String.valueOf( fia.getAdapterItemCount() ), Toast.LENGTH_SHORT ).show();
                 } else {
                     if (TextUtils.isEmpty(s)) {
-                        //Log.d("SearchClear", "33");
-                        ia.setNewList( db.getDeliveryPoint() );
+
+                        ia.setNewList( getDeliveryPoint() );
                         Toast.makeText(Trade.getAppContext(), "Всего: " + String.valueOf( ia.getAdapterItemCount()), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -113,8 +187,7 @@ public class DeliveryPointActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                //Log.d("SearchClose", "22");
-                ia.setNewList( db.getDeliveryPoint() );
+                ia.setNewList( getDeliveryPoint() );
                 Toast.makeText( Trade.getAppContext(), "Всего: " + String.valueOf( ia.getAdapterItemCount() ), Toast.LENGTH_SHORT ).show();
                 return true;
             }
@@ -128,7 +201,6 @@ public class DeliveryPointActivity extends AppCompatActivity {
 
         switch ( item.getItemId() ) {
             case android.R.id.home:
-                //Log.d("SearchClose", "11");
                 onBackPressed();
                 return true;
 

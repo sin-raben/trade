@@ -71,14 +71,13 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
 
     private Context mContext;
     private List<ItemObject> mItems;
-    private DB mdb;
+    private DB mdDB;
 
     public ItemsAutoCompleteAdapter(Context context, DB db) {
         mContext = context;
         mItems = new ArrayList<ItemObject>();
 
-        mItems.add( new ItemObject() );
-        mdb = db;
+        mdDB = db;
         Log.i("ADAPTER", "3");
     }
 
@@ -148,10 +147,35 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
 
         return f;
     }
-    private List<ItemObject> findItems(String i) {
+    private List<ItemObject> findItems(String s) {
         Log.i("ADAPTER", "4");
 
-        return mdb.getItemSearch( i );
+        List<ItemObject> r = new ArrayList<>();
+
+        String sql = "";
+        sql = "SELECT " + "s.i_id, i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) " + " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+
+        Cursor c = mdDB.rawQuery( sql, null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    ItemObject i = new ItemObject();
+                    i.setID( c.getInt( c.getColumnIndex("i_id") ));
+                    i.setName( c.getString( c.getColumnIndex("i_name") ) );
+                    i.setDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("i_id") ) ) );
+
+                    r.add(i);
+
+                    Log.i("Search", c.getString( c.getColumnIndex("i_name") ));
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
     }
 }
 

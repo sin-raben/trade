@@ -7,8 +7,6 @@ import android.widget.TextView;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import java.util.List;
-
-import pro.gofman.trade.Items.Items;
 import pro.gofman.trade.R;
 
 /**

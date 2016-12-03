@@ -1,26 +1,19 @@
 package pro.gofman.trade.Items;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
 import com.mikepenz.fastadapter.items.AbstractItem;
-
 import java.util.List;
-
 import pro.gofman.trade.R;
 
 /**
  * Created by roman on 14.07.16.
  */
 
-public class Items extends AbstractItem<Items, Items.ViewHolder> {
+public class ItemAbstractItem extends AbstractItem<ItemAbstractItem, ItemAbstractItem.ViewHolder> {
 
-    public String name = "";
-    public String description = "";
-    private int i_id = 0;
-
+    private ItemObject io;
 
     @Override
     public int getType() {
@@ -32,38 +25,20 @@ public class Items extends AbstractItem<Items, Items.ViewHolder> {
         return R.layout.recycleview_items;
     }
 
-    public Items withName(String Name) {
-        this.name = new String(Name);
-        return this;
+    public ItemObject getObj() {
+        return io;
     }
 
-    public Items withDescription(String description) {
-        this.description = new String(description);
-        return this;
+    public void setObj(ItemObject io) {
+        this.io = io;
     }
-
-    public void setID(int id) {
-        this.i_id = id;
-    }
-    public int getID() {
-        return this.i_id;
-    }
-
-
- /*   @Override
-    public void bindView(ViewHolder holder) {
-        super.bindView(holder);
-
-        holder.name.setText(name);
-        holder.description.setText(description);
-    }*/
 
     @Override
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        holder.name.setText(name);
-        holder.description.setText(description);
+        holder.name.setText( this.io.getName() );
+        holder.description.setText( this.io.getDescription() );
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {

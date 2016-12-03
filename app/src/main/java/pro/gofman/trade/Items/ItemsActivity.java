@@ -1,5 +1,6 @@
 package pro.gofman.trade.Items;
 
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -21,8 +22,10 @@ import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pro.gofman.trade.DB;
-import pro.gofman.trade.Items.Items;
 import pro.gofman.trade.LineDividerItemDecoration;
 import pro.gofman.trade.Trade;
 
@@ -52,16 +55,16 @@ public class ItemsActivity extends AppCompatActivity {
         ia = new FastItemAdapter();
 
         DB db = Trade.getWritableDatabase();
-        ia.setNewList( db.getItems() );
+        ia.setNewList( getItems() );
 
         ia.withSelectable(false);
-        ia.withOnClickListener(new FastAdapter.OnClickListener<Items>() {
+        ia.withOnClickListener(new FastAdapter.OnClickListener<ItemAbstractItem>() {
             @Override
-            public boolean onClick(View v, IAdapter<Items> adapter, Items item, int position) {
+            public boolean onClick(View v, IAdapter<ItemAbstractItem> adapter, ItemAbstractItem item, int position) {
                 DB db = Trade.getWritableDatabase();
-                Log.i("CLICK", String.valueOf(position) + " " + String.valueOf(item.getID()) + " " + db.getSearchString( item.getID() ));
+                Log.i("CLICK", String.valueOf(position) + " " + String.valueOf(item.getObj().getID()) + " " + db.getSearchString( item.getObj().getID() ));
 
-                Toast.makeText( Trade.getAppContext(), db.getSearchString( item.getID() ), Toast.LENGTH_SHORT ).show();
+                Toast.makeText( Trade.getAppContext(), db.getSearchString( item.getObj().getID() ), Toast.LENGTH_SHORT ).show();
                 return true;
             }
         });
@@ -70,6 +73,63 @@ public class ItemsActivity extends AppCompatActivity {
         r.addItemDecoration( new LineDividerItemDecoration( this ) );
         r.setAdapter( ia );
     }
+
+    // Достаем из базы список всей номенклатуры
+    private List<ItemAbstractItem> getItems() {
+        List<ItemAbstractItem> r = new ArrayList<>();
+
+        Cursor c = db.rawQuery("SELECT * FROM items", null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    ItemAbstractItem i = new ItemAbstractItem();
+                    i.setObj( new ItemObject() );
+
+                    i.getObj().setID( c.getInt( c.getColumnIndex("i_id") ));
+                    i.getObj().setName( c.getString( c.getColumnIndex("i_name") ) );
+                    i.getObj().setDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("i_id") ) ) );
+
+                    r.add(i);
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+
+    private List<ItemAbstractItem> getItemsSearch(String s) {
+        List<ItemAbstractItem> r = new ArrayList<>();
+
+        String sql = "";
+        sql = "SELECT " + "s.i_id,i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) " + " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+
+        Log.d("Search", sql);
+        Cursor c = db.rawQuery( sql, null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    ItemAbstractItem i = new ItemAbstractItem();
+                    i.getObj().setID( c.getInt( c.getColumnIndex("i_id") ));
+                    i.getObj().setName( c.getString( c.getColumnIndex("i_name") ) );
+                    i.getObj().setDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("i_id") ) ) );
+
+                    r.add(i);
+                    Log.d("Search", c.getString( c.getColumnIndex("i_name") ));
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -92,12 +152,12 @@ public class ItemsActivity extends AppCompatActivity {
 
                 //Log.d("Search", s );
                 if ( s.length() > 2 && !TextUtils.isEmpty(s) ) {
-                    ia.setNewList( db.getItemsSearch( s ) );
+                    ia.setNewList( getItemsSearch( s ) );
                     //Toast.makeText( Trade.getAppContext(), "Найдено: " + String.valueOf( fia.getAdapterItemCount() ), Toast.LENGTH_SHORT ).show();
                 } else {
                     if (TextUtils.isEmpty(s)) {
-                        //Log.d("SearchClear", "33");
-                        ia.setNewList( db.getItems() );
+
+                        ia.setNewList( getItems() );
                         Toast.makeText(Trade.getAppContext(), "Всего: " + String.valueOf( ia.getAdapterItemCount()), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -115,8 +175,8 @@ public class ItemsActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                //Log.d("SearchClose", "22");
-                ia.setNewList( db.getItems() );
+
+                ia.setNewList( getItems() );
                 Toast.makeText( Trade.getAppContext(), "Всего: " + String.valueOf( ia.getAdapterItemCount() ), Toast.LENGTH_SHORT ).show();
                 return true;
             }
@@ -130,7 +190,6 @@ public class ItemsActivity extends AppCompatActivity {
 
         switch ( item.getItemId() ) {
             case android.R.id.home:
-                //Log.d("SearchClose", "11");
                 onBackPressed();
                 return true;
 
