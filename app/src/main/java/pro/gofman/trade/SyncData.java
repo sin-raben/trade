@@ -217,6 +217,7 @@ public class SyncData extends IntentService {
         Log.i("SyncData", url);
 
         WebSocket ws = new WebSocketFactory().createSocket( url );
+        //ws.setMaxPayloadSize()
         WebSocket webSocket = ws.addListener(new WebSocketListener() {
             @Override
             public void onStateChanged(WebSocket websocket, WebSocketState newState) throws Exception {
@@ -275,7 +276,7 @@ public class SyncData extends IntentService {
 
             @Override
             public void onTextMessage(WebSocket websocket, String text) throws Exception {
-                Log.i("WS", "Text: " + text);
+                //Log.i("WS", "Text: " + text);
 
                 result = new JSONObject(text);
                 head = result.getString( Protocol.HEAD );
@@ -294,7 +295,7 @@ public class SyncData extends IntentService {
 
                                 Log.i("WS", "sendCoord");
                                 // Отправляем координаты
-                                sendCoord(websocket);
+                                //sendCoord(websocket);
 
                                 // Запрашиваем номенклатуру
                                 //getItems(websocket);
@@ -516,7 +517,7 @@ public class SyncData extends IntentService {
                                 if ( t.getInt("ca_id") > 0 ) {
 
                                     db.insert("countragents", cv);
-                                    Log.i("COUNTERAGENTS", t.getString("ca_name") );
+                                    //Log.i("COUNTERAGENTS", t.getString("ca_name") );
                                 }
                             }
                         }
@@ -541,7 +542,7 @@ public class SyncData extends IntentService {
                                 if (!t.getString("dp_name").isEmpty()) {
 
                                     db.insert("point_delivery", cv);
-                                    Log.i("POINTS_DELIVERY", t.getString("dp_name"));
+                                    //Log.i("POINTS_DELIVERY", t.getString("dp_name"));
                                 }
                             }
                         }
@@ -566,7 +567,7 @@ public class SyncData extends IntentService {
                                 if ( t.getBoolean("lcp_active") ) {
 
                                     db.insert("ca_dp_link", cv);
-                                    Log.i("LINK_POINTS_DELIVERY", String.valueOf(t.getInt("ca_id")) );
+                                    //Log.i("LINK_POINTS_DELIVERY", String.valueOf(t.getInt("ca_id")) );
                                 }
                             }
                         }
@@ -594,13 +595,13 @@ public class SyncData extends IntentService {
 //                        }
 
                         // загрузка поисковых строк
-                        Log.i("POINT", String.valueOf( body.has(Protocol.COUNTRAGENT_ADDRESSES) ) );
+                        Log.i("POINT_ADDRESS", String.valueOf( body.has(Protocol.COUNTRAGENT_ADDRESSES) ) );
                         if ( body.has(Protocol.COUNTRAGENT_ADDRESSES) ) {
 
                             db.execSQL("DELETE FROM addresses");
 
                             JSONArray ig = body.getJSONArray(Protocol.COUNTRAGENT_ADDRESSES);
-
+                            Log.i("ADDRESS", String.valueOf( ig.length() ) );
                             for (int i = 0; i < ig.length(); i++) {
                                 JSONObject t = ig.getJSONObject(i);
 
@@ -906,15 +907,16 @@ public class SyncData extends IntentService {
                 r.put( Protocol.HEAD, "getCountragents" );
 
                 JSONObject body = new JSONObject();
-                //body.put( Protocol.COUNTERAGENTS, "all" );
-                //body.put( Protocol.POINTS_DELIVERY, "all" );
-                //body.put( Protocol.LINK_POINTS_DELIVERY, "all" );
+                body.put( Protocol.COUNTERAGENTS, "all" );
                 body.put( Protocol.COUNTRAGENT_SEARCH, "all" );
                 body.put( Protocol.COUNTRAGENT_ADDRESSES, "all" );
+                body.put( Protocol.POINTS_DELIVERY, "all" );
+                body.put( Protocol.LINK_POINTS_DELIVERY, "all" );
+
 
                 r.put( Protocol.BODY, body );
 
-                Log.i("getCountragent", r.toString() );
+                //Log.i("getCountragent", r.toString() );
                 websocket.sendText( r.toString() );
             }
 
