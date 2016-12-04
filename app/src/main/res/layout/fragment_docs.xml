@@ -4,20 +4,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
     <!-- TODO: Update blank fragment layout -->
 
     <AutoCompleteTextView
-        android:layout_width="330dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/delivery_point_view"
+        android:hint="Точка доставки"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.66"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/organization_view" />
+
+    <AutoCompleteTextView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/countragent_view"
         android:hint="Контрагент"
-        android:layout_margin="6dp"
-        tools:layout_editor_absoluteY="0dp"
-        android:layout_marginEnd="6dp"
+        app:layout_constraintTop_toBottomOf="@+id/delivery_point_view"
+        android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="6dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintHorizontal_bias="0.33" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:id="@+id/delivery_date"
+        android:hint="Дата доставки"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/store_view" />
+
+    <AutoCompleteTextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/store_view"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/countragent_view"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:hint="Склад"
+        app:layout_constraintHorizontal_bias="1.0" />
+
+    <AutoCompleteTextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/organization_view"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.43"
+        android:hint="Организация" />
+
+
+
+
+
+
 
 </android.support.constraint.ConstraintLayout>

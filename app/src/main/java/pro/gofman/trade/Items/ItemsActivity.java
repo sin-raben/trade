@@ -78,7 +78,7 @@ public class ItemsActivity extends AppCompatActivity {
     private List<ItemAbstractItem> getItems() {
         List<ItemAbstractItem> r = new ArrayList<>();
 
-        Cursor c = db.rawQuery("SELECT * FROM items", null);
+        Cursor c = db.rawQuery("SELECT * FROM items ORDER BY i_name", null);
         if ( c != null ) {
             if ( c.moveToFirst() ) {
                 do {
@@ -105,7 +105,11 @@ public class ItemsActivity extends AppCompatActivity {
         List<ItemAbstractItem> r = new ArrayList<>();
 
         String sql = "";
-        sql = "SELECT " + "s.i_id,i.i_name" + " FROM " + "item_search s JOIN items i ON ( s.i_id = i.i_id ) " + " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+        sql = "SELECT " +
+                "s.i_id, i.i_name" +
+                " FROM " +
+                "item_search s JOIN items i ON ( s.i_id = i.i_id ) " +
+                " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
 
         Log.d("Search", sql);
         Cursor c = db.rawQuery( sql, null);
@@ -114,19 +118,19 @@ public class ItemsActivity extends AppCompatActivity {
                 do {
 
                     ItemAbstractItem i = new ItemAbstractItem();
+                    i.setObj( new ItemObject() );
                     i.getObj().setID( c.getInt( c.getColumnIndex("i_id") ));
                     i.getObj().setName( c.getString( c.getColumnIndex("i_name") ) );
                     i.getObj().setDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("i_id") ) ) );
 
                     r.add(i);
-                    Log.d("Search", c.getString( c.getColumnIndex("i_name") ));
+
 
                 } while ( c.moveToNext() );
 
                 c.close();
             }
         }
-
         return r;
     }
 

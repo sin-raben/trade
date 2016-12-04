@@ -1,7 +1,9 @@
 package pro.gofman.trade.Docs;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,6 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.DatePicker;
+import android.widget.EditText;
+
+import java.util.Calendar;
 
 import pro.gofman.trade.Countragents.DeliveryPointAutoCompleteAdapter;
 import pro.gofman.trade.Countragents.DeliveryPointObject;
@@ -35,6 +41,8 @@ public class DocShapkaFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private DatePickerDialog mDateDialog;
 
     private OnFragmentInteractionListener mListener;
 
@@ -68,20 +76,55 @@ public class DocShapkaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_docs, container, false);
 
         final AutoCompleteTextView countragent = (AutoCompleteTextView) view.findViewById(R.id.countragent_view);
-        DeliveryPointAutoCompleteAdapter adapter = new DeliveryPointAutoCompleteAdapter( view.getContext(), Trade.getWritableDatabase() );
-        countragent.setAdapter( adapter );
-
+        ItemsAutoCompleteAdapter i_adapter = new ItemsAutoCompleteAdapter( view.getContext(), Trade.getWritableDatabase() );
+        countragent.setAdapter( i_adapter );
         AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                DeliveryPointObject io = (DeliveryPointObject) adapterView.getItemAtPosition(i);
+                ItemObject io = (ItemObject) adapterView.getItemAtPosition(i);
                 countragent.setText( io.getName(), true );
 
             }
         };
-
         countragent.setOnItemClickListener( clickListener );
+
+        final AutoCompleteTextView delivery_point = (AutoCompleteTextView) view.findViewById(R.id.delivery_point_view);
+        DeliveryPointAutoCompleteAdapter dp_adapter = new DeliveryPointAutoCompleteAdapter( view.getContext(), Trade.getWritableDatabase() );
+        delivery_point.setAdapter( dp_adapter );
+        delivery_point.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                DeliveryPointObject io = (DeliveryPointObject) adapterView.getItemAtPosition(i);
+                delivery_point.setText( io.getName(), true );
+            }
+        });
+
+        final EditText delivery_date = (EditText) view.findViewById(R.id.delivery_date);
+        delivery_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar c = Calendar.getInstance();
+                int mYear = c.get(Calendar.YEAR);
+                int mMonth = c.get(Calendar.MONTH);
+                int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+                    DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                            delivery_date.setText( String.valueOf(i2) + "/" + String.valueOf(i1+1) + "/" + String.valueOf(i) );
+                        }
+                    };
+
+                    mDateDialog = new DatePickerDialog( view.getContext(), dateSetListener, mYear, mMonth, mDay );
+                    mDateDialog.show();
+                //}
+            }
+        });
+
+
 
         // Inflate the layout for this fragment
         return view;
