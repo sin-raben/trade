@@ -913,7 +913,6 @@ public class SyncData extends IntentService {
                 body.put( Protocol.POINTS_DELIVERY, "all" );
                 body.put( Protocol.LINK_POINTS_DELIVERY, "all" );
 
-
                 r.put( Protocol.BODY, body );
 
                 //Log.i("getCountragent", r.toString() );
