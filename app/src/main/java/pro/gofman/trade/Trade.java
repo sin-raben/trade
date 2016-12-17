@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
-import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 
 /**
  * Created by roman on 10.07.16.
@@ -22,7 +21,7 @@ public class Trade extends Application {
 
     private static Trade sInstance;
     private static DB db;
-    private static FastItemAdapter fia;
+    //private static FastItemAdapter fia;
 
 
     public static Trade getInstance() {
@@ -40,12 +39,12 @@ public class Trade extends Application {
         return db;
     }
 
-    public synchronized static FastItemAdapter getFastItemAdapter() {
-        if ( fia == null ) {
-            fia = new FastItemAdapter();
-        }
-        return fia;
-    }
+//    public synchronized static FastItemAdapter getFastItemAdapter() {
+//        if ( fia == null ) {
+//            fia = new FastItemAdapter();
+//        }
+//        return fia;
+//    }
 
     @Override
     public void onCreate() {
@@ -57,7 +56,7 @@ public class Trade extends Application {
         super.onCreate();
         sInstance = this;
         db = new DB(this);
-        fia = new FastItemAdapter();
+        //fia = new FastItemAdapter();
     }
 
     @Override

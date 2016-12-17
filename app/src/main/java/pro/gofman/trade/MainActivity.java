@@ -23,8 +23,8 @@ import android.view.Menu;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import com.mikepenz.fastadapter.adapters.FastItemAdapter;
-import com.mikepenz.iconics.IconicsDrawable;
+//import com.mikepenz.fastadapter.adapters.FastItemAdapter;
+//import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
