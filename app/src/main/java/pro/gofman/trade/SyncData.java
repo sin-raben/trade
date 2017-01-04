@@ -622,7 +622,7 @@ public class SyncData extends IntentService {
                                         if ( !t.getString("value").isEmpty() ) {
 
                                             db.insert("dp_search", cv);
-                                            //Log.i("DELIVERY_POINT_SEARCH", t.getString("value") );
+                                            Log.i("DELIVERY_POINT_SEARCH", t.getString("value") );
                                         }
                                     }
                                 }

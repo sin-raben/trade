@@ -77,7 +77,7 @@ public class DocsActivity extends AppCompatActivity {
                 Log.i("CLICK", String.valueOf(position) + " " + String.valueOf(doc.getID()) + " " + db.getSearchString( doc.getID() ));
 
                 Toast.makeText( Trade.getAppContext(), "Открываем документ №" + String.valueOf( doc.getID() ), Toast.LENGTH_SHORT ).show();
-                Intent i = new Intent(v.getContext(), DocActivity.class);
+                Intent i = new Intent( v.getContext(), DocActivity.class );
                 i.putExtra( "PARAM", doc.getID() );
 
                 startActivity( i );
