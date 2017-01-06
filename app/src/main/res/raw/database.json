@@ -737,7 +737,7 @@
       "indexes": [
         {
           "index": "any_adrt",
-          "unique": true,
+          "unique": false,
           "fields": [
             "any_id",
             "adrt_id"
