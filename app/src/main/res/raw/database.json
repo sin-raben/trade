@@ -733,6 +733,16 @@
           "type": "text",
           "description": "Строка адреса"
         }
+      ],
+      "indexes": [
+        {
+          "index": "any_adrt",
+          "unique": false,
+          "fields": [
+            "any_id",
+            "adrt_id"
+          ]
+        }
       ]
 
     }

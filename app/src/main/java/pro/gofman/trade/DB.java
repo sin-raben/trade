@@ -286,6 +286,10 @@ public class DB {
                     s.execSQL(sql);
                     Log.i("SQLCREATE", sql);
 
+                    if ( table.optJSONArray("indexes") != null ) {
+                        CreateIndexes(table.getString("table"), table.optJSONArray("indexes"), s);
+                    }
+
                     if ( table.optJSONArray("values") != null ) {
                         FillTable(table.getString("table"), table.optJSONArray("values"), s);
                         //s.execSQL(sql);
@@ -293,6 +297,12 @@ public class DB {
                     }
 
                 }
+
+
+
+
+
+
 
             } catch (UnsupportedEncodingException | JSONException e) {
                 e.printStackTrace();
@@ -368,6 +378,42 @@ public class DB {
 
             }
 
+        }
+        private void CreateIndexes(String t, JSONArray a, SQLiteDatabase s ) throws JSONException {
+            int length = a.length();
+            JSONObject f;
+            JSONArray c;
+            String sql;
+
+            if ( length > 0 ) {
+
+                for (int i=0; i < length; i++ ) {
+
+                    f = a.getJSONObject(i);
+
+                    sql = "CREATE ";
+                    if ( f.optBoolean("unique") ) {
+                        sql += "UNIQUE ";
+                    }
+                    sql += "INDEX IF NOT EXISTS ";
+                    sql += f.getString("index") + " ON " + t + " ( ";
+
+                    c = f.getJSONArray("fields");
+
+                    for (int j=0; j < c.length(); j++ ) {
+                        sql += c.getString(j);
+                        sql += j == c.length() - 1 ? " " : ", ";
+                    }
+
+                    sql += " );";
+
+
+                    s.execSQL( sql );
+                    Log.i("SQLINDEX", sql);
+                }
+
+
+            }
         }
 
     } // dbHelper

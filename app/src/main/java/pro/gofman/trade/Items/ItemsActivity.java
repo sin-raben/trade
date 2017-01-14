@@ -111,7 +111,7 @@ public class ItemsActivity extends AppCompatActivity {
                 "item_search s JOIN items i ON ( s.i_id = i.i_id ) " +
                 " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
 
-        Log.d("Search", sql);
+        Log.i("Search", sql);
         Cursor c = db.rawQuery( sql, null);
         if ( c != null ) {
             if ( c.moveToFirst() ) {

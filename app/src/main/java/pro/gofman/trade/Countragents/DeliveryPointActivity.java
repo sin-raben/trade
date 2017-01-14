@@ -75,6 +75,7 @@ public class DeliveryPointActivity extends AppCompatActivity {
     private List<DeliveryPointAbstractItem> getDeliveryPoint() {
         List<DeliveryPointAbstractItem> r = new ArrayList<>();
 
+        Log.i("SELECTDP", "Старт");
         Cursor c = db.rawQuery("SELECT " +
                 "dp.dp_name, " +
                 "dp.dp_id, " +
@@ -83,6 +84,8 @@ public class DeliveryPointActivity extends AppCompatActivity {
                 "  point_delivery dp " +
                 "  JOIN addresses a ON (dp.dp_id = a.any_id AND a.adrt_id = 3) " +
                 "ORDER BY dp.dp_name", null);
+
+        Log.i("SELECTDP", "Стoп " + String.valueOf(c.getCount()));
 
         if ( c != null ) {
             if ( c.moveToFirst() ) {
@@ -104,22 +107,46 @@ public class DeliveryPointActivity extends AppCompatActivity {
             }
         }
 
+        Log.i("SELECTDP", "Ещё Стoп");
+
         return r;
     }
     public List<DeliveryPointAbstractItem> getDPSearch(String s) {
         List<DeliveryPointAbstractItem> r = new ArrayList<>();
 
         String sql = "";
+        /*
+        sql = "SELECT " +
+                "s.dp_id" +
+                " FROM " +
+                "dp_search s" +
+                " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+
+        */
+
+        ///*
         sql = "SELECT " +
                 "s.dp_id, dp.dp_name, a.adr_str" +
                 " FROM " +
-                "dp_search s JOIN point_delivery dp ON ( s.dp_id = dp.dp_id ) " +
+                "dp_search s LEFT JOIN point_delivery dp ON ( s.dp_id = dp.dp_id ) " +
                 "JOIN addresses a ON ( s.dp_id = a.any_id AND a.adrt_id = 3) " +
-                " WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+                "WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "'";
+        //*/
 
+        /*
+        sql = "SELECT " +
+                "s.dp_id, dp.dp_name, a.adr_str" +
+                " FROM " +
+                "dp_search s, point_delivery dp, addresses a " +
+                "WHERE " + "s.value MATCH '" + s.trim().toUpperCase() + "' AND " +
+                "dp.dp_id = s.dp_id AND (a.any_id = s.dp_id AND a.adrt_id = 3)";
+       */
 
         Log.i("Search", sql);
         Cursor c = db.rawQuery( sql, null);
+        Log.i("Search", "Запрос выполнен " + String.valueOf( c.getCount() ) );
+
+        ///*
         if ( c != null ) {
             if ( c.moveToFirst() ) {
                 do {
@@ -131,13 +158,13 @@ public class DeliveryPointActivity extends AppCompatActivity {
                     i.getObj().setAdr( c.getString( c.getColumnIndex("adr_str") ) );
 
                     r.add(i);
-
-                    //Log.i("Search", c.getString( c.getColumnIndex("i_name") ));
+                    //Log.i("Search", c.getString( c.getColumnIndex("dp_name") ));
                 } while ( c.moveToNext() );
 
                 c.close();
             }
         }
+        //*/
 
         return r;
     }
