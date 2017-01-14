@@ -30,16 +30,18 @@
 
         <service
             android:name=".SyncData"
-            android:exported="false" />
+            android:enabled="true"
+            android:exported="false" android:stopWithTask="false"/>
 
         <receiver
             android:name=".CallCRM"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter
-                android:autoVerify="true"
-                android:priority="1000">
+                android:priority="100">
                 <action android:name="android.intent.action.PHONE_STATE" />
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
 

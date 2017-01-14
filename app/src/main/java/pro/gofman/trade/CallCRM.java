@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by gofman on 03.11.16.
@@ -17,6 +18,12 @@ public class CallCRM extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         Log.i("CRM", "1");
+
+        if (intent.getAction().equals( "android.net.wifi.WIFI_STATE_CHANGED" )) {
+            Log.i("CRM", "WIFI ON or OFF");
+        }
+
+
         if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
             String phoneState = intent.getStringExtra( TelephonyManager.EXTRA_STATE );
 
@@ -29,6 +36,11 @@ public class CallCRM extends BroadcastReceiver {
                 //Трубка не поднята, телефон звонит
                 String phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
                 incomingCall = true;
+                Toast toast = Toast.makeText(context.getApplicationContext(),
+                        phoneNumber, Toast.LENGTH_LONG);
+                toast.show();
+
+
                 Log.i("CRM", "Show window: " + phoneNumber);
 
             } else if ( phoneState.equals(TelephonyManager.EXTRA_STATE_OFFHOOK) ) {
