@@ -205,6 +205,10 @@ public class SyncData extends IntentService {
         // TODO: Handle action SyncData
         Log.i("SyncData", "SyncData стартанул");
 
+        final Boolean FullSync = p.optString( Protocol.COMMAND_SYNC, "" ).equals( Protocol.FULL_SYNC );
+
+
+
 
         startForeground(778, n);
 
@@ -300,16 +304,16 @@ public class SyncData extends IntentService {
                                 //sendCoord(websocket);
 
                                 // Запрашиваем номенклатуру
-                                getItems(websocket);
+                                getItemsM(websocket);
 
                                 // Запрашиваем контрагентов
-                                getCountragents(websocket);
+                               // getCountragents(websocket);
 
                                 // Запрашиваем цены
-                                getPrices(websocket);
+                                //getPrices(websocket);
 
                                 // Запрашиваем остатки
-                                getAmounts(websocket);
+                                //getAmounts(websocket);
                             }
 
                             // Получаем только новости
@@ -324,6 +328,45 @@ public class SyncData extends IntentService {
                             }
 
                         }
+
+                        break;
+                    }
+
+                    case "getItemsM": {
+
+                        if ( FullSync ) {
+                            db.execSQL("DELETE FROM items");
+                        }
+
+                        JSONArray items = body.optJSONArray( Protocol.DATA );
+                        if ( items == null ) {
+                            // Надо залогировать проблему
+                            break;
+                        }
+
+                        for (int i = 0; i < items.length(); i++ ) {
+                            JSONObject t = items.getJSONObject(i);
+
+
+                            cv = new ContentValues();
+                            cv.put("i_id", t.getInt("i_id"));
+                            cv.put("i_name", t.getString("i_name"));
+
+                            db.replace("items", cv);
+
+                            Log.i("TOV", cv.getAsString("i_name"));
+
+                        }
+
+                        JSONObject r = new JSONObject();
+                        r.put(Protocol.HEAD, "statusSync");
+                        r.put(Protocol.BODY,
+                                new JSONObject()
+                                    .put( "getItemsM", true )
+                        );
+
+                        websocket.sendText( r.toString() );
+
 
                         break;
                     }
@@ -955,6 +998,9 @@ public class SyncData extends IntentService {
                 }
             */
 
+
+
+
                 JSONObject r = new JSONObject();
                 r.put( Protocol.HEAD, "getItems" );
 
@@ -968,6 +1014,20 @@ public class SyncData extends IntentService {
                 r.put( Protocol.BODY, body );
 
                 Log.i("getItems", r.toString() );
+                websocket.sendText( r.toString() );
+
+            }
+            public void getItemsM(WebSocket websocket) throws Exception {
+
+                JSONObject r = new JSONObject();
+                r.put( Protocol.HEAD, "getItemsM" );
+
+                JSONObject body = new JSONObject();
+                body.put( Protocol.FULL_SYNC, FullSync );
+
+                r.put( Protocol.BODY, body );
+
+                Log.i("getItemsM", r.toString() );
                 websocket.sendText( r.toString() );
 
             }

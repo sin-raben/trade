@@ -68,8 +68,12 @@ public class DB {
     }
     public Cursor rawQuery(String sql, String[] arg) { return mDatabase.rawQuery(sql, arg); }
 
-    public void insert(String tn, ContentValues cv) {
-        mDatabase.insert(tn, null, cv);
+    public long insert(String tn, ContentValues cv) {
+        return mDatabase.insert(tn, null, cv);
+    }
+
+    public long replace(String tn, ContentValues cv) {
+        return mDatabase.replace(tn, null, cv);
     }
 
 
