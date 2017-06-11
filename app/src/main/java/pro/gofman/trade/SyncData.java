@@ -25,6 +25,7 @@ import android.support.v4.database.DatabaseUtilsCompat;
 import android.util.Log;
 
 import com.neovisionaries.ws.client.OpeningHandshakeException;
+import com.neovisionaries.ws.client.ThreadType;
 import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
@@ -218,6 +219,7 @@ public class SyncData extends IntentService {
 
         WebSocket ws = new WebSocketFactory().createSocket( url );
         //ws.setMaxPayloadSize()
+
         WebSocket webSocket = ws.addListener(new WebSocketListener() {
             @Override
             public void onStateChanged(WebSocket websocket, WebSocketState newState) throws Exception {
@@ -872,6 +874,20 @@ public class SyncData extends IntentService {
 
             @Override
             public void onFrameUnsent(WebSocket websocket, WebSocketFrame frame) throws Exception {
+
+            }
+            @Override
+            public void onThreadCreated(WebSocket websocket, ThreadType threadType, Thread thread) throws Exception {
+
+            }
+
+            @Override
+            public void onThreadStarted(WebSocket websocket, ThreadType threadType, Thread thread) throws Exception {
+
+            }
+
+            @Override
+            public void onThreadStopping(WebSocket websocket, ThreadType threadType, Thread thread) throws Exception {
 
             }
 

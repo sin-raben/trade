@@ -34,6 +34,11 @@ public class Docs extends AbstractItem<Docs, Docs.ViewHolder> {
         return R.layout.recycleview_docs;
     }
 
+    @Override
+    public ViewHolder getViewHolder(View v) {
+        return new ViewHolder(v);
+    }
+
     public void setID(int id) {
         this.d_id = id;
     }

@@ -35,6 +35,10 @@ public class DeliveryPointAbstractItem extends AbstractItem<DeliveryPointAbstrac
         return R.layout.recycleview_delivery_point;
     }
 
+    @Override
+    public ViewHolder getViewHolder(View v) {
+        return new ViewHolder(v);
+    }
 
     @Override
     public void bindView(DeliveryPointAbstractItem.ViewHolder holder, List payloads) {

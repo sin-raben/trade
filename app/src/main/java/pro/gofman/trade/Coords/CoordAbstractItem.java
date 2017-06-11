@@ -2,6 +2,7 @@ package pro.gofman.trade.Coords;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import java.util.List;
@@ -32,6 +33,11 @@ public class CoordAbstractItem  extends AbstractItem<CoordAbstractItem, CoordAbs
     @Override
     public int getLayoutRes() {
         return R.layout.recycleview_items;
+    }
+
+    @Override
+    public ViewHolder getViewHolder(View v) {
+        return new ViewHolder(v);
     }
 
     @Override

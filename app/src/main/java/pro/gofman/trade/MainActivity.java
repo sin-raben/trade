@@ -175,24 +175,74 @@ public class MainActivity extends AppCompatActivity {
         dwb.withAccountHeader( ah );
 
         dwb.addDrawerItems(
+                new ExpandableDrawerItem().withName("Новости").withIcon(R.drawable.items).withIdentifier(23).withSelectable(false).withSubItems(
+                        new SecondaryDrawerItem()
+                                .withName("Акции")
+                                .withLevel(2)
+                                .withIcon(R.drawable.worker)
+                                .withIdentifier(2008)
+                ),
+
                 new ExpandableDrawerItem().withName("Справочники").withIcon(R.drawable.items).withIdentifier(19).withSelectable(false).withSubItems(
-                        new SecondaryDrawerItem().withName("Точки доставки").withLevel(2).withIcon(R.drawable.document).withIdentifier(2007),
-                        new SecondaryDrawerItem().withName("Номенклатура").withLevel(2).withIcon(R.drawable.document).withIdentifier(2000),
-                        new SecondaryDrawerItem().withName("Прайс-листы").withLevel(2).withIcon(R.drawable.document).withIdentifier(2001)
+                        new SecondaryDrawerItem()
+                                .withName("Точки доставки")
+                                .withLevel(2)
+                                .withIcon(R.drawable.document)
+                                .withIdentifier(2007),
+
+                        new SecondaryDrawerItem()
+                                .withName("Номенклатура")
+                                .withLevel(2)
+                                .withIcon(R.drawable.document)
+                                .withIdentifier(2000),
+
+                        new SecondaryDrawerItem()
+                                .withName("Прайс-листы")
+                                .withLevel(2)
+                                .withIcon(R.drawable.document)
+                                .withIdentifier(2001)
 
                 ),
                 new ExpandableDrawerItem().withName("Документы").withIcon(R.drawable.items).withIdentifier(20).withSelectable(false).withSubItems(
-                        new SecondaryDrawerItem().withName("Заказ покупателя").withLevel(2).withIcon(R.drawable.document).withIdentifier(2002),
-                        new SecondaryDrawerItem().withName("Оплата покупателя").withLevel(2).withIcon(R.drawable.document).withIdentifier(2003),
-                        new SecondaryDrawerItem().withName("Фотография").withLevel(2).withIcon(R.drawable.document).withIdentifier(2004)
+                        new SecondaryDrawerItem()
+                                .withName("Заказ покупателя")
+                                .withLevel(2)
+                                .withIcon(R.drawable.document)
+                                .withIdentifier(2002),
+
+                        new SecondaryDrawerItem()
+                                .withName("Оплата покупателя")
+                                .withLevel(2)
+                                .withIcon(R.drawable.document)
+                                .withIdentifier(2003),
+
+                        new SecondaryDrawerItem()
+                                .withName("Фотография")
+                                .withLevel(2)
+                                .withIcon(R.drawable.document)
+                                .withIdentifier(2004)
                 ),
                 new ExpandableDrawerItem().withName("Операции").withIcon(R.drawable.items).withIdentifier(21).withSelectable(false).withSubItems(
-                        new SecondaryDrawerItem().withName("Полная синхронизация").withLevel(2).withIcon(R.drawable.document).withIdentifier(2005)
+                        new SecondaryDrawerItem()
+                                .withName("Полная синхронизация")
+                                .withLevel(2)
+                                .withIcon(R.drawable.document)
+                                .withIdentifier(2005)
                 ),
-                // new SwitchDrawerItem().withName("Мониторинг").withIcon(R.drawable.items).withChecked(false).withOnCheckedChangeListener(onCheckedChangeListener)
+
                 new ExpandableDrawerItem().withName("Мониторинг").withIcon(R.drawable.items).withIdentifier(22).withSelectable(false).withSubItems(
-                        new SecondarySwitchDrawerItem().withName("Рубильник").withIcon(R.drawable.document).withLevel(2).withChecked(bGPSMonitoringStatus).withOnCheckedChangeListener(onCheckedChangeListener),
-                        new SecondaryDrawerItem().withName("Координаты").withLevel(2).withIcon(R.drawable.document).withIdentifier(2006)
+                        new SecondarySwitchDrawerItem()
+                                .withName("Рубильник")
+                                .withIcon(R.drawable.document)
+                                .withLevel(2)
+                                .withChecked(bGPSMonitoringStatus)
+                                .withOnCheckedChangeListener(onCheckedChangeListener),
+
+                        new SecondaryDrawerItem()
+                                .withName("Координаты")
+                                .withLevel(2)
+                                .withIcon(R.drawable.document)
+                                .withIdentifier(2006)
                 )
         );
 
@@ -267,6 +317,13 @@ public class MainActivity extends AppCompatActivity {
                             // Точки доставки
                             Intent i = new Intent(MainActivity.this, DeliveryPointActivity.class);
                             startActivity( i );
+
+                            break;
+                        }
+
+                        case 2008: {
+                            // Акции
+                            Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
 
                             break;
                         }

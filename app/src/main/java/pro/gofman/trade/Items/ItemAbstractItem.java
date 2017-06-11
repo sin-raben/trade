@@ -34,6 +34,11 @@ public class ItemAbstractItem extends AbstractItem<ItemAbstractItem, ItemAbstrac
     }
 
     @Override
+    public ViewHolder getViewHolder(View v) {
+        return new ViewHolder(v);
+    }
+
+    @Override
     public void bindView(ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
