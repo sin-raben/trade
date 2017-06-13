@@ -14,6 +14,11 @@ import android.widget.Toast;
 public class CallCRM extends BroadcastReceiver {
     private static boolean incomingCall = false;
 
+    public CallCRM() {
+        super();
+        Log.i("CRM", "0");
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
 

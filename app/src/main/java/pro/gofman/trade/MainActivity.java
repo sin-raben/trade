@@ -203,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                                 .withIdentifier(2001)
 
                 ),
+
                 new ExpandableDrawerItem().withName("Документы").withIcon(R.drawable.items).withIdentifier(20).withSelectable(false).withSubItems(
                         new SecondaryDrawerItem()
                                 .withName("Заказ покупателя")
@@ -222,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                                 .withIcon(R.drawable.document)
                                 .withIdentifier(2004)
                 ),
+
                 new ExpandableDrawerItem().withName("Операции").withIcon(R.drawable.items).withIdentifier(21).withSelectable(false).withSubItems(
                         new SecondaryDrawerItem()
                                 .withName("Полная синхронизация")
@@ -290,7 +292,9 @@ public class MainActivity extends AppCompatActivity {
                         case 2005: {
                             // Синхронизация полная
                             try {
+                                // Параметры для соединения с сервером
                                 connectionData.put( Protocol.USER_DATA, userData );
+                                // Признак полной синхронизации (перед загрузкой будет очищать таблицы)
                                 connectionData.put( Protocol.COMMAND_SYNC, Protocol.FULL_SYNC );
                             } catch (JSONException e) {
                                 e.printStackTrace();
