@@ -1023,6 +1023,7 @@ public class SyncData extends IntentService {
                 r.put( Protocol.HEAD, "getItemsM" );
 
                 JSONObject body = new JSONObject();
+
                 body.put( Protocol.FULL_SYNC, FullSync );
 
                 r.put( Protocol.BODY, body );

@@ -121,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // https://github.com/firebase/quickstart-android/tree/master/messaging
+
 
         /*
             При первом подключении отправляем IMEI, который является токеном, пользователь вводит логин и пароль
@@ -226,6 +228,12 @@ public class MainActivity extends AppCompatActivity {
 
                 new ExpandableDrawerItem().withName("Операции").withIcon(R.drawable.items).withIdentifier(21).withSelectable(false).withSubItems(
                         new SecondaryDrawerItem()
+                                .withName("Cинхронизация")
+                                .withLevel(2)
+                                .withIcon(R.drawable.document)
+                                .withIdentifier(2009),
+
+                        new SecondaryDrawerItem()
                                 .withName("Полная синхронизация")
                                 .withLevel(2)
                                 .withIcon(R.drawable.document)
@@ -296,6 +304,23 @@ public class MainActivity extends AppCompatActivity {
                                 connectionData.put( Protocol.USER_DATA, userData );
                                 // Признак полной синхронизации (перед загрузкой будет очищать таблицы)
                                 connectionData.put( Protocol.COMMAND_SYNC, Protocol.FULL_SYNC );
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            Intent intent = new Intent(MainActivity.this, SyncData.class);
+                            intent.setAction( Trade.SERVICE_SYNCDATA );
+                            intent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
+
+                            startService( intent );
+                            break;
+                        }
+
+                        case 2009: {
+                            // Синхронизация только изменения
+                            try {
+                                // Параметры для соединения с сервером
+                                connectionData.put( Protocol.USER_DATA, userData );
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

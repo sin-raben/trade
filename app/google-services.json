@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "116452601615",
+    "firebase_url": "https://trade-d15ce.firebaseio.com",
+    "project_id": "trade-d15ce",
+    "storage_bucket": "trade-d15ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116452601615:android:9803862047695676",
+        "android_client_info": {
+          "package_name": "pro.gofman.trade"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "116452601615-vege1lh5dh07r7vtjhmk8lg9tlneurb3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlNUrdWostXWvM_PmL6EuMYuHiyBV1JNs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
