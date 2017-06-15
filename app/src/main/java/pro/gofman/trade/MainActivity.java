@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 //import com.mikepenz.fastadapter.adapters.FastItemAdapter;
 //import com.mikepenz.iconics.IconicsDrawable;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -130,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
          */
         db = Trade.getWritableDatabase();
 
+        String FCM_TOKEN = FirebaseInstanceId.getInstance().getToken();
+        Log.d("FCM_TOKEN", FCM_TOKEN);
 
         try {
             // Берем с базы данных информацию подключения к серверу и пользователе

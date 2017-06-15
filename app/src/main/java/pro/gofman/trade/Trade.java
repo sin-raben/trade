@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 
 /**
@@ -57,6 +60,8 @@ public class Trade extends Application {
         sInstance = this;
         db = new DB(this);
         //fia = new FastItemAdapter();
+
+
     }
 
     @Override
