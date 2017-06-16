@@ -131,13 +131,14 @@ public class MainActivity extends AppCompatActivity {
          */
         db = Trade.getWritableDatabase();
 
-        String FCM_TOKEN = FirebaseInstanceId.getInstance().getToken();
-        Log.d("FCM_TOKEN", FCM_TOKEN);
+
 
         try {
             // Берем с базы данных информацию подключения к серверу и пользователе
             connectionData = new JSONObject( db.getOptions( DB.OPTION_CONNECTION ) );
             userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
+            // При авторизации надо отправить на сервер, FCM Token, чтобы можно было пушить на устройство
+            userData.put( Protocol.FCM_TOKEN, Trade.getFcmToken() );
 
             if ( ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED ) {
                 ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_PHONE_STATE }, PERMISSION_REQUEST_CODE );
@@ -372,6 +373,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         dw = dwb.build();
+
+        Log.i("FCM_TOKEN", Trade.getFcmToken());
+
+
     }
 
     private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
@@ -401,6 +406,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+
 
 
     @Override

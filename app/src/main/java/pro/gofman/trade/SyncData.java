@@ -307,13 +307,13 @@ public class SyncData extends IntentService {
                                 getItemsM(websocket);
 
                                 // Запрашиваем контрагентов
-                               // getCountragents(websocket);
+                                getCountragents(websocket);
 
                                 // Запрашиваем цены
-                                //getPrices(websocket);
+                                getPrices(websocket);
 
                                 // Запрашиваем остатки
-                                //getAmounts(websocket);
+                                getAmounts(websocket);
                             }
 
                             // Получаем только новости

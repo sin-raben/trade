@@ -21,10 +21,9 @@ public class Trade extends Application {
     protected static final String SERVICE_PARAM = "pro.gofman.trade.extra.param";
 
 
-
     private static Trade sInstance;
     private static DB db;
-    //private static FastItemAdapter fia;
+    private static String FCM_TOKEN;
 
 
     public static Trade getInstance() {
@@ -40,6 +39,10 @@ public class Trade extends Application {
             db = new DB( getAppContext() );
         }
         return db;
+    }
+
+    public static String getFcmToken() {
+        return FCM_TOKEN;
     }
 
 //    public synchronized static FastItemAdapter getFastItemAdapter() {
@@ -61,6 +64,7 @@ public class Trade extends Application {
         db = new DB(this);
         //fia = new FastItemAdapter();
 
+        FCM_TOKEN = FirebaseInstanceId.getInstance().getToken();
 
     }
 

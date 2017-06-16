@@ -22,14 +22,14 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        //Log.d(TAG, "FROM: " + remoteMessage.getFrom() );
+        Log.d(TAG, "FROM: " + remoteMessage.getFrom() );
 
         if (remoteMessage.getData().size() > 0) {
-            //Log.d(TAG, "DATA: " + remoteMessage.getData() );
+            Log.d(TAG, "DATA: " + remoteMessage.getData() );
         }
 
         if (remoteMessage.getNotification() != null) {
-            //Log.d(TAG, "BODY: " + remoteMessage.getNotification().getBody() );
+            Log.d(TAG, "BODY: " + remoteMessage.getNotification().getBody());
 
             sendNotification( remoteMessage.getNotification().getBody() );
         }

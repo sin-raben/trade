@@ -30,6 +30,7 @@ public class Protocol {
 
     // Служебные атрибуты
     protected static final String DATA = "data";
+    protected static final String FCM_TOKEN = "fcmToken";
 
     // Объекты синхронизации
     protected static final String AUTH_USER = "authUser";
