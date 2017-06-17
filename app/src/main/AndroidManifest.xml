@@ -31,17 +31,15 @@
         <service
             android:name=".SyncData"
             android:enabled="true"
-            android:exported="false"/>
-
-        <service android:name=".MessagingService">
+            android:exported="false" />
+        <service android:name=".Messages.MessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <service android:name=".FirebaseInstanceIDService">
+        <service android:name=".Messages.FirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
@@ -49,8 +47,7 @@
             android:name=".CallCRM"
             android:enabled="true"
             android:exported="false">
-            <intent-filter
-                android:priority="100">
+            <intent-filter android:priority="100">
                 <action android:name="android.intent.action.PHONE_STATE" />
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
@@ -70,7 +67,8 @@
             android:label="@string/title_activity_docs"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Docs.DocActivity" />
-        <activity android:name=".Countragents.DeliveryPointActivity"/>
+        <activity android:name=".Countragents.DeliveryPointActivity" />
+        <activity android:name=".News.NewsActivity"></activity>
     </application>
 
 </manifest>

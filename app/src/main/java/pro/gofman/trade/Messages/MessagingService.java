@@ -1,4 +1,4 @@
-package pro.gofman.trade;
+package pro.gofman.trade.Messages;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,6 +12,9 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import pro.gofman.trade.MainActivity;
+import pro.gofman.trade.R;
+
 /**
  * Created by gofman on 15.06.17.
  */
@@ -22,14 +25,14 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        Log.d(TAG, "FROM: " + remoteMessage.getFrom() );
+        Log.i(TAG, "FROM: " + remoteMessage.getFrom() );
 
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "DATA: " + remoteMessage.getData() );
+            Log.i(TAG, "DATA: " + remoteMessage.getData() );
         }
 
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "BODY: " + remoteMessage.getNotification().getBody());
+            Log.i(TAG, "BODY: " + remoteMessage.getNotification().getBody());
 
             sendNotification( remoteMessage.getNotification().getBody() );
         }

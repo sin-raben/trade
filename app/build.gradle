@@ -29,14 +29,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    //compile 'com.mikepenz:fastadapter-commons:2.0.0@aar'
 
-    //compile('com.mikepenz:fastadapter:2.1.5@aar') {
-    //    transitive = true
-    //}
 
-    compile 'com.mikepenz:fastadapter-commons:2.6.0@aar'
-    compile 'com.mikepenz:fastadapter-extensions:2.6.0@aar'
 
     compile('com.mikepenz:materialdrawer:5.9.2@aar') {
         transitive = true
@@ -46,6 +40,8 @@ dependencies {
     //compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar'
     //compile 'com.mikepenz:fontawesome-typeface:4.6.0.3@aar'
 
+    compile 'com.mikepenz:fastadapter-commons:2.6.0@aar'
+    compile 'com.mikepenz:fastadapter-extensions:2.6.0@aar'
     compile 'com.mikepenz:material-design-iconic-typeface:2.2.0.1@aar'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'

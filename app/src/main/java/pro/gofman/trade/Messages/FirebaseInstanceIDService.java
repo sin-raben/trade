@@ -1,4 +1,4 @@
-package pro.gofman.trade;
+package pro.gofman.trade.Messages;
 
 import android.util.Log;
 

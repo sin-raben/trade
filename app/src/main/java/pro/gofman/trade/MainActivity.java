@@ -49,6 +49,8 @@ import pro.gofman.trade.Items.ItemsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    //https://www.youtube.com/watch?v=LNF_yho6ook
+
     private static final String GPS_MONITORING_STATUS = "GPSMonitoringStatus";
     private int PERMISSION_REQUEST_CODE = 0;
 
@@ -375,6 +377,38 @@ public class MainActivity extends AppCompatActivity {
         dw = dwb.build();
 
         Log.i("FCM_TOKEN", Trade.getFcmToken());
+
+
+
+        // Переход на другие активити в зависимости от
+        if (getIntent().getExtras() != null) {
+
+            String place = getIntent().getExtras().getString("goto");
+
+            switch ( place ) {
+                case "2000": {
+
+                    // Номенклатура
+                    Intent i = new Intent( MainActivity.this, ItemsActivity.class );
+                    startActivity( i );
+
+                    break;
+                }
+
+            }
+
+
+            /*
+
+            Log.i("ПРИВЕТ", "dfdf");
+
+            for (String key : getIntent().getExtras().keySet()) {
+                Object value = getIntent().getExtras().get(key);
+                Log.i("MainActivity", "Key: " + key + " Value: " + value);
+            }
+
+            */
+        }
 
 
     }
