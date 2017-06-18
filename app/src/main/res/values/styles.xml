@@ -33,6 +33,9 @@
         <item name="colorAccent">@color/color_accent_pink</item>
     </style>
 
+    <style name="TextAppearance.AppCompat.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/color_accent_pink</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

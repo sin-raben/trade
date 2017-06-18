@@ -2,12 +2,17 @@ package pro.gofman.trade.Docs;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -88,6 +93,47 @@ public class DocShapkaFragment extends Fragment {
             }
         };
         countragent.setOnItemClickListener( clickListener );
+
+        final Drawable x = ContextCompat.getDrawable( getContext(), android.support.v7.appcompat.R.drawable.abc_ic_clear_material );
+        x.setBounds(0,0,x.getIntrinsicWidth(),x.getIntrinsicHeight());
+        countragent.setCompoundDrawablesWithIntrinsicBounds(null, null, countragent.getText().toString().equals("") ? null : x, null);
+
+        countragent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (countragent.getCompoundDrawables()[2] == null) {
+                    return false;
+                }
+                if (motionEvent.getAction() != MotionEvent.ACTION_UP) {
+                    return false;
+                }
+                if (motionEvent.getX() > countragent.getWidth() - countragent.getPaddingRight() - x.getIntrinsicWidth()) {
+                    countragent.setText("");
+                    countragent.setCompoundDrawables(null, null, null, null);
+                }
+                return false;
+            }
+        });
+
+        countragent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                countragent.setCompoundDrawablesWithIntrinsicBounds(null,null,x,null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
+
 
         final AutoCompleteTextView delivery_point = (AutoCompleteTextView) view.findViewById(R.id.delivery_point_view);
         DeliveryPointAutoCompleteAdapter dp_adapter = new DeliveryPointAutoCompleteAdapter( view.getContext(), Trade.getWritableDatabase() );
