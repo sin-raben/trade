@@ -303,8 +303,9 @@ public class SyncData extends IntentService {
                                 // Отправляем координаты
                                 //sendCoord(websocket);
 
-                                // Запрашиваем номенклатуру
+                                // Запрашиваем номенклатур
                                 getItemsM(websocket);
+                                getItems(websocket);
 
                                 // Запрашиваем контрагентов
                                 getCountragents(websocket);
@@ -1005,7 +1006,7 @@ public class SyncData extends IntentService {
                 r.put( Protocol.HEAD, "getItems" );
 
                 JSONObject body = new JSONObject();
-                body.put( Protocol.ITEMS, "all" );
+                //body.put( Protocol.ITEMS, "all" );
                 body.put( Protocol.ITEMS_SEARCH, "all");
                 body.put( Protocol.ITEM_GROUP_TYPES, "all" );
                 body.put( Protocol.ITEM_GROUPS, "all" );

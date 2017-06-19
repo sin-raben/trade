@@ -79,6 +79,8 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
 
         mdDB = db;
         Log.i("ADAPTER", "3");
+
+        mItems = allItems();
     }
 
 
@@ -147,6 +149,8 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
 
         return f;
     }
+
+
     private List<ItemObject> findItems(String s) {
         Log.i("ADAPTER", "4");
 
@@ -176,6 +180,43 @@ public class ItemsAutoCompleteAdapter extends BaseAdapter implements Filterable 
         }
 
         return r;
+    }
+
+    private List<ItemObject> allItems() {
+        List<ItemObject> r = new ArrayList<>();
+
+        String sql = "";
+        sql = "SELECT " +
+                "i.i_id, i.i_name" +
+                " FROM " +
+                "items i ";
+
+        Cursor c = mdDB.rawQuery( sql, null);
+        if ( c != null ) {
+            if ( c.moveToFirst() ) {
+                do {
+
+                    ItemObject i = new ItemObject();
+                    i.setID( c.getInt( c.getColumnIndex("i_id") ));
+                    i.setName( c.getString( c.getColumnIndex("i_name") ) );
+                    i.setDescription( "Код номенклатуры: " + String.valueOf( c.getInt( c.getColumnIndex("i_id") ) ) );
+
+                    r.add(i);
+
+                    ///Log.i("Search", c.getString( c.getColumnIndex("i_name") ));
+
+                } while ( c.moveToNext() );
+
+                c.close();
+            }
+        }
+
+        return r;
+    }
+
+    public void setAllItems() {
+        mItems = allItems();
+        notifyDataSetChanged();
     }
 }
 

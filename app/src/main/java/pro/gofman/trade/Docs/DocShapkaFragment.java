@@ -81,7 +81,7 @@ public class DocShapkaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_docs, container, false);
 
         final AutoCompleteTextView countragent = (AutoCompleteTextView) view.findViewById(R.id.countragent_view);
-        ItemsAutoCompleteAdapter i_adapter = new ItemsAutoCompleteAdapter( view.getContext(), Trade.getWritableDatabase() );
+        final ItemsAutoCompleteAdapter i_adapter = new ItemsAutoCompleteAdapter( view.getContext(), Trade.getWritableDatabase() );
         countragent.setAdapter( i_adapter );
         AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -129,6 +129,15 @@ public class DocShapkaFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
 
+            }
+        });
+
+        countragent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                i_adapter.setAllItems();
+                countragent.setAdapter( i_adapter );
+                countragent.showDropDown();
             }
         });
 
