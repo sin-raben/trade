@@ -24,7 +24,7 @@ public class UPD {
     public void createPdf(String dest) throws IOException {
 
 
-         PdfWriter writer = new PdfWriter("file.pdf");
+         PdfWriter writer = new PdfWriter(dest);
 
 
         //Initialize PDF document

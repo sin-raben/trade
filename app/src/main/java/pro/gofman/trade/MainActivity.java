@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -42,10 +43,14 @@ import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+
 import pro.gofman.trade.Coords.CoordsActivity;
 import pro.gofman.trade.Countragents.DeliveryPointActivity;
 import pro.gofman.trade.Docs.DocsActivity;
 import pro.gofman.trade.Items.ItemsActivity;
+import pro.gofman.trade.PrintForms.UPD;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -359,6 +364,19 @@ public class MainActivity extends AppCompatActivity {
                         case 2008: {
                             // Акции
                             Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
+
+                            Log.i("CD", "onItemClick: " + Environment.getExternalStorageDirectory().getPath() );
+
+                            UPD t = new UPD();
+                            try {
+
+
+
+                                t.createPdf( "file2.pdf");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
 
                             break;
                         }
