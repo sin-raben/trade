@@ -30,6 +30,7 @@ public class DocActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.title_activity_docs);
 
         ViewPager vp = (ViewPager) findViewById(R.id.viewPager);
+
         PagerAdapter2 pa = new PagerAdapter2( getSupportFragmentManager() );
         pa.addFragment( DocShapkaFragment.newInstance(" ", " "), "Шапка" );
         pa.addFragment( DocShapkaFragment.newInstance(" ", " "), "Товары" );
@@ -42,6 +43,7 @@ public class DocActivity extends AppCompatActivity {
 
         TabLayout tl = (TabLayout) findViewById(R.id.tabLayout);
         tl.setupWithViewPager(vp);
+
 
 
 
