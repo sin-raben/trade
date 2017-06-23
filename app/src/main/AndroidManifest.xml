@@ -59,19 +59,24 @@
         <activity
             android:name=".Items.ItemsActivity"
             android:label="@string/title_activity_items"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".Coords.CoordsActivity"
             android:label="@string/title_activity_coords"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".Docs.DocsActivity"
             android:label="@string/title_activity_docs"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".Docs.DocActivity"
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".Countragents.DeliveryPointActivity" />
-        <activity android:name=".News.NewsActivity"></activity>
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".Countragents.DeliveryPointActivity"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".News.NewsActivity"
+            android:windowSoftInputMode="adjustPan"/>
     </application>
 
 </manifest>

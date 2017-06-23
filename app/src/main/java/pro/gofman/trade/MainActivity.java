@@ -401,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
         // Переход на другие активити в зависимости от
         if (getIntent().getExtras() != null) {
 
-            String place = getIntent().getExtras().getString("goto");
+            String place = getIntent().getExtras().getString("cmd");
 
             switch ( place ) {
                 case "2000": {
