@@ -55,4 +55,19 @@ public class Protocol {
     protected static final String STOCKS = "stocks";
     protected static final String NEWS = "news";
 
+
+    // Комманды пришедшие с сервера
+    protected static final String COMMAND_SERVER = "cmd";
+
+    protected static final String CMD_SYNC = "1000";
+    protected static final String CMD_SYNC_NEWS = "1000";
+    protected static final String CMD_FULLSYNC = "1000";
+
+    protected static final String CMD_OPENITEMS = "2000";
+
+    protected static final String CMD_COORD = "3000";
+
+
+
+
 }

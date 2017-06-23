@@ -33,6 +33,9 @@ import pro.gofman.trade.R;
 
 public class ItemsActivity extends AppCompatActivity {
 
+    public static final String ITEMS_ACTION = "pro.gofman.trade.action.open.items";
+    public static final String ITEMS_PARAM = "pro.gofman.trade.param.items";
+
     private DB db;
     private FastItemAdapter ia;
 

@@ -397,19 +397,19 @@ public class MainActivity extends AppCompatActivity {
         Log.i("FCM_TOKEN", Trade.getFcmToken());
 
 
-
-        // Переход на другие активити в зависимости от
+        // Уведомления
+        // Переход на другие активити в зависимости параметров в уведомлениях
         if (getIntent().getExtras() != null) {
 
-            String place = getIntent().getExtras().getString("goto");
+            String cmd = getIntent().getExtras().getString( Protocol.COMMAND_SERVER );
 
-            switch ( place ) {
-                case "2000": {
+            switch ( cmd ) {
+                case Protocol.CMD_OPENITEMS: {
 
                     // Номенклатура
-                    Intent i = new Intent( MainActivity.this, ItemsActivity.class );
-                    startActivity( i );
+                    String s = "";
 
+                    OpenItems( s );
                     break;
                 }
 
@@ -429,6 +429,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void OpenItems(String Search) {
+
+        Intent i = new Intent(MainActivity.this, ItemsActivity.class);
+        if ( !Search.isEmpty() ) {
+            i.setAction(ItemsActivity.ITEMS_ACTION);
+            i.putExtra(Trade.SERVICE_PARAM, connectionData.toString());
+        }
+        startActivity( i );
     }
 
     private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {

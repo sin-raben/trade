@@ -19,6 +19,8 @@ import pro.gofman.trade.R;
  * Created by gofman on 15.06.17.
  */
 
+// https://habrahabr.ru/post/303514/
+
 public class MessagingService extends FirebaseMessagingService {
     private static final String TAG = "FirebaseMessagingService";
 
