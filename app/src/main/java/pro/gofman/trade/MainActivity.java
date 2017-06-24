@@ -431,12 +431,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void OpenItems(String Search) {
+    private void OpenItems( String s ) {
 
         Intent i = new Intent(MainActivity.this, ItemsActivity.class);
-        if ( !Search.isEmpty() ) {
+        if ( !s.isEmpty() ) {
             i.setAction(ItemsActivity.ITEMS_ACTION);
-            i.putExtra(Trade.SERVICE_PARAM, connectionData.toString());
+            i.putExtra(ItemsActivity.ITEMS_PARAM, s );
         }
         startActivity( i );
     }

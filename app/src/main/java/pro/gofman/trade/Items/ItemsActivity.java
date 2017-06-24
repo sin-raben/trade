@@ -49,6 +49,12 @@ public class ItemsActivity extends AppCompatActivity {
         toolbar.setLogo(R.drawable.worker);
         toolbar.setTitle(R.string.title_activity_items);
 
+        // Получаем входящие параметры
+        if (getIntent().getExtras() != null) {
+            String cmd = getIntent().getExtras().getString( ITEMS_PARAM );
+        }
+
+
         db = Trade.getWritableDatabase();
 
         RecyclerView r = (RecyclerView) findViewById(R.id.recyclerview_items);
