@@ -46,13 +46,12 @@
         </service>
 
         <receiver
-            android:name=".CallCRM"
+            android:name=".CRM.CallReceiver"
             android:enabled="true"
             android:exported="false">
-            <intent-filter android:priority="100">
+            <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
 

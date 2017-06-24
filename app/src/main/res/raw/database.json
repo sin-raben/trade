@@ -462,28 +462,33 @@
       ]
     },
     {
-      "table": "coords",
+      "table": "log_coords",
       "description": "Хранение координат",
       "fields": [
         {
-          "field": "lat",
+          "field": "lc_lat",
           "type": "text",
           "description": "Широта"
         },
         {
-          "field": "lon",
+          "field": "lc_lon",
           "type": "text",
           "description": "Долгота"
         },
         {
-          "field": "atime",
+          "field": "lc_time",
           "type": "integer",
           "description": "Время получения координат"
         },
         {
-          "field": "provider",
+          "field": "lc_provider",
           "type": "text",
           "description": "Провайдер, который зарегистрировал координаты"
+        },
+        {
+          "field": "lc_event",
+          "type": "integer",
+          "description": "Событие при котором запрашиваются координаты"
         }
       ]
     },
@@ -745,7 +750,77 @@
         }
       ]
 
+    },
+    {
+      "table": "news",
+      "description": "Справочник новостей",
+      "fields": [
+        {
+          "field": "n_id",
+          "type": "integer",
+          "description": "ID справочника новостей",
+          "primary_key": true
+        },
+        {
+          "field": "n_date",
+          "type": "text",
+          "description": "Дата новости"
+        },
+        {
+          "field": "n_title",
+          "type": "text",
+          "description": "Заголовок новостей"
+        },
+        {
+          "field": "n_text",
+          "type": "text",
+          "description": "Тескт новости"
+        },
+        {
+          "field": "n_data",
+          "type": "text",
+          "description": "Данные свободного формата"
+        },
+        {
+          "field": "n_type",
+          "type": "integer",
+          "description": "Тип новости"
+        }
+
+      ]
+    },
+    {
+      "table": "log_calls",
+      "description": "Логирование звонков",
+      "fields": [
+        {
+          "field": "lс_stime",
+          "type": "text",
+          "description": "Время начала звонка"
+        },
+        {
+          "field": "lc_billsec",
+          "type": "integer",
+          "description": "Продолжительность звонка"
+        },
+        {
+          "field": "lc_phone",
+          "type": "text",
+          "description": "Номер набранный или звонящий"
+        },
+        {
+          "field": "lc_name",
+          "type": "text",
+          "description": "Наименование из телефонной книги"
+        },
+        {
+          "field": "lc_incoming",
+          "type": "integer",
+          "description": "Входящий звонок"
+        }
+      ]
     }
+
 
   ]
 }

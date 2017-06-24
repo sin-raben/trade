@@ -29,11 +29,13 @@ public class Protocol {
     protected static final String SUPPORT_SYNC = "supportSync";
 
     // Служебные атрибуты
+    protected static final String SYNC = "sync";
     protected static final String DATA = "data";
+    protected static final String RESULT = "result";
     protected static final String FCM_TOKEN = "fcmToken";
 
     // Объекты синхронизации
-    protected static final String AUTH_USER = "authUser";
+    protected static final String AUTH_USER = "authUserM";
     protected static final String ITEMS = "items";
     protected static final String ITEM_GROUP_TYPES = "itemGroupTypes";
     protected static final String ITEM_GROUPS = "itemGroups";
@@ -53,7 +55,7 @@ public class Protocol {
     protected static final String STORES = "stores";
     protected static final String LINK_STORES = "storeLink";
     protected static final String STOCKS = "stocks";
-    protected static final String NEWS = "news";
+    protected static final String NEWS = "getNewsM";
 
 
     // Комманды пришедшие с сервера
