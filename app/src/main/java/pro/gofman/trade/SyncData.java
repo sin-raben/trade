@@ -205,7 +205,7 @@ public class SyncData extends IntentService {
         // TODO: Handle action SyncData
         Log.i("SyncData", "SyncData стартанул");
 
-        final Boolean FullSync = p.optString( Protocol.COMMAND_SYNC, "" ).equals( Protocol.FULL_SYNC );
+        final Boolean FullSync = p.optBoolean( Protocol.FULL_SYNC, false );
 
 
 
@@ -292,43 +292,41 @@ public class SyncData extends IntentService {
                 switch (head) {
                     case Protocol.AUTH_USER: {
                         // Успешная авторизация запуск процедуры обмена
-                        mAuth = body.optBoolean("result", false);
+                        mAuth = body.optBoolean(Protocol.RESULT, false);
 
                         if ( mAuth ) {
 
-                            // Делаем полную синхронизацию
-                            if ( p.getString( Protocol.COMMAND_SYNC ).equals( Protocol.FULL_SYNC ) ) {
+                            // Делаем синхронизацию
+                            if ( p.optBoolean( Protocol.COMMAND_SYNC, false ) ) {
+
+                                JSONObject par;
+
+                                if ( FullSync ) {
+                                    par = new JSONObject().put( Protocol.FULL_SYNC, true );
+                                } else {
+                                    par = new JSONObject();
+                                }
+
 
                                 //Log.i("WS", "sendCoord");
                                 // Отправляем координаты
                                 //sendCoord(websocket);
 
                                 // Запрос новостей
-                                getNews(websocket);
+                                getNews(websocket, par );
 
                                 // Запрашиваем номенклатур
-                                getItemsM(websocket);
-                                getItems(websocket);
+                                //getItemsM(websocket);
+                                //getItems(websocket);
 
                                 // Запрашиваем контрагентов
-                                getCountragents(websocket);
+                                //getCountragents(websocket);
 
                                 // Запрашиваем цены
-                                getPrices(websocket);
+                                //getPrices(websocket);
 
                                 // Запрашиваем остатки
-                                getAmounts(websocket);
-                            }
-
-                            // Получаем только новости
-                            if ( p.getString( Protocol.COMMAND_SYNC ).equals( Protocol.MESSAGE_SYNC ) ) {
-                                //sendNews();
-                                getNews(websocket);
-                            }
-
-                            if ( p.getString( Protocol.COMMAND_SYNC ).equals( Protocol.SUPPORT_SYNC ) ) {
-                                // sendNews();
-                                // getSupportMessage(websocket);
+                                //getAmounts(websocket);
                             }
 
                         }
@@ -336,16 +334,21 @@ public class SyncData extends IntentService {
                         break;
                     }
 
-                    case Protocol.NEWS: {
+                    case Protocol.SYNC_NEWS: {
+                        // Если полная синхронизация обнуляем соответствующие таблицы
                         if (FullSync) {
                             db.execSQL("DELETE FROM news");
                         }
+
+                        // Сервер не вернул данные
                         JSONArray news = body.optJSONArray( Protocol.DATA );
                         if ( news == null ) {
                             // Надо залогировать проблему
                             break;
                         }
-                        Integer SyncID = body.optInt( Protocol.SYNC, 0);
+
+                        // Идентификатор синхронизации
+                        Integer SyncID = body.optInt( Protocol.SYNC_ID, 0);
 
                         // Запись в базу данных мобильного устройства
                         for (int i = 0; i < news.length(); i++ ) {
@@ -361,18 +364,18 @@ public class SyncData extends IntentService {
 
                             db.replace("news", cv);
 
-                            Log.i("NEWS", cv.getAsString("n_title"));
+                            Log.i(Protocol.SYNC_NEWS, cv.getAsString("n_title"));
 
                         }
 
                         // Отправляем ответ об успешном приеме данных
                         JSONObject r = new JSONObject();
-                        r.put(Protocol.HEAD, "setSync");
-                        r.put(Protocol.BODY,
+                        r.put( Protocol.HEAD, Protocol.RESULT_SYNC );
+                        r.put( Protocol.BODY,
                                 new JSONObject()
-                                        .put( "name", Protocol.NEWS )
-                                        .put( "id", SyncID )
-                                        .put( "result", true )
+                                        .put( Protocol.NAME, Protocol.SYNC_NEWS )
+                                        .put( Protocol.ID, SyncID )
+                                        .put( Protocol.RESULT, true )
                         );
 
                         websocket.sendText( r.toString() );
@@ -1129,15 +1132,12 @@ public class SyncData extends IntentService {
                 websocket.sendText( r.toString() );
             }
 
-            private void getNews(WebSocket w) throws Exception {
+            private void getNews(WebSocket w, JSONObject p) throws Exception {
                 JSONObject r = new JSONObject();
-                r.put( Protocol.HEAD, Protocol.NEWS );
+                r.put( Protocol.HEAD, Protocol.SYNC_NEWS );
+                r.put( Protocol.BODY, p );
 
-                JSONObject body = new JSONObject();
-                body.put( Protocol.NEWS, "all" );
-                r.put( Protocol.BODY, body );
-
-                Log.i(Protocol.NEWS, r.toString() );
+                Log.i(Protocol.SYNC_NEWS, r.toString() );
                 w.sendText( r.toString() );
             }
 
@@ -1161,6 +1161,8 @@ public class SyncData extends IntentService {
                                 .toString()
 
                 );
+
+
             }
         }
         catch (OpeningHandshakeException e) {

@@ -313,8 +313,9 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 // Параметры для соединения с сервером
                                 connectionData.put( Protocol.USER_DATA, userData );
+                                connectionData.put( Protocol.COMMAND_SYNC, true );
                                 // Признак полной синхронизации (перед загрузкой будет очищать таблицы)
-                                connectionData.put( Protocol.COMMAND_SYNC, Protocol.FULL_SYNC );
+                                connectionData.put( Protocol.FULL_SYNC, true );
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -332,6 +333,9 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 // Параметры для соединения с сервером
                                 connectionData.put( Protocol.USER_DATA, userData );
+                                connectionData.put( Protocol.COMMAND_SYNC, true );
+                                connectionData.put( Protocol.FULL_SYNC, false );
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -394,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
 
         dw = dwb.build();
 
-        Log.i("FCM_TOKEN", Trade.getFcmToken());
+        //Log.i("FCM_TOKEN", Trade.getFcmToken());
 
 
         // Уведомления
