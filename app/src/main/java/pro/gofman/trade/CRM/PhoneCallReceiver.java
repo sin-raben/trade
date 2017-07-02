@@ -3,6 +3,8 @@ package pro.gofman.trade.CRM;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.support.v4.app.LoaderManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -12,7 +14,7 @@ import java.util.Date;
  * Created by gofman on 03.11.16.
  */
 
-public abstract class PhoneCallReceiver extends BroadcastReceiver {
+public abstract class PhoneCallReceiver extends BroadcastReceiver implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
     private static int lastState = TelephonyManager.CALL_STATE_IDLE;
@@ -72,6 +74,7 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
                 savedNumber = number;
                 onIncomingCallStarted(context, number, callStartTime);
                 break;
+
             case TelephonyManager.CALL_STATE_OFFHOOK:
                 //Transition of ringing->offhook are pickups of incoming calls.  Nothing done on them
                 if(lastState != TelephonyManager.CALL_STATE_RINGING){
@@ -80,6 +83,7 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
                     onOutgoingCallStarted(context, savedNumber, callStartTime);
                 }
                 break;
+
             case TelephonyManager.CALL_STATE_IDLE:
                 //Went to idle-  this is the end of a call.  What type depends on previous state(s)
                 if(lastState == TelephonyManager.CALL_STATE_RINGING){
