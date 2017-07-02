@@ -12,6 +12,7 @@ import android.util.Log;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.security.PrivateKey;
 import java.util.Date;
 
 import pro.gofman.trade.MainActivity;
@@ -109,7 +110,7 @@ public class CallReceiver extends PhoneCallReceiver  {
         Bundle bundle = new Bundle();
         bundle.putString(QUERY_KEY, number);
 
-        ContactablesLoaderCallbacks loaderCallbacks = new ContactablesLoaderCallbacks( ctx );
+        //ContactablesLoaderCallbacks loaderCallbacks = new ContactablesLoaderCallbacks( ctx );
 
         // Start the loader with the new query, and an object that will handle all callbacks.
 
@@ -121,11 +122,20 @@ public class CallReceiver extends PhoneCallReceiver  {
 
         // .restartLoader(CONTACT_QUERY_LOADER, bundle, loaderCallbacks);
 
+
+
     }
 
     @Override
     protected void onMissedCall(Context ctx, String number, Date start) {
         Log.i("CallReceiver", "onMissedCall: " + number + " " + String.valueOf(start));
+    }
+
+    private String GetNameByNumber(String Number) {
+
+
+
+        return "";
     }
 
 
