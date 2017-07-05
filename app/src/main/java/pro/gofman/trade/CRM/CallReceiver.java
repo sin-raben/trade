@@ -1,5 +1,6 @@
 package pro.gofman.trade.CRM;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
@@ -101,27 +102,25 @@ public class CallReceiver extends PhoneCallReceiver  {
         String selectionArgs = String.valueOf(new String[]{number});
         //Cursor cursor = ctx.getContentResolver().query(ContactsContract.Data.CONTENT_URI, projection, selection, selectionArgs, null);
 
+
     }
 
     @Override
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
         Log.i("CallReceiver", "onOutgoingCallEnded: " + number + " " + String.valueOf(start) + " " + String.valueOf(end));
 
-        Bundle bundle = new Bundle();
-        bundle.putString(QUERY_KEY, number);
 
-        //ContactablesLoaderCallbacks loaderCallbacks = new ContactablesLoaderCallbacks( ctx );
+        Uri uri = Uri.withAppendedPath( ContactsContract.CommonDataKinds.Contactables.CONTENT_FILTER_URI, number );
+        String selection = ContactsContract.CommonDataKinds.Contactables.HAS_PHONE_NUMBER + " = " + 1;
+        String sortBy = ContactsContract.CommonDataKinds.Contactables.LOOKUP_KEY;
 
-        // Start the loader with the new query, and an object that will handle all callbacks.
+        Cursor cur = ctx.getContentResolver().query( uri, null, selection, null, sortBy );
+        cur.moveToFirst();
+        while ( cur.moveToNext() ) {
 
-        LoaderManager lm;
+            Log.i("onOutgoingCallEnded", "onOutgoingCallEnded: " + cur.getString( cur.getColumnIndex( ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME) ) );
 
-        //lm = new Lo
-
-        //lm.restartLoader( CONTACT_QUERY_LOADER, bundle, loaderCallbacks );
-
-        // .restartLoader(CONTACT_QUERY_LOADER, bundle, loaderCallbacks);
-
+        }
 
 
     }
