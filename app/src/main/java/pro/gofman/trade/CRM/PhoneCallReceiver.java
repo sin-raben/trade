@@ -14,7 +14,7 @@ import java.util.Date;
  * Created by gofman on 03.11.16.
  */
 
-public abstract class PhoneCallReceiver extends BroadcastReceiver implements LoaderManager.LoaderCallbacks<Cursor> {
+public abstract class PhoneCallReceiver extends BroadcastReceiver {
 
 
     private static int lastState = TelephonyManager.CALL_STATE_IDLE;

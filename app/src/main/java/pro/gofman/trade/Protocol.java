@@ -19,8 +19,6 @@ public class Protocol {
     protected static final String BODY = "body";
     protected static final String NAME = "name";
     protected static final String ID = "id";
-    protected static final String EMPTY = "{}";
-
 
     protected static final String CONNECTION_BEGIN = "BeginConnection";
 
@@ -59,7 +57,15 @@ public class Protocol {
     protected static final String STORES = "stores";
     protected static final String LINK_STORES = "storeLink";
     protected static final String STOCKS = "stocks";
+
+    // Функции синхронизации
     protected static final String SYNC_NEWS = "f020018g";
+    protected static final String SYNC_ITEMS = "f020006g";
+    protected static final String SYNC_ITEMGROUPTYPES = "f020007g";
+    protected static final String SYNC_ITEMGROUPS = "f020008g";
+    protected static final String SYNC_LINKITEMGROUP = "f020009g";
+
+
     protected static final String RESULT_SYNC = "f010004s";
 
 

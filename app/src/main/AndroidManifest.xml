@@ -45,15 +45,8 @@
             </intent-filter>
         </service>
 
-        <receiver
-            android:name=".CRM.CallReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
-                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
-            </intent-filter>
-        </receiver>
+
+
 
         <activity
             android:name=".Items.ItemsActivity"

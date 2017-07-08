@@ -1,6 +1,7 @@
 package pro.gofman.trade.CRM;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import java.io.PrintWriter;
 import java.security.PrivateKey;
 import java.util.Date;
 
+import pro.gofman.trade.DB;
 import pro.gofman.trade.MainActivity;
 import pro.gofman.trade.Trade;
 
@@ -24,16 +26,14 @@ import pro.gofman.trade.Trade;
  * Created by roman on 25.06.17.
  */
 
-public class CallReceiver extends PhoneCallReceiver  {
+public class CallReceiver extends PhoneCallReceiver {
 
     public static final int CONTACT_QUERY_LOADER = 0;
     public static final String QUERY_KEY = "query";
+    private DB db;
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
 
+    /*
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() == 0) {
@@ -78,11 +78,8 @@ public class CallReceiver extends PhoneCallReceiver  {
 
 
     }
+    */
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
 
     @Override
     protected void onIncomingCallStarted(Context ctx, String number, Date start) {
@@ -90,37 +87,27 @@ public class CallReceiver extends PhoneCallReceiver  {
 
     @Override
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
+
     }
 
     @Override
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
         Log.i("CallReceiver", "onIncomingCallEnded: " + number + " " + String.valueOf(start) + " " + String.valueOf(end));
 
-        String[] projection = new String[]{ContactsContract.Data.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.STARRED, ContactsContract.Contacts.CONTACT_STATUS, ContactsContract.Contacts.CONTACT_PRESENCE};
+        ContentValues cv = new ContentValues();
+        cv.put("lc_stime", start.toString());
+        long sec = (end.getTime() - start.getTime())/1000;
+        cv.put("lc_billsec", sec);
+        cv.put("lc_phone", number);
+        cv.put("lc_name", "");
+        cv.put("lc_incoming", 1);
 
-        String selection = "PHONE_NUMBERS_EQUAL(" + ContactsContract.CommonDataKinds.Phone.NUMBER + ",?) AND " + ContactsContract.Contacts.Data.MIMETYPE + "='" + ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "'";
-        String selectionArgs = String.valueOf(new String[]{number});
-        //Cursor cursor = ctx.getContentResolver().query(ContactsContract.Data.CONTENT_URI, projection, selection, selectionArgs, null);
-
-
+        db.insert("log_calls", cv);
     }
 
     @Override
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
         Log.i("CallReceiver", "onOutgoingCallEnded: " + number + " " + String.valueOf(start) + " " + String.valueOf(end));
-
-
-        Uri uri = Uri.withAppendedPath( ContactsContract.CommonDataKinds.Contactables.CONTENT_FILTER_URI, number );
-        String selection = ContactsContract.CommonDataKinds.Contactables.HAS_PHONE_NUMBER + " = " + 1;
-        String sortBy = ContactsContract.CommonDataKinds.Contactables.LOOKUP_KEY;
-
-        Cursor cur = ctx.getContentResolver().query( uri, null, selection, null, sortBy );
-        cur.moveToFirst();
-        while ( cur.moveToNext() ) {
-
-            Log.i("onOutgoingCallEnded", "onOutgoingCallEnded: " + cur.getString( cur.getColumnIndex( ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME) ) );
-
-        }
 
 
     }
@@ -131,7 +118,6 @@ public class CallReceiver extends PhoneCallReceiver  {
     }
 
     private String GetNameByNumber(String Number) {
-
 
 
         return "";
