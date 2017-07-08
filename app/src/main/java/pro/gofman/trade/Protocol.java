@@ -64,6 +64,9 @@ public class Protocol {
     protected static final String SYNC_ITEMGROUPTYPES = "f020007g";
     protected static final String SYNC_ITEMGROUPS = "f020008g";
     protected static final String SYNC_LINKITEMGROUP = "f020009g";
+    protected static final String SYNC_ITEMUNITS = "f020010g";
+    protected static final String SYNC_LINKITEMUNIT = "f020011g";
+    protected static final String SYNC_ITEMSEARCH = "f020012g";
 
 
     protected static final String RESULT_SYNC = "f010004s";

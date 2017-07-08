@@ -351,9 +351,12 @@ public class SyncData extends IntentService {
                         break;
                     }
 
-
+                    // Номенклатура
                     case Protocol.SYNC_ITEMS: {
-                        String[][] a = {{"i_id", "i_id", "int"}, {"i_name", "i_name", "text"}};
+                        String[][] a = {
+                                {"i_id", "i_id", "int"},
+                                {"i_name", "i_name", "text"}
+                        };
                         syncFunction(websocket, Protocol.SYNC_ITEMS, "items", a );
 
                         break;
@@ -361,7 +364,6 @@ public class SyncData extends IntentService {
 
                     // Типы групп номенклатуры
                     case Protocol.SYNC_ITEMGROUPTYPES: {
-
                         String[][] a = {
                                 {"igt_id", "igt_id", "int"},
                                 {"igt_name", "igt_name", "text"}
@@ -369,158 +371,82 @@ public class SyncData extends IntentService {
 
                         syncFunction(websocket, Protocol.SYNC_ITEMGROUPTYPES, "item_group_types", a );
 
-
                         break;
                     }
                     // Группы номенклатуры
                     case Protocol.SYNC_ITEMGROUPS: {
+                        String[][] a = {
+                                {"ig_id", "ig_id", "int"},
+                                {"igt_id", "igt_id", "int"},
+                                {"ig_name", "ig_value", "text"}
+                        };
 
-                        JSONArray items = body.optJSONArray( Protocol.DATA );
-                        if ( items == null ) {
-                            // Надо залогировать проблему
-                            break;
-                        }
-
-                        if ( FullSync ) {
-                            db.execSQL("DELETE FROM item_groups");
-                        }
-
-                        // Идентификатор синхронизации
-                        Integer SyncID = body.optInt( Protocol.SYNC_ID, 0);
-
-                        for (int i = 0; i < items.length(); i++ ) {
-                            JSONObject t = items.getJSONObject(i);
-
-                            cv = new ContentValues();
-                            cv.put("ig_id", t.getInt("ig_id"));
-                            cv.put("igt_id", t.getInt("igt_id"));
-                            cv.put("ig_name", t.getString("ig_value"));
-
-                            db.replace("item_groups", cv);
-
-                            Log.i("GROUPS", cv.getAsString("ig_value"));
-
-                        }
-
-                        // Отправляем ответ об успешном приеме данных
-                        JSONObject r = new JSONObject();
-                        r.put( Protocol.HEAD, Protocol.RESULT_SYNC );
-                        r.put( Protocol.BODY,
-                                new JSONObject()
-                                        .put( Protocol.NAME, Protocol.SYNC_ITEMGROUPS )
-                                        .put( Protocol.ID, SyncID )
-                                        .put( Protocol.RESULT, true )
-                        );
-
-                        websocket.sendText( r.toString() );
-
+                        syncFunction(websocket, Protocol.SYNC_ITEMGROUPS, "item_groups", a );
 
                         break;
                     }
 
+                    // Cвязи групп и номенклатуры
+                    case Protocol.SYNC_LINKITEMGROUP: {
+                        String[][] a = {
+                                {"lig_id", "lig_id", "int"},
+                                {"i_id", "i_id", "int"},
+                                {"igt_id", "igt_id", "int"},
+                                {"ig_id", "ig_id", "int"}
+                        };
 
-
-                    case "getItems": {
-                        /*
-                            {"items":[{Номенклатура}],"count":1000}
-                         */
-
-
-                        // Загрузка типы единиц измерения
-                        if ( body.has(Protocol.ITEM_UNIT_TYPES) ) {
-
-                            db.execSQL("DELETE FROM item_unit_types");
-                            JSONArray items = body.getJSONArray(Protocol.ITEM_UNIT_TYPES);
-                            for (int i = 0; i < items.length(); i++) {
-                                JSONObject t = items.getJSONObject(i);
-
-                                cv = new ContentValues();
-                                cv.put("iut_id", t.getInt("iut_id"));
-                                cv.put("iut_name", t.getString("iut_name"));
-
-                                db.insert("item_unit_types", cv);
-                                Log.i("UNIT_TYPES", cv.getAsString("i_name"));
-                            }
-                        }
-
-                        // Загрузка единиц измерения
-                        if ( body.has(Protocol.ITEM_UNITS) ) {
-
-                            db.execSQL("DELETE FROM item_units");
-                            JSONArray items = body.getJSONArray(Protocol.ITEM_UNITS);
-                            for (int i = 0; i < items.length(); i++) {
-                                JSONObject t = items.getJSONObject(i);
-
-                                cv = new ContentValues();
-                                cv.put("i_id", t.getInt("i_id"));
-                                cv.put("iut_id", t.getInt("iut_id"));
-                                cv.put("iu_krat", t.getInt("iu_krat"));
-                                cv.put("iu_num", t.getInt("iu_num"));
-                                cv.put("iu_denum", t.getInt("iu_denum"));
-                                cv.put("iu_gros", t.getInt("iu_gros"));
-                                cv.put("iu_length", t.getInt("iu_length"));
-                                cv.put("iu_width", t.getInt("iu_width"));
-                                cv.put("iu_height", t.getInt("iu_height"));
-                                cv.put("iu_area", t.getInt("iu_area"));
-                                cv.put("iu_volume", t.getInt("iu_volume"));
-                                cv.put("iu_base", t.getBoolean("iu_base"));
-                                cv.put("iu_main", t.getBoolean("iu_main"));
-                                
-                                db.insert("item_units", cv);
-                                Log.i("UNITS", cv.getAsString("i_id"));
-                            }
-                        }
-
-
-
-
-
-                        // Загрузка связей групп и номенклатуры
-                        if ( body.has(Protocol.LINK_ITEM_GROUPS) ) {
-
-                            db.execSQL("DELETE FROM link_item_groups");
-
-                            JSONArray ig = body.getJSONArray(Protocol.LINK_ITEM_GROUPS);
-                            for (int i = 0; i < ig.length(); i++) {
-                                JSONObject t = ig.getJSONObject(i);
-
-                                cv = new ContentValues();
-                                cv.put( "lig_id", t.getInt("lig_id") );
-                                cv.put( "i_id", t.getInt("i_id") );
-                                cv.put( "igt_id", t.getInt("igt_id") );
-                                cv.put( "ig_id", t.getInt("ig_id") );
-
-                                db.insert("link_item_groups", cv);
-                                Log.i("LINK_GROUPS", cv.getAsString("lig_id") + " " + cv.getAsString("i_id"));
-                            }
-                        }
-
-                        // Загрузка поисковых строк
-                        if ( body.has(Protocol.ITEMS_SEARCH) ) {
-
-                            db.execSQL("DELETE FROM item_search");
-
-                            JSONArray ig = body.getJSONArray(Protocol.ITEMS_SEARCH);
-
-                            for (int i = 0; i < ig.length(); i++) {
-                                JSONObject t = ig.getJSONObject(i);
-
-
-
-                                cv = new ContentValues();
-                                cv.put( "i_id", t.getInt("i_id") );
-                                cv.put( "value", t.getString("value").toUpperCase() );
-
-                                if ( !cv.getAsString("value").isEmpty() ) {
-
-                                    db.insert("item_search", cv);
-                                    Log.i("ITEMS_SEARCH", cv.getAsString("value"));
-                                }
-                            }
-                        }
+                        syncFunction(websocket, Protocol.SYNC_LINKITEMGROUP, "link_item_groups", a );
 
                         break;
                     }
+
+                    // Единицы измерения
+                    case Protocol.SYNC_ITEMUNITS: {
+                        String[][] a = {
+                                {"iut_id", "iut_id", "int"},
+                                {"iut_name", "iut_name", "text"}
+                        };
+
+                        syncFunction(websocket, Protocol.SYNC_ITEMUNITS, "item_unit_types", a );
+
+                        break;
+                    }
+
+                    // Связи номенклатуры и единиц измерения
+                    case Protocol.SYNC_LINKITEMUNIT: {
+                        String[][] a = {
+                                {"i_id", "i_id", "int"},
+                                {"iut_id", "iut_id", "int"},
+                                {"iu_krat", "iu_krat", "int"},
+                                {"iu_num", "iu_num", "int"},
+                                {"iu_denum", "iu_denum", "int"},
+                                {"iu_gros", "iu_gros", "int"},
+                                {"iu_length", "iu_length", "int"},
+                                {"iu_width", "iu_width", "int"},
+                                {"iu_height", "iu_height", "int"},
+                                {"iu_area", "iu_area", "int"},
+                                {"iu_volume", "iu_volume", "int"},
+                                {"iu_base", "iu_base", "int"},
+                                {"iu_main", "iu_main", "int"}
+                        };
+
+                        syncFunction(websocket, Protocol.SYNC_LINKITEMUNIT, "item_units", a );
+
+                        break;
+                    }
+
+                    // Поисковая строка номенклатуры
+                    case Protocol.SYNC_ITEMSEARCH: {
+                        String[][] a = {
+                                {"i_id", "i_id", "int"},
+                                {"value", "value", "text"}
+                        };
+
+                        syncFunction(websocket, Protocol.SYNC_ITEMSEARCH, "item_search", a );
+                        break;
+                    }
+
+
 
                     case "getCountragents": {
                         /*
