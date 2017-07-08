@@ -348,6 +348,7 @@ public class SyncData extends IntentService {
 
                         syncFunction(websocket, Protocol.SYNC_NEWS, "news", a );
 
+                        break;
                     }
 
 
@@ -361,43 +362,12 @@ public class SyncData extends IntentService {
                     // Типы групп номенклатуры
                     case Protocol.SYNC_ITEMGROUPTYPES: {
 
-                        JSONArray items = body.optJSONArray( Protocol.DATA );
-                        if ( items == null ) {
-                            // Надо залогировать проблему
-                            break;
-                        }
+                        String[][] a = {
+                                {"igt_id", "igt_id", "int"},
+                                {"igt_name", "igt_name", "text"}
+                        };
 
-                        if ( FullSync ) {
-                            db.execSQL("DELETE FROM item_group_types");
-                        }
-
-                        // Идентификатор синхронизации
-                        Integer SyncID = body.optInt( Protocol.SYNC_ID, 0);
-
-                        for (int i = 0; i < items.length(); i++ ) {
-                            JSONObject t = items.getJSONObject(i);
-
-                            cv = new ContentValues();
-                            cv.put("igt_id", t.getInt("igt_id"));
-                            cv.put("igt_name", t.getString("igt_name"));
-
-                            db.replace("item_group_types", cv);
-
-                            Log.i("GROUPTYPES", cv.getAsString("igt_name"));
-
-                        }
-
-                        // Отправляем ответ об успешном приеме данных
-                        JSONObject r = new JSONObject();
-                        r.put( Protocol.HEAD, Protocol.RESULT_SYNC );
-                        r.put( Protocol.BODY,
-                                new JSONObject()
-                                        .put( Protocol.NAME, Protocol.SYNC_ITEMGROUPS )
-                                        .put( Protocol.ID, SyncID )
-                                        .put( Protocol.RESULT, true )
-                        );
-
-                        websocket.sendText( r.toString() );
+                        syncFunction(websocket, Protocol.SYNC_ITEMGROUPTYPES, "item_group_types", a );
 
 
                         break;
