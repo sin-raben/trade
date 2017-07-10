@@ -16,9 +16,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 public class Trade extends Application {
 
-    protected static final String SERVICE_SYNCDATA = "pro.gofman.trade.action.syncdata";
-    protected static final String SERVICE_LOGCOORD = "pro.gofman.trade.action.logcoord";
-    protected static final String SERVICE_PARAM = "pro.gofman.trade.extra.param";
+    public static final String SERVICE_SYNCDATA = "pro.gofman.trade.action.syncdata";
+    public static final String SERVICE_LOGCOORD = "pro.gofman.trade.action.logcoord";
+    public static final String SERVICE_PARAM = "pro.gofman.trade.extra.param";
 
 
     private static Trade sInstance;

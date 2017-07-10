@@ -298,17 +298,8 @@ public class SyncData extends IntentService {
 
                         if ( mAuth ) {
 
-                            // Делаем синхронизацию
+                            // Делаем синхронизацию, инициатор пользователь
                             if ( p.optBoolean( Protocol.COMMAND_SYNC, false ) ) {
-
-                                JSONObject par;
-
-                                if ( FullSync ) {
-                                    par = new JSONObject().put( Protocol.FULL_SYNC, true );
-                                } else {
-                                    par = new JSONObject();
-                                }
-
 
                                 //Log.i("WS", "sendCoord");
                                 // Отправляем координаты
@@ -339,6 +330,11 @@ public class SyncData extends IntentService {
 
                                 // Запрашиваем остатки
                                 //getAmounts(websocket);
+                            }
+
+                            // Делаем синхронизацию, инициатор сервер
+                            if ( p.optBoolean( Protocol.CUSTOM_SYNC, false ) ) {
+
                             }
 
                         }

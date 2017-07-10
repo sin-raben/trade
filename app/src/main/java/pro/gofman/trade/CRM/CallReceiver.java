@@ -109,19 +109,32 @@ public class CallReceiver extends PhoneCallReceiver {
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
         Log.i("CallReceiver", "onOutgoingCallEnded: " + number + " " + String.valueOf(start) + " " + String.valueOf(end));
 
+        ContentValues cv = new ContentValues();
+        cv.put("lc_stime", start.toString());
+        long sec = (end.getTime() - start.getTime())/1000;
+        cv.put("lc_billsec", sec);
+        cv.put("lc_phone", number);
+        cv.put("lc_name", "");
+        cv.put("lc_incoming", 0);
+
+        db.insert("log_calls", cv);
+
 
     }
 
     @Override
     protected void onMissedCall(Context ctx, String number, Date start) {
         Log.i("CallReceiver", "onMissedCall: " + number + " " + String.valueOf(start));
+
+        ContentValues cv = new ContentValues();
+        cv.put("lc_stime", start.toString());
+        cv.put("lc_billsec", 0);
+        cv.put("lc_phone", number);
+        cv.put("lc_name", "");
+        cv.put("lc_incoming", 1);
+
+        db.insert("log_calls", cv);
+
     }
-
-    private String GetNameByNumber(String Number) {
-
-
-        return "";
-    }
-
 
 };

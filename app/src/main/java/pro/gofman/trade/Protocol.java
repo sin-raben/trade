@@ -22,8 +22,9 @@ public class Protocol {
 
     protected static final String CONNECTION_BEGIN = "BeginConnection";
 
-    protected static final String USER_DATA = "userData";
-    protected static final String COMMAND_SYNC = "commandSync";
+    public static final String USER_DATA = "userData";
+    public static final String COMMAND_SYNC = "commandSync";
+    public static final String CUSTOM_SYNC = "customSync";
     // Команды синхронизации
     protected static final String MESSAGE_SYNC = "messageSync";
     protected static final String FULL_SYNC = "fullsync";
@@ -31,26 +32,14 @@ public class Protocol {
     protected static final String SUPPORT_SYNC = "supportSync";
 
     // Служебные атрибуты
-    protected static final String SYNC_ID = "sync";
-    protected static final String DATA = "data";
-    protected static final String RESULT = "result";
-    protected static final String FCM_TOKEN = "fcmToken";
+    public static final String SYNC_ID = "sync";
+    public static final String DATA = "data";
+    public static final String RESULT = "result";
+    public static final String FCM_TOKEN = "fcmToken";
 
     // Объекты синхронизации
     protected static final String AUTH_USER = "f010002s";
     protected static final String ITEMS = "items";
-    protected static final String ITEM_GROUP_TYPES = "itemGroupTypes";
-    protected static final String ITEM_GROUPS = "itemGroups";
-    protected static final String LINK_ITEM_GROUPS = "linkItemGroups";
-    protected static final String ITEMS_SEARCH = "itemsSearch";
-    protected static final String ITEM_UNIT_TYPES = "itemUnitTypes";
-    protected static final String ITEM_UNITS = "itemUnits";
-    protected static final String COUNTERAGENTS = "countragents";
-    protected static final String POINTS_DELIVERY = "deliveryPoints";
-    protected static final String LINK_POINTS_DELIVERY = "linksCountragentDeliveryPoint";
-    protected static final String COUNTRAGENT_SEARCH = "CountragentsSearch";
-    protected static final String COUNTRAGENT_ADDRESSES = "address";
-    protected static final String DELIVERY_POINT_SEARCH = "CountragentsSearch";
     protected static final String PRICE = "price";
     protected static final String PRICELISTS = "pricelist";
     protected static final String LINK_PRICELISTS = "pricelistLink";
