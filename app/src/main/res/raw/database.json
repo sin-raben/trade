@@ -145,6 +145,12 @@
       "description": "Справочник значений единиц измерения",
       "fields": [
         {
+          "field": "iu_id",
+          "type": "integer",
+          "description": "ID",
+          "primary_key": true
+        },
+        {
           "field": "i_id",
           "type": "integer",
           "description": "ID номенклатуры"

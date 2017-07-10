@@ -68,6 +68,13 @@ public class Protocol {
     protected static final String SYNC_LINKITEMUNIT = "f020011g";
     protected static final String SYNC_ITEMSEARCH = "f020012g";
 
+    protected static final String SYNC_COUNTERAGENTS = "f020013g";
+    protected static final String SYNC_DELIVERYPOINTS = "f020014g";
+    protected static final String SYNC_LINKCOUNTERAGENTPOINT = "f020015g";
+    protected static final String SYNC_COUNTERAGENTADDRESS = "f020016g";
+    protected static final String SYNC_POINTSEARCH = "f020017g";
+
+
 
     protected static final String RESULT_SYNC = "f010004s";
 
