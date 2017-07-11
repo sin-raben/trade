@@ -663,6 +663,14 @@ public class SyncData extends IntentService {
                         break;
                     }
 
+
+                    case Protocol.SYNC_CALLS: {
+                        String sql = "SELECT * FROM log_calls";
+
+                        //db.rawQuery()
+
+                    }
+
                     default:
 
                         break;
@@ -796,11 +804,15 @@ public class SyncData extends IntentService {
                 w.sendText( r.toString() );
             }
 
-            private void syncQuery(WebSocket w, String head) throws Exception {
+            private void syncQuery(WebSocket w, String head ) throws Exception {
+                JSONObject body = new JSONObject();
+                syncCustomQuery(w, head, body);
+            }
+
+            private void syncCustomQuery(WebSocket w, String head, JSONObject body ) throws Exception {
                 JSONObject r = new JSONObject();
                 r.put( Protocol.HEAD, head );
 
-                JSONObject body = new JSONObject();
                 if (FullSync) {
                     body.put( Protocol.FULL_SYNC, true );
                 }
@@ -809,7 +821,6 @@ public class SyncData extends IntentService {
 
                 Log.i( head, r.toString() );
                 w.sendText( r.toString() );
-
             }
 
             private void syncFunction(WebSocket w, String fun, String tn, String[][] f) throws Exception {

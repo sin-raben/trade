@@ -825,6 +825,22 @@
           "description": "Входящий звонок"
         }
       ]
+    },
+    {
+      "table": "sync",
+      "description": "Синхронизация данных",
+      "fields": [
+        {
+          "field": "obj_id",
+          "type": "integer",
+          "description": "Идентификатор таблицы"
+        },
+        {
+          "field": "any_id",
+          "type": "integer",
+          "description": "Идентификатор строки"
+        }
+      ]
     }
 
 

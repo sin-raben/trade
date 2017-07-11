@@ -64,6 +64,7 @@ public class Protocol {
     protected static final String SYNC_POINTSEARCH = "f020017g";
 
 
+    protected static final String SYNC_CALLS = "f020005s";
 
     protected static final String RESULT_SYNC = "f010004s";
 

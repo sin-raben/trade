@@ -88,5 +88,4 @@ public class CoordsActivity extends AppCompatActivity {
         return r;
     }
 
-
 }

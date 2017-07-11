@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
@@ -304,6 +305,20 @@ public class MainActivity extends AppCompatActivity {
                         case 2004: {
                             // Фотографии
                             Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
+
+                            Cursor c = db.rawQuery("SELECT * FROM log_calls", null);
+                            if ( c != null ) {
+                                if ( c.moveToFirst() ) {
+                                    do {
+
+                                        Log.i("CALLS", c.getString( c.getColumnIndex("lс_stime") )  + " " + c.getString( c.getColumnIndex("lc_phone") )  );
+
+
+                                    } while ( c.moveToNext() );
+
+                                    c.close();
+                                }
+                            }
 
                             break;
                         }
