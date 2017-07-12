@@ -285,6 +285,10 @@ public class DB {
                 for (int i = 0; i < tables.length(); i++) {
                     table = tables.getJSONObject(i);
 
+                    if ( table.optBoolean("nocreate", false) ) {
+                        continue;
+                    }
+
                     sql = SQLBuilderCreateTable( table.getString("table"), table.getJSONArray("fields"), table.optBoolean("fts3") );
 
                     s.execSQL(sql);

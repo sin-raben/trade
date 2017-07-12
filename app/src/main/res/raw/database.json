@@ -827,6 +827,23 @@
       ]
     },
     {
+      "table": "sync_object",
+      "description": "Описание объектов, которые синхронизируются",
+      "fields": [
+        {
+          "field": "so_name",
+          "type": "text",
+          "description": "Наименование объекта"
+        }
+      ],
+      "values": [
+        {
+          "so_name": "Звонки"
+        }
+      ],
+      "nocreate": true
+    },
+    {
       "table": "sync",
       "description": "Синхронизация данных",
       "fields": [
