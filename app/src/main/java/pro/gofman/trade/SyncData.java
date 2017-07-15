@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.location.Location;
 import android.location.LocationListener;
@@ -335,6 +336,9 @@ public class SyncData extends IntentService {
                             // Делаем синхронизацию, инициатор сервер
                             if ( p.optBoolean( Protocol.CUSTOM_SYNC, false ) ) {
 
+                                // Отправляем журнал звонков
+                                syncQuery( websocket, Protocol.SYNC_CALLS );
+
                             }
 
                         }
@@ -513,7 +517,7 @@ public class SyncData extends IntentService {
                         break;
                     }
 
-
+                    /*
                     case "getStocks": {
 
                         if (body.has(Protocol.STORES)) {
@@ -584,9 +588,7 @@ public class SyncData extends IntentService {
                     }
 
                     case "getPrices": {
-                        /*
-                            {"items":[{Контрагент}],"count":600}
-                         */
+
 
                         //Log.i("getPrices", Boolean.toString(body.has(Protocol.PRICE)) );
                         // Загрузка цен
@@ -662,12 +664,19 @@ public class SyncData extends IntentService {
 
                         break;
                     }
+                    */
 
+                    // Получает ответы сервера после передачи данных
+                    case Protocol.RESULT_SYNC: {
+                        // Должно быть удаление успешно отправленных данных
+
+
+                    }
 
                     case Protocol.SYNC_CALLS: {
-                        String sql = "SELECT * FROM log_calls";
+                        // Сервер ответил на передачу данных о звонках, удаляем в мобильной базе
 
-                        //db.rawQuery()
+
 
                     }
 
@@ -757,6 +766,7 @@ public class SyncData extends IntentService {
 
             }
 
+            /*
             public void sendCoord(WebSocket websocket) throws Exception {
 
                 Log.i("setCoord", "1");
@@ -803,10 +813,96 @@ public class SyncData extends IntentService {
                 Log.i(Protocol.SYNC_NEWS, r.toString() );
                 w.sendText( r.toString() );
             }
+            */
+
+            // Функция заполняет body для отправки данных на сервер
+            private JSONObject getBody(String head) throws Exception {
+                JSONObject b = new JSONObject();
+
+                switch (head) {
+
+                    case Protocol.SYNC_CALLS: {
+                        // Проверяем есть ли данные для отправки на сервер
+                        Boolean NeedSync = false;
+                        String sql = "SELECT c.ROWID as any_id FROM log_calls c LEFT JOIN sync_data sd ON (c.ROWID = sd.any_id AND sd.obj_id = 1) WHERE sd.ROWID ISNULL;";
+                        Cursor c = db.rawQuery(sql, null);
+                        if (c != null) {
+                            NeedSync = c.getCount() > 0;
+                            c.close();
+                        }
+
+
+                        if (NeedSync) {
+
+                            // Записываем данные в таблицу синхронизации и получаем ID синхронизации
+                            sql = "INSERT INTO sync (sdate) VALUES ( current_timestamp );\n" +
+                                    "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
+                                    " SELECT\n" +
+                                    "  1 as obj_id,\n" +
+                                    "  c.ROWID as any_id,\n" +
+                                    "  last_insert_rowid() as s_id\n" +
+                                    "FROM\n" +
+                                    "  log_calls c\n" +
+                                    "  LEFT JOIN sync_data sd ON (c.ROWID = sd.any_id AND sd.obj_id = 1)\n" +
+                                    "WHERE\n" +
+                                    "  sd.ROWID ISNULL;\n" +
+                                    "SELECT sd.s_id FROM sync_data sd WHERE sd.ROWID = last_insert_rowid();\n";
+
+                            c = db.rawQuery(sql, null);
+                            Integer SyncID = 0;
+                            if (c != null) {
+                                c.moveToFirst();
+                                SyncID = c.getInt( c.getColumnIndex("s_id") );
+                                c.close();
+                            }
+
+                            // Формируем пакет данных для отправки на сервер
+                            sql = "SELECT c.* FROM sync_data s JOIN log_calls c ON (s.any_id = c.ROWID) WHERE s.obj_id = 1 AND s.s_id = ?";
+                            c = db.rawQuery(sql, new String[] { String.valueOf( SyncID ) });
+                            if ( c != null ) {
+                                c.moveToFirst();
+                                JSONArray a = new JSONArray();
+                                do {
+                                    a.put(
+                                            new JSONObject()
+                                                .put("lc_id", c.getInt( c.getColumnIndex("ROWID") ) )
+                                                .put("lс_stime", c.getString( c.getColumnIndex("lс_stime") ))
+                                                .put("lc_billsec", c.getInt( c.getColumnIndex("lc_billsec") ))
+                                                .put("lc_phone", c.getString( c.getColumnIndex("lc_phone") ))
+                                                .put("lc_name", c.getString( c.getColumnIndex("lc_name") ))
+                                                .put("lc_incoming", c.getInt( c.getColumnIndex("lc_incoming") ))
+                                    );
+
+                                } while ( c.moveToNext() );
+                                c.close();
+
+                                b.put( Protocol.ID, SyncID );
+                                b.put( Protocol.DATA, a );
+
+                            }
+
+                        }
+
+                        return b;
+                    }
+
+                    case Protocol.SYNC_COORDS: {
+
+
+                        return b;
+                    }
+
+                    default:
+
+                        break;
+
+                }
+
+                return b;
+            }
 
             private void syncQuery(WebSocket w, String head ) throws Exception {
-                JSONObject body = new JSONObject();
-                syncCustomQuery(w, head, body);
+                syncCustomQuery(w, head, getBody(head) );
             }
 
             private void syncCustomQuery(WebSocket w, String head, JSONObject body ) throws Exception {

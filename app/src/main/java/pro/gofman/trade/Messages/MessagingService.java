@@ -30,9 +30,7 @@ import pro.gofman.trade.Trade;
 
 public class MessagingService extends FirebaseMessagingService {
     private static final String TAG = "FirebaseMessagingService";
-    private DB db;
-    JSONObject connectionData;
-    JSONObject userData;
+
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -79,12 +77,12 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private void syncCustomQuery(String data) throws Exception {
-        db = Trade.getWritableDatabase();
+        DB db = Trade.getWritableDatabase();
 
-        connectionData = new JSONObject( db.getOptions( DB.OPTION_CONNECTION ) );
-        userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
+        JSONObject connectionData = new JSONObject( db.getOptions( DB.OPTION_CONNECTION ) );
+        JSONObject userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
 
-        // Синхронизация только изменения
+
         try {
             // Параметры для соединения с сервером
             connectionData.put( Protocol.USER_DATA, userData );
