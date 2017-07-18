@@ -834,14 +834,19 @@
           "field": "so_name",
           "type": "text",
           "description": "Наименование объекта"
+        },
+        {
+          "field": "so_table",
+          "type": "text",
+          "description": "Название таблицы"
         }
       ],
       "values": [
         {
-          "so_name": "Звонки"
+          "so_name": "Звонки",
+          "so_table": "log_calls"
         }
-      ],
-      "nocreate": true
+      ]
     },
     {
       "table": "sync",
@@ -850,12 +855,33 @@
         {
           "field": "obj_id",
           "type": "integer",
-          "description": "Идентификатор таблицы"
+          "description": "Тип объекта"
         },
+        {
+          "field": "sdate",
+          "type": "integer",
+          "description": "Дата начало синхронизации"
+        },
+        {
+          "field": "edate",
+          "type": "integer",
+          "description": "Дата окончания синхронизации"
+        }
+      ]
+    },
+    {
+      "table": "sync_data",
+      "description": "Синхронизация данных, содержит ID строки",
+      "fields": [
         {
           "field": "any_id",
           "type": "integer",
           "description": "Идентификатор строки"
+        },
+        {
+          "field": "s_id",
+          "type": "integer",
+          "description": "Идентификатор синхронизации"
         }
       ]
     }

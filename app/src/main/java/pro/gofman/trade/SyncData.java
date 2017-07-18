@@ -669,6 +669,28 @@ public class SyncData extends IntentService {
                     // Получает ответы сервера после передачи данных
                     case Protocol.RESULT_SYNC: {
                         // Должно быть удаление успешно отправленных данных
+                        switch ( body.optString(Protocol.NAME) ) {
+
+
+                            // Ответ от отправки данных по звонкам
+                            case Protocol.SYNC_CALLS: {
+
+                                // Получили ответ по синхронизации по ID
+                                Integer SyncID = body.optInt(Protocol.ID, 0);
+
+                                // Удаляем данные
+
+
+                                // Удаляем данные из таблиц синхронизации
+
+
+                                break;
+                            }
+
+                            default:
+                                break;
+                        }
+
 
 
                     }
@@ -835,15 +857,14 @@ public class SyncData extends IntentService {
                         if (NeedSync) {
 
                             // Записываем данные в таблицу синхронизации и получаем ID синхронизации
-                            sql = "INSERT INTO sync (sdate) VALUES ( current_timestamp );\n" +
-                                    "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
-                                    " SELECT\n" +
-                                    "  1 as obj_id,\n" +
+                            sql = "INSERT INTO sync (obj_id, sdate) VALUES (1, current_timestamp );\n" +
+                                    "INSERT INTO sync_data (any_id, s_id)\n" +
+                            " SELECT\n" +
                                     "  c.ROWID as any_id,\n" +
                                     "  last_insert_rowid() as s_id\n" +
                                     "FROM\n" +
                                     "  log_calls c\n" +
-                                    "  LEFT JOIN sync_data sd ON (c.ROWID = sd.any_id AND sd.obj_id = 1)\n" +
+                                    "  LEFT JOIN sync_data sd ON (c.ROWID = sd.any_id)\n" +
                                     "WHERE\n" +
                                     "  sd.ROWID ISNULL;\n" +
                                     "SELECT sd.s_id FROM sync_data sd WHERE sd.ROWID = last_insert_rowid();\n";
@@ -899,6 +920,14 @@ public class SyncData extends IntentService {
                 }
 
                 return b;
+            }
+
+            private void clearSyncData( Integer SyncID ) {
+                // Узнаем тип объета который надо зачистить
+
+                String sql = "SELECT so.so_table FROM sync s JOIN sync_object so ON (s.obj_id = so.ROWID) WHERE s.ROWID = ?";
+
+
             }
 
             private void syncQuery(WebSocket w, String head ) throws Exception {
