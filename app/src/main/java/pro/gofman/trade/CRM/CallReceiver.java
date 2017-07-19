@@ -83,10 +83,12 @@ public class CallReceiver extends PhoneCallReceiver {
 
     @Override
     protected void onIncomingCallStarted(Context ctx, String number, Date start) {
+        Log.i("CallReceiver", "onIncomingCallStarted: " + number + " " + String.valueOf(start) );
     }
 
     @Override
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
+        Log.i("CallReceiver", "onOutgoingCallStarted: " + number + " " + String.valueOf(start) );
 
     }
 
