@@ -15,10 +15,10 @@ public class Protocol {
 
      */
 
-    protected static final String HEAD = "head";
-    protected static final String BODY = "body";
-    protected static final String NAME = "name";
-    protected static final String ID = "id";
+    public static final String HEAD = "head";
+    public static final String BODY = "body";
+    public static final String NAME = "name";
+    public static final String ID = "id";
 
     protected static final String CONNECTION_BEGIN = "BeginConnection";
 
@@ -67,6 +67,7 @@ public class Protocol {
     protected static final String SYNC_CALLS = "f020005s";
     protected static final String SYNC_COORDS = "f020004s";
 
+    public static final String SYNC_FCMTOKEN = "f010003s";
     protected static final String RESULT_SYNC = "f010004s";
 
 

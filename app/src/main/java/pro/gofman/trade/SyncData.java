@@ -695,12 +695,6 @@ public class SyncData extends IntentService {
 
                     }
 
-                    case Protocol.SYNC_CALLS: {
-                        // Сервер ответил на передачу данных о звонках, удаляем в мобильной базе
-
-
-
-                    }
 
                     default:
 
