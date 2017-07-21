@@ -33,6 +33,7 @@ public class Protocol {
 
     // Служебные атрибуты
     public static final String SYNC_ID = "sync";
+    public static final String TOKEN = "token";
     public static final String DATA = "data";
     public static final String RESULT = "result";
     public static final String FCM_TOKEN = "fcmToken";

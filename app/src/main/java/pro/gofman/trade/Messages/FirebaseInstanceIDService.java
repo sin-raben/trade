@@ -37,7 +37,7 @@ public class FirebaseInstanceIDService extends FirebaseInstanceIdService {
                             .put( Protocol.HEAD, Protocol.SYNC_FCMTOKEN )
                             .put( Protocol.BODY,
                                     new JSONObject()
-                                        .put( "token", refreshedToken )
+                                        .put( Protocol.TOKEN, refreshedToken )
                             )
             );
 

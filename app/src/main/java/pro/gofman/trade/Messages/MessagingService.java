@@ -39,6 +39,11 @@ public class MessagingService extends FirebaseMessagingService {
 
 
         // Получение данных от Firebase Cloud Messaging
+        // Приходят сообщения разного типа
+        //      Задание на синхронизацию
+        //      Новости с диалогом
+
+
         if (remoteMessage.getData().size() > 0) {
             Log.i(TAG, "DATA: " + remoteMessage.getData() );
             try {
