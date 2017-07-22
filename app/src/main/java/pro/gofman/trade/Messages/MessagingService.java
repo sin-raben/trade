@@ -4,6 +4,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -12,6 +15,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,17 +41,32 @@ public class MessagingService extends FirebaseMessagingService {
 
         Log.i(TAG, "FROM: " + remoteMessage.getFrom() );
 
-
         // Получение данных от Firebase Cloud Messaging
         // Приходят сообщения разного типа
-        //      Задание на синхронизацию
-        //      Новости с диалогом
+        //      Задание на синхронизацию (JSONArray)
+        //          Запрос координат или телефонных звонков
+        //      Новости с действиями (JSONObject)
+        //          Новости требующие отклика, обратной связи, последовательность действий
+        //      Новости связанные с объектами системы (JSONObject)
+        //          Добавлена новая номенклатура или контрагент, тап открывает карточку объекта
 
 
         if (remoteMessage.getData().size() > 0) {
             Log.i(TAG, "DATA: " + remoteMessage.getData() );
             try {
-                syncCustomQuery( String.valueOf(remoteMessage.getData()) );
+                // Получили объект с сервера, надо разобрать что это!
+                JSONObject data = new JSONObject( remoteMessage.getData().get( Protocol.NOTIFICATION_DATA ) );
+
+                // Обрабатываем запросы на синхронизацию
+                syncCustomQuery( data.optJSONArray( Protocol.NOTIFICATION_DATA ) );
+
+                // Показываем уведомление на экране
+                if ( data.optJSONObject(Protocol.NOTIFICATION_OBJECT) != null ) {
+                    sendNotification( data.optJSONObject(Protocol.NOTIFICATION_OBJECT) );
+                }
+
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -61,19 +80,28 @@ public class MessagingService extends FirebaseMessagingService {
 
     }
 
-    private void sendNotification(String body) {
+    private void sendNotification(JSONObject n) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.worker);
+
         NotificationCompat.Builder notifiBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Firebase Cloud Messaging")
-                .setContentText(body)
+                .setLargeIcon(largeIcon)
+                .setColor( Color.parseColor( n.optString(Protocol.NOTIFICATION_COLOR, "#4B8A08") ) )
+                .setStyle( new NotificationCompat.BigTextStyle().bigText( n.optString(Protocol.NOTIFICATION_BODY, "") ) )
+                .setContentTitle( n.optString(Protocol.NOTIFICATION_TITLE, "") )
+                .setContentText( n.optString(Protocol.NOTIFICATION_BODY, "") )
                 .setAutoCancel(true)
                 .setSound(notificationSound)
+                .setVibrate( new long[] { 1000, 1000, 1000, 1000, 1000 } )
+                .setLights(Color.MAGENTA, 500, 1000)
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -81,7 +109,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     }
 
-    private void syncCustomQuery(String data) throws Exception {
+    private void syncCustomQuery(JSONArray data) throws Exception {
         DB db = Trade.getWritableDatabase();
 
         JSONObject connectionData = new JSONObject( db.getOptions( DB.OPTION_CONNECTION ) );

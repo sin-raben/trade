@@ -333,11 +333,19 @@ public class SyncData extends IntentService {
                                 //getAmounts(websocket);
                             }
 
-                            // Делаем синхронизацию, инициатор сервер
+                            // Делаем синхронизацию, инициатор сервер,
+                            // CUSTOM_SYNC приходит через уведомления или системные изменения требующие отправки данных на сервер
                             if ( p.optBoolean( Protocol.CUSTOM_SYNC, false ) ) {
 
-                                // Отправляем журнал звонков
-                                syncQuery( websocket, Protocol.SYNC_CALLS );
+                                JSONObject obj = null;
+                                // Параметр DATA должен быть типа JSONArray
+                                for ( Integer i = 0; i < p.optJSONArray(Protocol.DATA).length(); i++ ) {
+
+
+                                    obj = p.optJSONArray(Protocol.DATA).getJSONObject(i);
+                                    syncQuery( websocket, obj.getString(Protocol.HEAD) );
+
+                                }
 
                             }
 

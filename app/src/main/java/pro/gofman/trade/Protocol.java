@@ -84,6 +84,19 @@ public class Protocol {
 
     protected static final String CMD_COORD = "3000";
 
+    // Описание уведомления
+    public static final String NOTIFICATION_OBJECT = "n";
+    public static final String NOTIFICATION_DATA = "d";
+    public static final String NOTIFICATION_TITLE = "t";
+    public static final String NOTIFICATION_BODY = "b";
+    public static final String NOTIFICATION_SMALLICON = "si";
+    public static final String NOTIFICATION_LARGEICON = "li";
+    public static final String NOTIFICATION_COLOR = "c";
+    public static final String NOTIFICATION_SOUND = "s";
+    public static final String NOTIFICATION_VIBRATE = "v";
+    public static final String NOTIFICATION_LIGHT = "l";
+
+
 
 
 

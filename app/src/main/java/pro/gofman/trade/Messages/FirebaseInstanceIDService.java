@@ -68,6 +68,7 @@ public class FirebaseInstanceIDService extends FirebaseInstanceIdService {
 
             Intent intent = new Intent( Trade.getAppContext(), SyncData.class);
             intent.setAction( Trade.SERVICE_SYNCDATA );
+            // Передаем только массив, когда CUSTOM_SYNC = true
             intent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
 
             startService( intent );
