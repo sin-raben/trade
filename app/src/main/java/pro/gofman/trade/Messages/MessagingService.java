@@ -2,6 +2,7 @@ package pro.gofman.trade.Messages;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -60,6 +61,11 @@ public class MessagingService extends FirebaseMessagingService {
                 // Обрабатываем запросы на синхронизацию
                 syncCustomQuery( data.optJSONArray( Protocol.NOTIFICATION_DATA ) );
 
+                // Загрузка объектов
+                //saveObjectDB( data.optJSONObject( Protocol.NOTIFICATION_DATA ) );
+
+
+
                 // Показываем уведомление на экране
                 if ( data.optJSONObject(Protocol.NOTIFICATION_OBJECT) != null ) {
                     sendNotification( data.optJSONObject(Protocol.NOTIFICATION_OBJECT) );
@@ -110,6 +116,9 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private void syncCustomQuery(JSONArray data) throws Exception {
+
+        Log.d(TAG, "syncCustomQuery: "+ data.toString());
+
         DB db = Trade.getWritableDatabase();
 
         JSONObject connectionData = new JSONObject( db.getOptions( DB.OPTION_CONNECTION ) );
@@ -131,5 +140,28 @@ public class MessagingService extends FirebaseMessagingService {
         intent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
 
         startService( intent );
+    }
+
+    private void saveObjectDB( JSONObject obj ) throws Exception {
+
+        DB db = Trade.getWritableDatabase();
+        JSONObject t = obj.optJSONObject( Protocol.DB_NEWS );
+        String[][] f =  Protocol.FIELDS_NEWS;
+
+        if ( t != null ) {
+
+            ContentValues cv = new ContentValues();
+            for (int j = 0; j < f.length; j++) {
+                if (f[j][2].equals("text")) {
+                    cv.put(f[j][0], t.getString(f[j][1]));
+                } else if (f[j][2].equals("int")) {
+                    cv.put(f[j][0], t.getInt(f[j][1]));
+                }
+
+            }
+            db.replace(Protocol.DB_NEWS, cv);
+
+        }
+
     }
 }

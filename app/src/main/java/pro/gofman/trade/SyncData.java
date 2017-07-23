@@ -341,30 +341,37 @@ public class SyncData extends IntentService {
                                 // Параметр DATA должен быть типа JSONArray
                                 for ( Integer i = 0; i < p.optJSONArray(Protocol.DATA).length(); i++ ) {
 
+                                    Log.d(Protocol.CUSTOM_SYNC, "onTextMessage1: " + p.optJSONArray(Protocol.DATA).getJSONObject(i).toString() );
+
 
                                     obj = p.optJSONArray(Protocol.DATA).getJSONObject(i);
-                                    syncQuery( websocket, obj.getString(Protocol.HEAD) );
+                                    Log.d(Protocol.CUSTOM_SYNC, " onTextMessage2: " + getBody( obj.getString(Protocol.HEAD) ).toString() );
+
+                                    JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : getBody( obj.getString(Protocol.HEAD) );
+
+
+                                    syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body );
+
+
+
+
+                                    // Надо придумать как разорвать соединение!!!
+                                    // Кол-во ответов должно быть равно количеству запросов
+
+
 
                                 }
 
                             }
 
-                        }
+                    }
 
                         break;
                     }
 
                     case Protocol.SYNC_NEWS: {
-                        String[][] a = {
-                                {"n_id", "n_id", "int"},
-                                {"n_date", "n_date", "text"},
-                                {"n_title", "n_title", "text"},
-                                {"n_text", "n_text", "text"},
-                                {"n_data", "n_data", "text"},
-                                {"n_type", "n_type", "int"}
-                        };
 
-                        syncFunction(websocket, Protocol.SYNC_NEWS, "news", a );
+                        syncFunction(websocket, Protocol.SYNC_NEWS, Protocol.DB_NEWS, Protocol.FIELDS_NEWS );
 
                         break;
                     }
@@ -843,8 +850,11 @@ public class SyncData extends IntentService {
             private JSONObject getBody(String head) throws Exception {
                 JSONObject b = new JSONObject();
 
+                Log.d("GETBODY", "getBody: " + head);
+
                 switch (head) {
 
+                    // obj_id = 1 - это звонки
                     case Protocol.SYNC_CALLS: {
                         // Проверяем есть ли данные для отправки на сервер
                         Boolean NeedSync = false;
@@ -852,52 +862,74 @@ public class SyncData extends IntentService {
                         Cursor c = db.rawQuery(sql, null);
                         if (c != null) {
                             NeedSync = c.getCount() > 0;
+
+                            Log.d("GETBODY", "getBody: " + String.valueOf( c.getCount() ) );
                             c.close();
                         }
 
+                        NeedSync = true;
 
                         if (NeedSync) {
 
                             // Записываем данные в таблицу синхронизации и получаем ID синхронизации
-                            sql = "INSERT INTO sync (obj_id, sdate) VALUES (1, current_timestamp );\n" +
-                                    "INSERT INTO sync_data (any_id, s_id)\n" +
-                            " SELECT\n" +
+                            /*sql = "INSERT INTO sync (sdate) VALUES ( current_timestamp )";
+                            db.execSQL(sql);
+
+                            sql = "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
+                                    "SELECT\n" +
+                                    "  1 as obj_id,\n" +
                                     "  c.ROWID as any_id,\n" +
                                     "  last_insert_rowid() as s_id\n" +
                                     "FROM\n" +
                                     "  log_calls c\n" +
-                                    "  LEFT JOIN sync_data sd ON (c.ROWID = sd.any_id)\n" +
+                                    "  LEFT JOIN sync_data sd ON (c.ROWID = sd.any_id AND sd.obj_id = 1)\n" +
                                     "WHERE\n" +
-                                    "  sd.ROWID ISNULL;\n" +
-                                    "SELECT sd.s_id FROM sync_data sd WHERE sd.ROWID = last_insert_rowid();\n";
+                                    "  sd.ROWID ISNULL;";
 
+                            db.execSQL(sql);
+
+                            sql = "SELECT sd.s_id as s_id FROM sync_data sd WHERE sd.ROWID = last_insert_rowid();";
+
+
+                            Log.d("GETBODY", "SQL: " + sql);
                             c = db.rawQuery(sql, null);
+                            Log.d("GETBODY", "rawQuery");
                             Integer SyncID = 0;
                             if (c != null) {
+                                Log.d("GETBODY", "getColumnCount: " + String.valueOf(c.getColumnCount()) );
                                 c.moveToFirst();
-                                SyncID = c.getInt( c.getColumnIndex("s_id") );
+                                SyncID = c.getInt( c.getColumnIndex( "s_id" ) );
+                                Log.d("GETBODY", "getBody: " + String.valueOf(SyncID) );
                                 c.close();
-                            }
+                            } else {
+                                Log.d("GETBODY", "Cursor null");
+                            }*/
+
+                            Integer SyncID = 28;
+
+                            Log.d("GETBODY", "SyncID: " + String.valueOf(SyncID));
 
                             // Формируем пакет данных для отправки на сервер
-                            sql = "SELECT c.* FROM sync_data s JOIN log_calls c ON (s.any_id = c.ROWID) WHERE s.obj_id = 1 AND s.s_id = ?";
-                            c = db.rawQuery(sql, new String[] { String.valueOf( SyncID ) });
+                            sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.ROWID AND sd.obj_id = 1) WHERE sd.s_id = ?";
+                            Cursor c2 = db.rawQuery(sql, new String[] { String.valueOf( SyncID ) });
                             if ( c != null ) {
-                                c.moveToFirst();
+                                Log.d("GETBODY", "getBody c2: " + String.valueOf(c2.getCount()));
+                                c2.moveToFirst();
                                 JSONArray a = new JSONArray();
                                 do {
+                                    Log.d("GETBODY", "getBody: " + c2.getString( c2.getColumnIndex("lc_phone") ) );
                                     a.put(
                                             new JSONObject()
-                                                .put("lc_id", c.getInt( c.getColumnIndex("ROWID") ) )
-                                                .put("lс_stime", c.getString( c.getColumnIndex("lс_stime") ))
-                                                .put("lc_billsec", c.getInt( c.getColumnIndex("lc_billsec") ))
-                                                .put("lc_phone", c.getString( c.getColumnIndex("lc_phone") ))
-                                                .put("lc_name", c.getString( c.getColumnIndex("lc_name") ))
-                                                .put("lc_incoming", c.getInt( c.getColumnIndex("lc_incoming") ))
+                                                //.put("lc_id", c2.getLong( c2.getColumnIndex("ROWID") ) )
+                                                .put("lс_stime", c2.getString( c2.getColumnIndex("lс_stime") ))
+                                                .put("lc_billsec", c2.getInt( c2.getColumnIndex("lc_billsec") ))
+                                                .put("lc_phone", c2.getString( c2.getColumnIndex("lc_phone") ))
+                                                .put("lc_name", c2.getString( c2.getColumnIndex("lc_name") ))
+                                                .put("lc_incoming", c2.getInt( c2.getColumnIndex("lc_incoming") ))
                                     );
 
-                                } while ( c.moveToNext() );
-                                c.close();
+                                } while ( c2.moveToNext() );
+                                c2.close();
 
                                 b.put( Protocol.ID, SyncID );
                                 b.put( Protocol.DATA, a );
@@ -906,6 +938,7 @@ public class SyncData extends IntentService {
 
                         }
 
+                        Log.d("GETBODY", "getBody: " + b.toString() );
                         return b;
                     }
 
@@ -946,7 +979,7 @@ public class SyncData extends IntentService {
 
                 r.put( Protocol.BODY, body );
 
-                Log.i( head, r.toString() );
+                Log.d( head, r.toString() );
                 w.sendText( r.toString() );
             }
 

@@ -853,11 +853,6 @@
       "description": "Синхронизация данных",
       "fields": [
         {
-          "field": "obj_id",
-          "type": "integer",
-          "description": "Тип объекта"
-        },
-        {
           "field": "sdate",
           "type": "integer",
           "description": "Дата начало синхронизации"
@@ -873,6 +868,11 @@
       "table": "sync_data",
       "description": "Синхронизация данных, содержит ID строки",
       "fields": [
+        {
+          "field": "obj_id",
+          "type": "integer",
+          "description": "Тип объекта"
+        },
         {
           "field": "any_id",
           "type": "integer",

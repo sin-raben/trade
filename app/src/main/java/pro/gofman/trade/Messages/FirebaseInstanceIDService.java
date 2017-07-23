@@ -43,12 +43,13 @@ public class FirebaseInstanceIDService extends FirebaseInstanceIdService {
 
             // Отправляем в сервис синхронизации
             syncCustomQuery( a );
-
+            Log.d(TAG, "data: " + a.toString() );
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         Log.d(TAG, "refreshedToken: " + refreshedToken);
+
         
     }
 

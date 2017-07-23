@@ -97,6 +97,20 @@ public class Protocol {
     public static final String NOTIFICATION_LIGHT = "l";
 
 
+    // Таблицы, надо придумать что более красивое
+    public static final String DB_NEWS = "news";
+
+
+    // Подгонка полей серверной базы под локальную
+    public static final String[][] FIELDS_NEWS = {
+        {"n_id", "n_id", "int"},
+        {"n_date", "n_date", "text"},
+        {"n_title", "n_title", "text"},
+        {"n_text", "n_text", "text"},
+        {"n_data", "n_data", "text"},
+        {"n_type", "n_type", "int"}
+    };
+
 
 
 
