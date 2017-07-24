@@ -331,7 +331,7 @@ public class DB {
 
             String result = "";
             String d;
-            Boolean pk, uk, wr;
+            Boolean pk, uk, wr, ai;
 
             if (length > 0) {
                 wr = false;
@@ -346,12 +346,17 @@ public class DB {
 
                     pk = a.getJSONObject(i).optBoolean("primary_key", false);
                     uk = a.getJSONObject(i).optBoolean("unique_key", false);
+                    ai = a.getJSONObject(i).optBoolean("autoincrement", false);
                     result += a.getJSONObject(i).getString("field") + " ";
                     d = i == length - 1 ? " " : ", ";
                     result += a.getJSONObject(i).getString("type");
                     if ( pk ) {
                         if ( !f ) result += " PRIMARY KEY";
                         wr = true;
+                    }
+                    if ( ai ) {
+                        if ( !f ) result += " AUTOINCREMENT";
+                        wr = false;
                     }
                     if ( uk ) {
                         result += " UNIQUE KEY";

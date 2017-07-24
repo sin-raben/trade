@@ -800,6 +800,13 @@
       "description": "Логирование звонков",
       "fields": [
         {
+          "field": "lc_id",
+          "type": "integer",
+          "description": "ID записи",
+          "primary_key": true,
+          "autoincrement": true
+        },
+        {
           "field": "lс_stime",
           "type": "text",
           "description": "Время начала звонка"
@@ -853,6 +860,13 @@
       "description": "Синхронизация данных",
       "fields": [
         {
+          "field": "s_id",
+          "type": "integer",
+          "description": "ID записи",
+          "primary_key": true,
+          "autoincrement": true
+        },
+        {
           "field": "sdate",
           "type": "integer",
           "description": "Дата начало синхронизации"
@@ -868,6 +882,13 @@
       "table": "sync_data",
       "description": "Синхронизация данных, содержит ID строки",
       "fields": [
+        {
+          "field": "sd_id",
+          "type": "integer",
+          "description": "ID записи",
+          "primary_key": true,
+          "autoincrement": true
+        },
         {
           "field": "obj_id",
           "type": "integer",

@@ -307,13 +307,13 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
 
 
-                            Cursor c = db.rawQuery("SELECT _rowid_, lc_stime, lc_billsec, lc_phone, lc_name, lc_incoming FROM log_calls", null);
-                            Log.d("CALLS", "SELECT rowid, lc_stime, lc_billsec, lc_phone, lc_name, lc_incoming FROM log_calls" );
+                            Cursor c = db.rawQuery("SELECT lc_id, lс_stime, lc_billsec, lc_phone, lc_name, lc_incoming FROM log_calls", null);
+                            Log.d("CALLS", "SELECT lc_id, lс_stime, lc_billsec, lc_phone, lc_name, lc_incoming FROM log_calls" );
                             if ( c != null ) {
                                 if ( c.moveToFirst() ) {
                                     do {
 
-                                        Log.d("CALLS", String.valueOf(c.getLong(c.getColumnIndex("_rowid_"))) + " " + c.getString( c.getColumnIndex("lс_stime") )  + " " + c.getString( c.getColumnIndex("lc_phone") )  );
+                                        Log.d("CALLS", String.valueOf(c.getLong(c.getColumnIndex("lc_id"))) + " " + c.getString( c.getColumnIndex("lс_stime") )  + " " + c.getString( c.getColumnIndex("lc_phone") )  );
 
 
                                     } while ( c.moveToNext() );

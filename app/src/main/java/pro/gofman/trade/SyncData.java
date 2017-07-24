@@ -858,7 +858,7 @@ public class SyncData extends IntentService {
                     case Protocol.SYNC_CALLS: {
                         // Проверяем есть ли данные для отправки на сервер
                         Boolean NeedSync = false;
-                        String sql = "SELECT c.ROWID as any_id FROM log_calls c LEFT JOIN sync_data sd ON (c.ROWID = sd.any_id AND sd.obj_id = 1) WHERE sd.ROWID ISNULL;";
+                        String sql = "SELECT c.lc_id as any_id FROM log_calls c LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1) WHERE sd.sd_id ISNULL;";
                         Cursor c = db.rawQuery(sql, null);
                         if (c != null) {
                             NeedSync = c.getCount() > 0;
@@ -905,12 +905,41 @@ public class SyncData extends IntentService {
                                 Log.d("GETBODY", "Cursor null");
                             }*/
 
-                            Integer SyncID = 28;
+                            sql = "INSERT INTO sync (sdate) VALUES ( current_timestamp );\n" +
+                                    "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
+                                    "SELECT\n" +
+                                    "  1 as obj_id,\n" +
+                                    "  c.lc_id as any_id,\n" +
+                                    "  last_insert_rowid() as s_id\n" +
+                                    "FROM\n" +
+                                    "  log_calls c\n" +
+                                    "  LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1)\n" +
+                                    "WHERE\n" +
+                                    "  sd.sd_id ISNULL;";
+
+                            db.execSQL(sql);
+
+                            sql = "SELECT sd.s_id FROM sync_data sd WHERE sd.sd_id = last_insert_rowid();";
+
+
+                            Log.d("GETBODY", "SQL: " + sql);
+                            Cursor c1 = db.rawQuery(sql, null);
+                            Log.d("GETBODY", "rawQuery");
+                            Long SyncID = 0L;
+                            if (c1 != null) {
+                                Log.d("GETBODY", "getColumnCount: " + String.valueOf(c1.getColumnCount()) );
+                                c1.moveToFirst();
+                                SyncID = c1.getLong( 0 );
+                                Log.d("GETBODY", "SyncID: " + String.valueOf(SyncID) );
+                                c1.close();
+                            }
+
+                            //Integer SyncID = 28;
 
                             Log.d("GETBODY", "SyncID: " + String.valueOf(SyncID));
 
                             // Формируем пакет данных для отправки на сервер
-                            sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.ROWID AND sd.obj_id = 1) WHERE sd.s_id = ?";
+                            sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.lc_id AND sd.obj_id = 1) WHERE sd.s_id = ?";
                             Cursor c2 = db.rawQuery(sql, new String[] { String.valueOf( SyncID ) });
                             if ( c != null ) {
                                 Log.d("GETBODY", "getBody c2: " + String.valueOf(c2.getCount()));
@@ -920,7 +949,7 @@ public class SyncData extends IntentService {
                                     Log.d("GETBODY", "getBody: " + c2.getString( c2.getColumnIndex("lc_phone") ) );
                                     a.put(
                                             new JSONObject()
-                                                //.put("lc_id", c2.getLong( c2.getColumnIndex("ROWID") ) )
+                                                .put("lc_id", c2.getLong( c2.getColumnIndex("lc_id") ) )
                                                 .put("lс_stime", c2.getString( c2.getColumnIndex("lс_stime") ))
                                                 .put("lc_billsec", c2.getInt( c2.getColumnIndex("lc_billsec") ))
                                                 .put("lc_phone", c2.getString( c2.getColumnIndex("lc_phone") ))
@@ -938,7 +967,7 @@ public class SyncData extends IntentService {
 
                         }
 
-                        Log.d("GETBODY", "getBody: " + b.toString() );
+                        Log.d("GETBODY", "getBody - b " + b.toString() );
                         return b;
                     }
 
