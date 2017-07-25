@@ -415,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
 
         dw = dwb.build();
 
-        //Log.i("FCM_TOKEN", Trade.getFcmToken());
+        Log.i("FCM_TOKEN", Trade.getFcmToken());
 
 
         // Уведомления

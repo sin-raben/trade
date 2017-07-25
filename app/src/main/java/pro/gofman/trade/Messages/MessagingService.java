@@ -40,7 +40,7 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        Log.i(TAG, "FROM: " + remoteMessage.getFrom() );
+        //Log.i(TAG, "FROM: " + remoteMessage.getFrom() );
 
         // Получение данных от Firebase Cloud Messaging
         // Приходят сообщения разного типа
@@ -59,22 +59,21 @@ public class MessagingService extends FirebaseMessagingService {
                 JSONObject data = new JSONObject( remoteMessage.getData().get( Protocol.NOTIFICATION_DATA ) );
 
                 // Обрабатываем запросы на синхронизацию
-                syncCustomQuery( data.optJSONArray( Protocol.NOTIFICATION_DATA ) );
+                if ( this.syncCustomQuery( data.optJSONArray( Protocol.NOTIFICATION_DATA ) ) ) {
+                    Log.i(TAG, "Запрос синхронизации выполнен" );
+                }
 
                 // Загрузка объектов
                 //saveObjectDB( data.optJSONObject( Protocol.NOTIFICATION_DATA ) );
 
 
-
                 // Показываем уведомление на экране
-                if ( data.optJSONObject(Protocol.NOTIFICATION_OBJECT) != null ) {
-                    sendNotification( data.optJSONObject(Protocol.NOTIFICATION_OBJECT) );
-                }
-
-
+//                if ( data.optJSONObject(Protocol.NOTIFICATION_OBJECT) != null ) {
+//                    sendNotification( data.optJSONObject(Protocol.NOTIFICATION_OBJECT) );
+//                }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
 
@@ -115,31 +114,32 @@ public class MessagingService extends FirebaseMessagingService {
 
     }
 
-    private void syncCustomQuery(JSONArray data) throws Exception {
+    private Boolean syncCustomQuery(JSONArray data)   {
 
-        Log.d(TAG, "syncCustomQuery: "+ data.toString());
-
+        Log.i(TAG, "syncCustomQuery: "+ data.toString() );
         DB db = Trade.getWritableDatabase();
 
-        JSONObject connectionData = new JSONObject( db.getOptions( DB.OPTION_CONNECTION ) );
-        JSONObject userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
-
-
         try {
+
+            JSONObject connectionData = new JSONObject( db.getOptions( DB.OPTION_CONNECTION ) );
+            JSONObject userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
+
             // Параметры для соединения с сервером
             connectionData.put( Protocol.USER_DATA, userData );
             connectionData.put( Protocol.CUSTOM_SYNC, true );
             connectionData.put( Protocol.DATA, data );
 
+            Intent intent = new Intent( Trade.getAppContext(), SyncData.class);
+            intent.setAction( Trade.SERVICE_SYNCDATA );
+            intent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
+
+            startService( intent );
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Intent intent = new Intent( Trade.getAppContext(), SyncData.class);
-        intent.setAction( Trade.SERVICE_SYNCDATA );
-        intent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
-
-        startService( intent );
+        return true;
     }
 
     private void saveObjectDB( JSONObject obj ) throws Exception {
