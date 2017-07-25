@@ -838,6 +838,12 @@
       "description": "Описание объектов, которые синхронизируются",
       "fields": [
         {
+          "field": "so_id",
+          "type": "integer",
+          "description": "ID записи",
+          "primary_key": true
+        },
+        {
           "field": "so_name",
           "type": "text",
           "description": "Наименование объекта"
@@ -850,6 +856,7 @@
       ],
       "values": [
         {
+          "so_id": 1,
           "so_name": "Звонки",
           "so_table": "log_calls"
         }

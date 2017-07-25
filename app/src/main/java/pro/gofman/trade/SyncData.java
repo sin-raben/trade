@@ -684,6 +684,7 @@ public class SyncData extends IntentService {
 
                                 // Получили ответ по синхронизации по ID
                                 Integer SyncID = body.optInt(Protocol.ID, 0);
+                                clearSyncData(SyncID);
 
                                 // Удаляем данные
 
@@ -971,12 +972,49 @@ public class SyncData extends IntentService {
                 return b;
             }
 
-            private void clearSyncData( Integer SyncID ) {
+            private Boolean clearSyncData( Integer SyncID ) {
+                if ( SyncID < 1 ) return false;
+
+                String so_table = "";
+                Integer obj_id = 0;
+
                 // Узнаем тип объета который надо зачистить
+                String sql = "SELECT so.so_table, so.so_id FROM sync s JOIN sync_object so ON (s.obj_id = so.so_id) WHERE s.s_id = " + String.valueOf(SyncID);
+                Cursor c = db.rawQuery(sql, null);
+                if ( c != null ) {
+                    c.moveToFirst();
+                    so_table = c.getString(0);
+                    obj_id = c.getInt(1);
+                    c.close();
+                }
 
-                String sql = "SELECT so.so_table FROM sync s JOIN sync_object so ON (s.obj_id = so.ROWID) WHERE s.ROWID = ?";
+                // Чистка таблицы с данными
+                switch (so_table) {
+
+                    case "log_calls": {
+                        sql = "DELETE FROM log_calls lc WHERE EXISTS ( SELECT sd.any_id FROM sync_data sd WHERE sd.obj_id = " + String.valueOf(obj_id) + " AND sd.any_id = lc.lc_id AND sd.s_id = "+ String.valueOf(SyncID) +" )";
+                        db.execSQL(sql);
+
+                        break;
+                    }
+
+                    default:
+
+                        break;
+
+                }
 
 
+                // Чистка таблицы синхронизации
+                sql = "DELETE FROM sync_data sd WHERE sd.obj_id = " + String.valueOf(obj_id) + " AND sd.s_id = " + so_table;
+                db.execSQL(sql);
+
+                sql = "DELETE FROM sync s WHERE s.s_id = " + String.valueOf(SyncID);
+                db.execSQL(sql);
+
+
+
+                return true;
             }
 
             private void syncQuery(WebSocket w, String head ) throws Exception {
