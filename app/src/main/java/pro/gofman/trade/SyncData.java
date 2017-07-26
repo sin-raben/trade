@@ -67,6 +67,7 @@ public class SyncData extends IntentService {
 
     private String head = "";
     private JSONObject body = null;
+    private Integer syncid = 0;
 
     private boolean mAuth = false;
 
@@ -289,6 +290,7 @@ public class SyncData extends IntentService {
 
                 result = new JSONObject(text);
                 head = result.getString( Protocol.HEAD );
+                syncid = result.optInt( Protocol.ID, 0 );
                 body = result.getJSONObject( Protocol.BODY );
 
                 ContentValues cv;
@@ -683,8 +685,9 @@ public class SyncData extends IntentService {
                             case Protocol.SYNC_CALLS: {
 
                                 // Получили ответ по синхронизации по ID
-                                Integer SyncID = body.optInt(Protocol.ID, 0);
-                                clearSyncData(SyncID);
+                                if ( syncid > 0 ) {
+                                    clearSyncData( syncid );
+                                }
 
                                 // Удаляем данные
 
@@ -842,6 +845,7 @@ public class SyncData extends IntentService {
             // Функция заполняет body для отправки данных на сервер
             private JSONObject getBody(String head) throws Exception {
                 JSONObject b = new JSONObject();
+                syncid = 0;
 
                 Log.i("GETBODY", "getBody: " + head);
 
@@ -906,17 +910,17 @@ public class SyncData extends IntentService {
                             sql = "SELECT last_insert_rowid()";
                             c = db.rawQuery(sql, null);
                             c.moveToFirst();
-                            Integer SyncID = c.getInt( 0 );
+                            syncid = c.getInt( 0 );
                             c.close();
 
-                            Log.i("GETBODY", "SyncID: " + String.valueOf(SyncID) );
+                            Log.i("GETBODY", "SyncID: " + String.valueOf(syncid) );
 
 
                             sql = "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
                                     "SELECT\n" +
                                     "  1 as obj_id,\n" +
                                     "  c.lc_id as any_id,\n" +
-                                    " " + String.valueOf(SyncID) +" as s_id\n" +
+                                    " " + String.valueOf(syncid) +" as s_id\n" +
                                     "FROM\n" +
                                     "  log_calls c\n" +
                                     "  LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1)\n" +
@@ -925,7 +929,7 @@ public class SyncData extends IntentService {
                             db.execSQL(sql);
 
                             // Формируем пакет данных для отправки на сервер
-                            sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.lc_id AND sd.obj_id = 1) WHERE sd.s_id = " + String.valueOf(SyncID);
+                            sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.lc_id AND sd.obj_id = 1) WHERE sd.s_id = " + String.valueOf(syncid);
                             c = db.rawQuery(sql, null);
                             if ( c != null ) {
                                 Log.d("GETBODY", "getBody c2: " + String.valueOf(c.getCount()));
@@ -946,12 +950,13 @@ public class SyncData extends IntentService {
                                 } while ( c.moveToNext() );
                                 c.close();
 
-                                b.put( Protocol.ID, SyncID );
+
                                 b.put( Protocol.DATA, a );
 
                             }
 
                         }
+
 
                         Log.i("GETBODY", "getBody - b " + b.toString() );
                         return b;
@@ -1027,6 +1032,10 @@ public class SyncData extends IntentService {
 
                 if (FullSync) {
                     body.put( Protocol.FULL_SYNC, true );
+                }
+
+                if ( syncid > 0 ) {
+                    r.put( Protocol.ID, syncid );
                 }
 
                 r.put( Protocol.BODY, body );
