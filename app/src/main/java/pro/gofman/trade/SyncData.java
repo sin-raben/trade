@@ -940,7 +940,7 @@ public class SyncData extends IntentService {
                                     a.put(
                                             new JSONObject()
                                                 .put("lc_id", c.getLong( c.getColumnIndex("lc_id") ) )
-                                                .put("lс_stime", c.getString( c.getColumnIndex("lс_stime") ))
+                                                .put("lс_stime", Integer.valueOf( c.getString( c.getColumnIndex("lс_stime") )))
                                                 .put("lc_billsec", c.getInt( c.getColumnIndex("lc_billsec") ))
                                                 .put("lc_phone", c.getString( c.getColumnIndex("lc_phone") ))
                                                 .put("lc_name", c.getString( c.getColumnIndex("lc_name") ))

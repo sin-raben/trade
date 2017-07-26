@@ -99,7 +99,7 @@ public class CallReceiver extends PhoneCallReceiver {
         db = Trade.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
-        cv.put("lс_stime", String.valueOf( start.getTime() ) );
+        cv.put("lс_stime", start.getTime()/1000 );
         long sec = (end.getTime() - start.getTime())/1000;
         cv.put("lc_billsec", sec);
         cv.put("lc_phone", number);
@@ -116,7 +116,8 @@ public class CallReceiver extends PhoneCallReceiver {
         db = Trade.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
-        cv.put("lс_stime", String.valueOf( start.getTime() ) );
+        long stime = start.getTime()/1000;
+        cv.put("lс_stime", stime );
         long sec = (end.getTime() - start.getTime())/1000;
         cv.put("lc_billsec", sec);
         cv.put("lc_phone", number);
@@ -135,7 +136,7 @@ public class CallReceiver extends PhoneCallReceiver {
         db = Trade.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
-        cv.put("lс_stime", String.valueOf( start.getTime() ) );
+        cv.put("lс_stime", start.getTime()/1000 );
         cv.put("lc_billsec", 0);
         cv.put("lc_phone", number);
         cv.put("lc_name", "");
