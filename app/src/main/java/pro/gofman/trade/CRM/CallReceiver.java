@@ -97,9 +97,9 @@ public class CallReceiver extends PhoneCallReceiver {
         Log.i("CallReceiver", "onIncomingCallEnded: " + number + " " + String.valueOf(start) + " " + String.valueOf(end));
 
         db = Trade.getWritableDatabase();
-
         ContentValues cv = new ContentValues();
-        cv.put("lс_stime", start.getTime()/1000 );
+        long stime = start.getTime()/1000;
+        cv.put("lc_stime", String.valueOf( stime ) );
         long sec = (end.getTime() - start.getTime())/1000;
         cv.put("lc_billsec", sec);
         cv.put("lc_phone", number);
@@ -114,10 +114,9 @@ public class CallReceiver extends PhoneCallReceiver {
         Log.i("CallReceiver", "onOutgoingCallEnded: " + number + " " + String.valueOf(start) + " " + String.valueOf(end));
 
         db = Trade.getWritableDatabase();
-
         ContentValues cv = new ContentValues();
         long stime = start.getTime()/1000;
-        cv.put("lс_stime", stime );
+        cv.put("lc_stime", String.valueOf( stime ) );
         long sec = (end.getTime() - start.getTime())/1000;
         cv.put("lc_billsec", sec);
         cv.put("lc_phone", number);
@@ -125,8 +124,6 @@ public class CallReceiver extends PhoneCallReceiver {
         cv.put("lc_incoming", 0);
 
         db.insert("log_calls", cv);
-
-
     }
 
     @Override
@@ -134,9 +131,9 @@ public class CallReceiver extends PhoneCallReceiver {
         Log.i("CallReceiver", "onMissedCall: " + number + " " + String.valueOf(start));
 
         db = Trade.getWritableDatabase();
-
         ContentValues cv = new ContentValues();
-        cv.put("lс_stime", start.getTime()/1000 );
+        long stime = start.getTime()/1000;
+        cv.put("lc_stime", String.valueOf( stime ) );
         cv.put("lc_billsec", 0);
         cv.put("lc_phone", number);
         cv.put("lc_name", "");

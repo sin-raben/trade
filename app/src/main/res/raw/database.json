@@ -807,7 +807,7 @@
           "autoincrement": true
         },
         {
-          "field": "lс_stime",
+          "field": "lc_stime",
           "type": "text",
           "description": "Время начала звонка"
         },
