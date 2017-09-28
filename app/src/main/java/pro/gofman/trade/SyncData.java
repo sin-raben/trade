@@ -340,13 +340,15 @@ public class SyncData extends IntentService {
                             if ( p.optBoolean( Protocol.CUSTOM_SYNC, false ) ) {
 
                                 JSONObject obj = null;
+                                JSONObject data = new JSONObject();
                                 // Параметр DATA должен быть типа JSONArray
                                 for ( Integer i = 0; i < p.optJSONArray(Protocol.DATA).length(); i++ ) {
 
                                     obj = p.optJSONArray(Protocol.DATA).getJSONObject(i);
-                                    JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : getBody( obj.getString(Protocol.HEAD) );
+                                    data = getSyncData( obj.getString(Protocol.HEAD) );
 
-                                    syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body );
+                                    JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : data.optJSONObject(Protocol.DATA);
+                                    syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body, data.optInt(Protocol.ID, 0) );
 
                                     // Надо придумать как разорвать соединение!!!
                                     // Нужно еще от сервера получить ответ и если положительный зачистить синхронизированные данные
@@ -843,11 +845,11 @@ public class SyncData extends IntentService {
             */
 
             // Функция заполняет body для отправки данных на сервер
-            private JSONObject getBody(String head) throws Exception {
+            private JSONObject getSyncData(String head) throws Exception {
                 JSONObject b = new JSONObject();
-                syncid = 0;
+                Integer syncid = 0;
 
-                Log.i("GETBODY", "getBody: " + head);
+                Log.i("GETBODY", "getData: " + head);
 
                 switch (head) {
 
@@ -865,9 +867,7 @@ public class SyncData extends IntentService {
                             Log.i("GETBODY", "getBody: " + String.valueOf( c.getCount() ) );
                             c.close();
                         }
-
-                        NeedSync = true;
-
+                        // Данные есть нужна синхронизация
                         if (NeedSync) {
 
                             // Записываем данные в таблицу синхронизации и получаем ID синхронизации
@@ -904,18 +904,22 @@ public class SyncData extends IntentService {
                                 Log.d("GETBODY", "Cursor null");
                             }*/
 
+
+                            // Добавляем в таблицу начало синхронизации
                             sql = "INSERT INTO sync (sdate) VALUES ( current_timestamp )";
                             db.execSQL(sql);
 
+
+                            // Получаем ID синхронизации
                             sql = "SELECT last_insert_rowid()";
                             c = db.rawQuery(sql, null);
                             c.moveToFirst();
                             syncid = c.getInt( 0 );
                             c.close();
-
                             Log.i("GETBODY", "SyncID: " + String.valueOf(syncid) );
 
 
+                            // Фиксируем данные для синхронизации на полученный ID синхронизации
                             sql = "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
                                     "SELECT\n" +
                                     "  1 as obj_id,\n" +
@@ -951,6 +955,7 @@ public class SyncData extends IntentService {
                                 c.close();
 
 
+                                b.put( Protocol.ID, syncid );
                                 b.put( Protocol.DATA, a );
 
                             }
@@ -1023,10 +1028,15 @@ public class SyncData extends IntentService {
             }
 
             private void syncQuery(WebSocket w, String head ) throws Exception {
-                syncCustomQuery(w, head, getBody(head) );
+
+                // Если функция синхронизации требует заполнение данными, заполняем или пустой объект
+                JSONObject data = getSyncData(head);
+
+                // Отправляем пакет для синхронизации
+                syncCustomQuery(w, head, data.optJSONObject(Protocol.DATA), data.optInt(Protocol.ID, 0) );
             }
 
-            private void syncCustomQuery(WebSocket w, String head, JSONObject body ) throws Exception {
+            private void syncCustomQuery(WebSocket w, String head, JSONObject body, Integer syncid ) throws Exception {
                 JSONObject r = new JSONObject();
                 r.put( Protocol.HEAD, head );
 
