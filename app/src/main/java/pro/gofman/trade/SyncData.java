@@ -686,7 +686,7 @@ public class SyncData extends IntentService {
                             // Ответ от отправки данных по звонкам
                             case Protocol.SYNC_CALLS: {
 
-                                // Получили ответ по синхронизации по ID
+                                // Получили ответ синхронизации по ID
                                 if ( syncid > 0 ) {
                                     clearSyncData( syncid );
                                 }
