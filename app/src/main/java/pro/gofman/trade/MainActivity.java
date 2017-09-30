@@ -357,6 +357,7 @@ public class MainActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
+                            // intent сделать глобальным, проверять на null, не стартовать сервис второй раз
                             Intent intent = new Intent(MainActivity.this, SyncData.class);
                             intent.setAction( Trade.SERVICE_SYNCDATA );
                             intent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );

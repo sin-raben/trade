@@ -65,9 +65,10 @@ public class SyncData extends IntentService {
     private String sql = "";
     private JSONObject result = null;
 
+
     private String head = "";
     private JSONObject body = null;
-    private Integer syncid = 0;
+    private Integer headid = 0;
     private Integer count = 1;
 
     private boolean mAuth = false;
@@ -181,7 +182,6 @@ public class SyncData extends IntentService {
 
                     if (ACTION_LOGCOORD_STOP.equals(action)) {
                         Log.d("StopService", "123");
-                        stopForeground(true);
                         stopSelf();
                     }
                 }
@@ -212,10 +212,6 @@ public class SyncData extends IntentService {
 
         final Boolean FullSync = p.optBoolean( Protocol.FULL_SYNC, false );
 
-
-
-
-        startForeground(778, n);
 
         String url = "";
         try {
@@ -289,9 +285,17 @@ public class SyncData extends IntentService {
             public void onTextMessage(WebSocket websocket, String text) throws Exception {
                 //Log.i("WS", "Text: " + text);
 
+
+                // Полученный JSONObject
                 result = new JSONObject(text);
+
+                // Заголовок имя функции
                 head = result.getString( Protocol.HEAD );
-                syncid = result.optInt( Protocol.ID, 0 );
+
+                // ID заголовка
+                headid = result.optInt( Protocol.ID, 0 );
+
+                // Тело функции содержит информацию и дополнительные параметры если они нужны
                 body = result.getJSONObject( Protocol.BODY );
 
                 ContentValues cv;
@@ -343,21 +347,13 @@ public class SyncData extends IntentService {
                             if ( p.optBoolean( Protocol.CUSTOM_SYNC, false ) ) {
 
                                 JSONObject obj = null;
-                                JSONObject data = new JSONObject();
                                 // Параметр DATA должен быть типа JSONArray
                                 for ( Integer i = 0; i < p.optJSONArray(Protocol.DATA).length(); i++ ) {
 
                                     obj = p.optJSONArray(Protocol.DATA).getJSONObject(i);
-                                    data = getSyncData( obj.getString(Protocol.HEAD) );
 
-                                    JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : data.optJSONObject(Protocol.DATA);
-                                    syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body, data.optInt(Protocol.ID, 0) );
-
-                                    // Надо придумать как разорвать соединение!!!
-                                    // Нужно еще от сервера получить ответ и если положительный зачистить синхронизированные данные
-                                    // Кол-во ответов должно быть равно количеству запросов
-
-
+                                    JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : getSyncData( obj.getString(Protocol.HEAD) );
+                                    syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body);
 
                                 }
 
@@ -533,6 +529,9 @@ public class SyncData extends IntentService {
 
                     // Получает ответы сервера после передачи данных
                     case Protocol.RESULT_SYNC: {
+
+                        Integer syncid = body.optInt( Protocol.SYNC_ID, 0 );
+
                         // Должно быть удаление успешно отправленных данных
                         switch ( body.optString(Protocol.NAME) ) {
 
@@ -659,54 +658,6 @@ public class SyncData extends IntentService {
 
             }
 
-            /*
-            public void sendCoord(WebSocket websocket) throws Exception {
-
-                Log.i("setCoord", "1");
-
-                websocket.sendText( db.getCoords2().toString() );
-            }
-
-
-            public void getPrices(WebSocket websocket) throws Exception {
-                JSONObject r = new JSONObject();
-                r.put( Protocol.HEAD, "getPrices" );
-
-                JSONObject body = new JSONObject();
-                body.put( Protocol.PRICE, "all" );
-                body.put( Protocol.PRICELISTS, "all" );
-                body.put( Protocol.LINK_PRICELISTS, "all" );
-
-                r.put(Protocol.BODY, body);
-
-                //Log.i("getCountragent", r.toString() );
-                websocket.sendText(r.toString());
-            }
-
-            public void getAmounts(WebSocket websocket) throws Exception {
-                JSONObject r = new JSONObject();
-                r.put( Protocol.HEAD, "getStocks" );
-
-                JSONObject body = new JSONObject();
-                body.put(Protocol.STORES, "all");
-                body.put(Protocol.LINK_STORES, "all");
-                body.put(Protocol.STOCKS, "all");
-
-                r.put( Protocol.BODY, body );
-
-                //Log.i("getCountragent", r.toString() );
-                websocket.sendText( r.toString() );
-            }
-
-            private void getNews(WebSocket w, JSONObject p) throws Exception {
-                JSONObject r = new JSONObject();
-                r.put( Protocol.HEAD, Protocol.SYNC_NEWS );
-                r.put( Protocol.BODY, p );
-
-                Log.i(Protocol.SYNC_NEWS, r.toString() );
-                w.sendText( r.toString() );
-            }
-            */
 
             // Функция заполняет body для отправки данных на сервер
             private JSONObject getSyncData(String head) throws Exception {
@@ -734,45 +685,9 @@ public class SyncData extends IntentService {
                         // Данные есть нужна синхронизация
                         if (NeedSync) {
 
-                            // Записываем данные в таблицу синхронизации и получаем ID синхронизации
-                            /*sql = "INSERT INTO sync (sdate) VALUES ( current_timestamp )";
-                            db.execSQL(sql);
-
-                            sql = "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
-                                    "SELECT\n" +
-                                    "  1 as obj_id,\n" +
-                                    "  c.ROWID as any_id,\n" +
-                                    "  last_insert_rowid() as s_id\n" +
-                                    "FROM\n" +
-                                    "  log_calls c\n" +
-                                    "  LEFT JOIN sync_data sd ON (c.ROWID = sd.any_id AND sd.obj_id = 1)\n" +
-                                    "WHERE\n" +
-                                    "  sd.ROWID ISNULL;";
-
-                            db.execSQL(sql);
-
-                            sql = "SELECT sd.s_id as s_id FROM sync_data sd WHERE sd.ROWID = last_insert_rowid();";
-
-
-                            Log.d("GETBODY", "SQL: " + sql);
-                            c = db.rawQuery(sql, null);
-                            Log.d("GETBODY", "rawQuery");
-                            Integer SyncID = 0;
-                            if (c != null) {
-                                Log.d("GETBODY", "getColumnCount: " + String.valueOf(c.getColumnCount()) );
-                                c.moveToFirst();
-                                SyncID = c.getInt( c.getColumnIndex( "s_id" ) );
-                                Log.d("GETBODY", "getBody: " + String.valueOf(SyncID) );
-                                c.close();
-                            } else {
-                                Log.d("GETBODY", "Cursor null");
-                            }*/
-
-
                             // Добавляем в таблицу начало синхронизации
                             sql = "INSERT INTO sync (sdate) VALUES ( current_timestamp )";
                             db.execSQL(sql);
-
 
                             // Получаем ID синхронизации
                             sql = "SELECT last_insert_rowid()";
@@ -781,7 +696,6 @@ public class SyncData extends IntentService {
                             syncid = c.getInt( 0 );
                             c.close();
                             Log.i("GETBODY", "SyncID: " + String.valueOf(syncid) );
-
 
                             // Фиксируем данные для синхронизации на полученный ID синхронизации
                             sql = "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
@@ -800,7 +714,6 @@ public class SyncData extends IntentService {
                             sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.lc_id AND sd.obj_id = 1) WHERE sd.s_id = " + String.valueOf(syncid);
                             c = db.rawQuery(sql, null);
                             if ( c != null ) {
-                                Log.d("GETBODY", "getBody c2: " + String.valueOf(c.getCount()));
                                 c.moveToFirst();
                                 JSONArray a = new JSONArray();
                                 do {
@@ -819,7 +732,7 @@ public class SyncData extends IntentService {
                                 c.close();
 
 
-                                b.put( Protocol.ID, syncid );
+                                b.put( Protocol.SYNC_ID, syncid );
                                 b.put( Protocol.DATA, a );
 
                             }
@@ -893,50 +806,49 @@ public class SyncData extends IntentService {
 
             private void syncQuery(WebSocket w, String head ) throws Exception {
 
-                // Если функция синхронизации требует заполнение данными, заполняем или пустой объект
-                JSONObject data = getSyncData(head);
-
-
-
-                Log.i("222","1111 " );
-
                 // Отправляем пакет для синхронизации
-                syncCustomQuery(w, head, data.optJSONObject(Protocol.DATA) == null ? new JSONObject() : data.optJSONObject(Protocol.DATA), data.optInt(Protocol.ID, 0) );
-                Log.i("333","1111");
+                syncCustomQuery( w, head, getSyncData(head) );
             }
 
-            private void syncCustomQuery(WebSocket w, String head, JSONObject body, Integer syncid ) throws Exception {
+            private void syncCustomQuery(WebSocket w, String head, JSONObject body) throws Exception {
                 count += 1;
-
                 Log.i("COUNT", String.valueOf(count) + " " + head );
+
                 JSONObject r = new JSONObject();
+
+                // Добавляем в пакет для отправки на сервер заголовок (имя функции)
                 r.put( Protocol.HEAD, head );
 
-                if (FullSync) {
+                // Добавляем в пакет для отправки на сервер признак полной синхронизации
+                if ( FullSync ) {
                     body.put( Protocol.FULL_SYNC, true );
                 }
 
-                if ( syncid > 0 ) {
-                    r.put( Protocol.ID, syncid );
+                // Добавлем в пакет отправки HEAD_ID который пришел с сервера
+                if ( headid > 0 ) {
+                    r.put( Protocol.ID, headid );
                 }
 
+                // Добавляем тело функции
                 r.put( Protocol.BODY, body );
 
                 Log.i( head, r.toString() );
                 w.sendText( r.toString() );
             }
 
+
+            // функция принимает данные от сервера и записывает в мобильную базу данных
             private void syncFunction(WebSocket w, String fun, String tn, String[][] f) throws Exception {
 
-                Log.i(fun, tn);
-
+                //Log.i(fun, tn);
+                // Получаем из тела функции набор данных который надо записать в базу данных
                 JSONArray items = body.optJSONArray( Protocol.DATA );
                 if ( items == null ) {
                     // Надо залогировать проблему
                     return;
                 }
 
-
+                // Если есть параметр FULLSYNC, то сначала обнуляем таблицу
                 if ( FullSync ) {
                     db.execSQL("DELETE FROM " + tn);
                 }
@@ -945,7 +857,6 @@ public class SyncData extends IntentService {
                 Integer SyncID = body.optInt( Protocol.SYNC_ID, 0);
 
                 try {
-
 
                     for (int i = 0; i < items.length(); i++ ) {
                         JSONObject t = items.getJSONObject(i);
@@ -966,10 +877,12 @@ public class SyncData extends IntentService {
                         //Log.i(tn, cv.getAsString(f[0][0]));
 
                     }
+
                 } catch (Exception e) {
                     Log.e("error", "syncFunction: ", e);
                 }
-                Log.i("COUNT", tn);
+
+                //Log.i("COUNT", tn);
 
                 // Отправляем ответ об успешном приеме данных
                 JSONObject r = new JSONObject();
@@ -980,10 +893,11 @@ public class SyncData extends IntentService {
                                 .put( Protocol.SYNC_ID, SyncID )
                                 .put( Protocol.RESULT, true )
                 );
+
                 count+=1;
                 Log.i("COUNT", String.valueOf(count) + " " + Protocol.RESULT_SYNC+" "+tn );
-                w.sendText( r.toString() );
 
+                w.sendText( r.toString() );
 
             }
 
