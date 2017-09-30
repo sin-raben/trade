@@ -969,13 +969,14 @@ public class SyncData extends IntentService {
                     Log.e("error", "syncFunction: ", e);
                 }
                 Log.i("COUNT", tn);
+
                 // Отправляем ответ об успешном приеме данных
                 JSONObject r = new JSONObject();
                 r.put( Protocol.HEAD, Protocol.RESULT_SYNC );
                 r.put( Protocol.BODY,
                         new JSONObject()
                                 .put( Protocol.NAME, fun )
-                                .put( Protocol.ID, SyncID )
+                                .put( Protocol.SYNC_ID, SyncID )
                                 .put( Protocol.RESULT, true )
                 );
                 count+=1;
