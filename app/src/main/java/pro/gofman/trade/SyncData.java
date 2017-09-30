@@ -569,12 +569,13 @@ public class SyncData extends IntentService {
                 }
 
 
-                count -=1;
-                Log.i("COUNT", String.valueOf(count) + " " + head + " -" );
+                count -= 1;
+                // Log.i("COUNT", String.valueOf(count) + " " + head + " -" );
 
-
+                // Больше не ждем данных можно и разорвать соединение
                 if ( count < 1 ) {
-                    websocket.disconnect();
+                    websocket.sendClose();
+                    // websocket.disconnect();
                 }
 
             }
