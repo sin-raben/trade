@@ -68,6 +68,7 @@ public class SyncData extends IntentService {
     private String head = "";
     private JSONObject body = null;
     private Integer syncid = 0;
+    private Integer count = 1;
 
     private boolean mAuth = false;
 
@@ -294,6 +295,7 @@ public class SyncData extends IntentService {
                 body = result.getJSONObject( Protocol.BODY );
 
                 ContentValues cv;
+
                 switch (head) {
                     case Protocol.AUTH_USER: {
                         // Успешная авторизация запуск процедуры обмена
@@ -312,8 +314,9 @@ public class SyncData extends IntentService {
                                 //getNews(websocket, par );
 
                                 // Запрашиваем номенклатуру и всё что с ней связано
-                                syncQuery( websocket, Protocol.SYNC_ITEMS );
-                                syncQuery( websocket, Protocol.SYNC_ITEMGROUPTYPES );
+                                syncQuery( websocket, Protocol.SYNC_ITEMS );                // 0.0001  дай мне товары
+
+                                syncQuery( websocket, Protocol.SYNC_ITEMGROUPTYPES );       // 3 дай мне группы но я тебе соберу кучу всякого барахла
                                 syncQuery( websocket, Protocol.SYNC_ITEMGROUPS );
                                 syncQuery( websocket, Protocol.SYNC_LINKITEMGROUP );
                                 syncQuery( websocket, Protocol.SYNC_ITEMUNITS );
@@ -448,8 +451,8 @@ public class SyncData extends IntentService {
                                 {"iu_height", "iu_height", "int"},
                                 {"iu_area", "iu_area", "int"},
                                 {"iu_volume", "iu_volume", "int"},
-                                {"iu_base", "iu_base", "int"},
-                                {"iu_main", "iu_main", "int"}
+                                {"iu_base", "iu_base", "bool"},
+                                {"iu_main", "iu_main", "bool"}
                         };
 
                         syncFunction(websocket, Protocol.SYNC_LINKITEMUNIT, "item_units", a );
@@ -472,7 +475,7 @@ public class SyncData extends IntentService {
                     case Protocol.SYNC_COUNTERAGENTS: {
                         String[][] a = {
                                 {"ca_id", "ca_id", "int"},
-                                {"ca_type", "ca_type", "int"},
+                                //{"ca_type", "ca_type", "int"},
                                 {"ca_name", "ca_name", "text"},
                                 {"ca_inn", "ca_inn", "text"},
                                 {"ca_kpp", "ca_kpp", "text"}
@@ -499,7 +502,7 @@ public class SyncData extends IntentService {
                         String[][] a = {
                                 {"ca_id", "ca_id", "int"},
                                 {"dp_id", "dp_id", "int"},
-                                {"dp_active", "lcp_active", "int"}
+                                {"dp_active", "lcp_active", "bool"}
                         };
                         syncFunction(websocket, Protocol.SYNC_LINKCOUNTERAGENTPOINT, "ca_dp_link", a );
                         break;
@@ -527,155 +530,6 @@ public class SyncData extends IntentService {
 
                         break;
                     }
-
-                    /*
-                    case "getStocks": {
-
-                        if (body.has(Protocol.STORES)) {
-
-                            db.execSQL("DELETE FROM stores");
-                            JSONArray ig = body.getJSONArray(Protocol.STORES);
-
-                            for (int i = 0; i < ig.length(); i++) {
-                                JSONObject t = ig.getJSONObject(i);
-
-                                cv = new ContentValues();
-                                cv.put("sr_id", t.getInt("sr_id"));
-                                cv.put("sr_type", t.getInt("sr_type"));
-                                cv.put("sr_name", t.getString("sr_name"));
-
-
-                                if (t.getInt("sr_id") > 0) {
-                                    db.insert("stores", cv);
-                                    Log.i("STORES", t.getString("sr_name"));
-                                }
-                            }
-                        }
-
-                        if (body.has(Protocol.LINK_STORES)) {
-
-                            db.execSQL("DELETE FROM store_link");
-                            JSONArray ig = body.getJSONArray(Protocol.LINK_STORES);
-
-                            for (int i = 0; i < ig.length(); i++) {
-                                JSONObject t = ig.getJSONObject(i);
-
-                                cv = new ContentValues();
-                                cv.put("srl_parent", t.getInt("sr_id"));
-                                cv.put("srl_child", t.getInt("sr_type"));
-                                cv.put("srl_prior", t.getInt("sr_name"));
-
-
-                                if (t.getInt("sr_id") > 0) {
-                                    db.insert("store_link", cv);
-                                    Log.i("LINK STORES", t.getString("sr_name"));
-                                }
-                            }
-                        }
-
-
-                        if (body.has(Protocol.STOCKS)) {
-
-                            db.execSQL("DELETE FROM stocks");
-                            JSONArray ig = body.getJSONArray(Protocol.STOCKS);
-
-                            for (int i = 0; i < ig.length(); i++) {
-                                JSONObject t = ig.getJSONObject(i);
-
-                                cv = new ContentValues();
-                                cv.put("i_id", t.getInt("i_id"));
-                                cv.put("sr_id", t.getInt("sr_id"));
-                                cv.put("sc_amount", t.getInt("sc_amount"));
-
-
-                                if (t.getInt("sc_amount") > 0) {
-                                    db.insert("stocks", cv);
-                                    Log.i("STOCKS", t.getString("sr_name"));
-                                }
-                            }
-                        }
-
-
-                    }
-
-                    case "getPrices": {
-
-
-                        //Log.i("getPrices", Boolean.toString(body.has(Protocol.PRICE)) );
-                        // Загрузка цен
-                        if ( body.has(Protocol.PRICE) ) {
-
-                            db.execSQL("DELETE FROM price");
-                            JSONArray ig = body.getJSONArray(Protocol.PRICE);
-
-                            for (int i = 0; i < ig.length(); i++) {
-                                JSONObject t = ig.getJSONObject(i);
-
-                                cv = new ContentValues();
-                                cv.put( "pl_id", t.getInt("pl_id") );
-                                cv.put( "i_id", t.getInt("i_id") );
-                                cv.put("p_date_b", t.getLong("p_date_b"));
-                                cv.put("p_date_e", t.getLong("p_date_e"));
-                                cv.put( "p_cn", t.getInt("p_cn") );
-
-                                //t.getDouble()
-
-                                if ( cv.getAsInteger("p_cn") > 0 ) {
-                                    db.insert("price", cv);
-                                    Log.i("PRICE", cv.getAsString("p_cn"));
-                                }
-                            }
-                        }
-
-                        Log.i("getPrices", Boolean.toString(body.has(Protocol.PRICELISTS)) );
-                        // Загрузка прайслистов
-                        if ( body.has(Protocol.PRICELISTS) ) {
-
-
-
-                            db.execSQL("DELETE FROM pricelists");
-                            JSONArray ig = body.getJSONArray(Protocol.PRICELISTS);
-
-                            for (int i = 0; i < ig.length(); i++) {
-                                JSONObject t = ig.getJSONObject(i);
-
-                                Log.i("getPrices", t.toString());
-
-                                cv = new ContentValues();
-                                cv.put( "pl_id", t.getInt("pl_id") );
-                                cv.put( "pl_name", t.getString("pl_name") );
-
-                                if ( !cv.getAsString("pl_name").isEmpty() ) {
-                                    db.insert("pricelists", cv);
-                                    Log.i("PRICELISTS", cv.getAsString("pl_name"));
-                                }
-                            }
-                        }
-
-
-                        // Загрузка связей прайслистов
-                        if ( body.has(Protocol.LINK_PRICELISTS) ) {
-
-                            db.execSQL("DELETE FROM pricelist_link");
-                            JSONArray ig = body.getJSONArray(Protocol.LINK_PRICELISTS);
-
-                            for (int i = 0; i < ig.length(); i++) {
-                                JSONObject t = ig.getJSONObject(i);
-
-                                cv = new ContentValues();
-                                cv.put( "pll_parent", t.getInt("pl_parent") );
-                                cv.put( "pll_child", t.getInt("pl_child") );
-                                cv.put( "pll_prior", t.getInt("pll_prior") );
-
-                                db.insert("pricelist_link", cv);
-                                Log.i("LINK_PRICELISTS", cv.getAsString("pll_parent"));
-
-                            }
-                        }
-
-                        break;
-                    }
-                    */
 
                     // Получает ответы сервера после передачи данных
                     case Protocol.RESULT_SYNC: {
@@ -712,6 +566,15 @@ public class SyncData extends IntentService {
                     default:
 
                         break;
+                }
+
+
+                count -=1;
+                Log.i("COUNT", String.valueOf(count) + " " + head + " -" );
+
+
+                if ( count < 1 ) {
+                    websocket.disconnect();
                 }
 
             }
@@ -1032,11 +895,19 @@ public class SyncData extends IntentService {
                 // Если функция синхронизации требует заполнение данными, заполняем или пустой объект
                 JSONObject data = getSyncData(head);
 
+
+
+                Log.i("222","1111 " );
+
                 // Отправляем пакет для синхронизации
-                syncCustomQuery(w, head, data.optJSONObject(Protocol.DATA), data.optInt(Protocol.ID, 0) );
+                syncCustomQuery(w, head, data.optJSONObject(Protocol.DATA) == null ? new JSONObject() : data.optJSONObject(Protocol.DATA), data.optInt(Protocol.ID, 0) );
+                Log.i("333","1111");
             }
 
             private void syncCustomQuery(WebSocket w, String head, JSONObject body, Integer syncid ) throws Exception {
+                count += 1;
+
+                Log.i("COUNT", String.valueOf(count) + " " + head );
                 JSONObject r = new JSONObject();
                 r.put( Protocol.HEAD, head );
 
@@ -1050,11 +921,14 @@ public class SyncData extends IntentService {
 
                 r.put( Protocol.BODY, body );
 
-                Log.d( head, r.toString() );
+                Log.i( head, r.toString() );
                 w.sendText( r.toString() );
             }
 
             private void syncFunction(WebSocket w, String fun, String tn, String[][] f) throws Exception {
+
+                Log.i(fun, tn);
+
                 JSONArray items = body.optJSONArray( Protocol.DATA );
                 if ( items == null ) {
                     // Надо залогировать проблему
@@ -1069,24 +943,32 @@ public class SyncData extends IntentService {
                 // Идентификатор синхронизации
                 Integer SyncID = body.optInt( Protocol.SYNC_ID, 0);
 
-                for (int i = 0; i < items.length(); i++ ) {
-                    JSONObject t = items.getJSONObject(i);
+                try {
 
-                    ContentValues cv = new ContentValues();
-                    for (int j = 0; j < f.length; j++ ) {
-                        if ( f[j][2].equals("text") ) {
-                            cv.put(f[j][0],  t.getString(f[j][1]));
-                        } else if ( f[j][2].equals("int") ) {
-                            cv.put(f[j][0],  t.getInt(f[j][1]));
+
+                    for (int i = 0; i < items.length(); i++ ) {
+                        JSONObject t = items.getJSONObject(i);
+
+                        ContentValues cv = new ContentValues();
+                        for (int j = 0; j < f.length; j++ ) {
+                            if ( f[j][2].equals("text") ) {
+                                cv.put(f[j][0],  t.getString(f[j][1]));
+                            } else if ( f[j][2].equals("int") ) {
+                                cv.put(f[j][0],  t.getInt(f[j][1]));
+                            } else if ( f[j][2].equals("bool") ) {
+                                cv.put(f[j][0],  t.getBoolean(f[j][1]));
+                            }
+
                         }
+                        db.replace(tn, cv);
+
+                        //Log.i(tn, cv.getAsString(f[0][0]));
 
                     }
-                    db.replace(tn, cv);
-
-                    Log.i(tn, cv.getAsString(f[0][0]));
-
+                } catch (Exception e) {
+                    Log.e("error", "syncFunction: ", e);
                 }
-
+                Log.i("COUNT", tn);
                 // Отправляем ответ об успешном приеме данных
                 JSONObject r = new JSONObject();
                 r.put( Protocol.HEAD, Protocol.RESULT_SYNC );
@@ -1096,8 +978,11 @@ public class SyncData extends IntentService {
                                 .put( Protocol.ID, SyncID )
                                 .put( Protocol.RESULT, true )
                 );
-
+                count+=1;
+                Log.i("COUNT", String.valueOf(count) + " " + Protocol.RESULT_SYNC+" "+tn );
                 w.sendText( r.toString() );
+
+
             }
 
 
@@ -1228,3 +1113,4 @@ public class SyncData extends IntentService {
 
 
 }
+
