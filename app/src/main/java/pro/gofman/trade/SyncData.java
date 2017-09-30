@@ -574,7 +574,7 @@ public class SyncData extends IntentService {
 
                 // Больше не ждем данных можно и разорвать соединение
                 if ( count < 1 ) {
-                    websocket.sendClose();
+                    websocket.sendClose(1000);
                     // websocket.disconnect();
                 }
 
