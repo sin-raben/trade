@@ -1,8 +1,10 @@
 package pro.gofman.trade;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -67,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
     private DB db;
     private JSONObject connectionData;
     private JSONObject userData;
+
+    private Intent SyncDataIntent = null;
+    private SyncDataReceive syncDataReceive;
+    private JSONObject SyncDataResult = new JSONObject();
 
 
     @Override
@@ -337,11 +343,15 @@ public class MainActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
-                            Intent intent = new Intent(MainActivity.this, SyncData.class);
-                            intent.setAction( Trade.SERVICE_SYNCDATA );
-                            intent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
+                            if ( SyncDataIntent == null ) {
+                                SyncDataIntent = new Intent(MainActivity.this, SyncData.class);
+                                SyncDataIntent.setAction( Trade.SERVICE_SYNCDATA );
+                                SyncDataIntent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
+                                startService( SyncDataIntent );
+                            } else {
+                                Toast.makeText(view.getContext(), "Синхронизация уже запущена!", Toast.LENGTH_SHORT).show();
+                            }
 
-                            startService( intent );
                             break;
                         }
 
@@ -357,12 +367,19 @@ public class MainActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
-                            // intent сделать глобальным, проверять на null, не стартовать сервис второй раз
-                            Intent intent = new Intent(MainActivity.this, SyncData.class);
-                            intent.setAction( Trade.SERVICE_SYNCDATA );
-                            intent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
 
-                            startService( intent );
+                            if ( SyncDataIntent == null ) {
+
+                                SyncDataIntent = new Intent(MainActivity.this, SyncData.class);
+                                SyncDataIntent.setAction( Trade.SERVICE_SYNCDATA );
+                                SyncDataIntent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
+                                startService( SyncDataIntent );
+
+                            } else {
+                                Toast.makeText(view.getContext(), "Синхронизация уже запущена!", Toast.LENGTH_SHORT).show();
+                            }
+
+
                             break;
                         }
 
@@ -450,9 +467,47 @@ public class MainActivity extends AppCompatActivity {
             */
         }
 
+        syncDataReceive = new SyncDataReceive();
+        IntentFilter intentFilter = new IntentFilter(
+            SyncData.ACTION_SYNCDATA
+        );
+        registerReceiver( syncDataReceive, intentFilter );
 
 
 
+
+
+
+
+
+
+
+
+    }
+
+    class SyncDataReceive extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String SyncData = intent.getStringExtra( pro.gofman.trade.SyncData.EXTRA_RESULT );
+
+            try {
+                SyncDataResult = new JSONObject( SyncData );
+
+                // Сервис синхронизация закончил свою работу
+                if ( SyncDataResult.optBoolean( "finish", false ) ) {
+                    stopService( SyncDataIntent );
+                    SyncDataIntent = null;
+
+                    Toast.makeText( context, "Синхронизация завершена!", Toast.LENGTH_SHORT).show();
+                }
+
+            } catch ( JSONException e ) {
+
+            }
+
+
+        }
     }
 
     private void OpenItems( String s ) {
@@ -500,7 +555,14 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if ( dw != null && dw.isDrawerOpen() ) {
             dw.closeDrawer();
-        } else
+        } else {
             super.onBackPressed();
         }
+
     }
+}
+
+
+
+
+

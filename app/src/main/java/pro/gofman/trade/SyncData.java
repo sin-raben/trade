@@ -59,6 +59,7 @@ public class SyncData extends IntentService {
     protected static final String ACTION_LOGCOORD_STOP = "pro.gofman.trade.action.logcoord_stop";
 
     protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.param";
+    protected static final String EXTRA_RESULT = "pro.gofman.trade.result";
 
 
     private DB db; //;
@@ -471,7 +472,6 @@ public class SyncData extends IntentService {
                     case Protocol.SYNC_COUNTERAGENTS: {
                         String[][] a = {
                                 {"ca_id", "ca_id", "int"},
-                                //{"ca_type", "ca_type", "int"},
                                 {"ca_name", "ca_name", "text"},
                                 {"ca_inn", "ca_inn", "text"},
                                 {"ca_kpp", "ca_kpp", "text"}
@@ -574,6 +574,12 @@ public class SyncData extends IntentService {
                 // Больше не ждем данных можно и разорвать соединение
                 if ( count < 1 ) {
                     websocket.sendClose(1000);
+
+                    Intent intent = new Intent();
+                    intent.setAction( ACTION_SYNCDATA );
+                    intent.putExtra( EXTRA_RESULT, new JSONObject().put("finish", true).toString() );
+                    sendBroadcast( intent );
+
                     // websocket.disconnect();
                 }
 
