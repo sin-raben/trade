@@ -103,7 +103,11 @@ public class MainActivity extends AppCompatActivity {
                     if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
 
                         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                        String imei = tm.getDeviceId();
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            String imei = tm.getImei();
+                        } else {
+                            String imei = tm.getDeviceId();
+                        }
 
                         Toast.makeText(this, "Доступ к телефону разрешен! ", Toast.LENGTH_LONG).show();
                     }
@@ -454,16 +458,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-
             /*
-
             Log.i("ПРИВЕТ", "dfdf");
 
             for (String key : getIntent().getExtras().keySet()) {
                 Object value = getIntent().getExtras().get(key);
                 Log.i("MainActivity", "Key: " + key + " Value: " + value);
             }
-
             */
         }
 

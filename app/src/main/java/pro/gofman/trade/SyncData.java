@@ -578,6 +578,7 @@ public class SyncData extends IntentService {
                 if ( count < 1 ) {
                     websocket.sendClose(1000);
 
+                    // Сообщаем MainActyvity что синхронизация окончена
                     Intent intent = new Intent();
                     intent.setAction( ACTION_SYNCDATA );
                     intent.putExtra( EXTRA_RESULT, new JSONObject().put("finish", true).toString() );
