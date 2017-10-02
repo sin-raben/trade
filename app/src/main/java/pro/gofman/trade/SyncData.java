@@ -354,7 +354,10 @@ public class SyncData extends IntentService {
                                     obj = p.optJSONArray(Protocol.DATA).getJSONObject(i);
 
                                     JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : getSyncData( obj.getString(Protocol.HEAD) );
-                                    syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body);
+
+                                    if ( body != null ) {
+                                        syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body);
+                                    }
 
                                 }
 
@@ -792,11 +795,9 @@ public class SyncData extends IntentService {
                     }
 
                     default:
-
                         break;
 
                 }
-
 
                 // Чистка таблицы синхронизации
                 sql = "DELETE FROM sync_data sd WHERE sd.obj_id = " + String.valueOf(obj_id) + " AND sd.s_id = " + so_table;
@@ -804,8 +805,6 @@ public class SyncData extends IntentService {
 
                 sql = "DELETE FROM sync s WHERE s.s_id = " + String.valueOf(SyncID);
                 db.execSQL(sql);
-
-
 
                 return true;
             }

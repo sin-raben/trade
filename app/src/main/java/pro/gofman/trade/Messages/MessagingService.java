@@ -35,6 +35,7 @@ import pro.gofman.trade.Trade;
 
 public class MessagingService extends FirebaseMessagingService {
     private static final String TAG = "FirebaseMessagingService";
+    private Context context = null;
 
 
     @Override
@@ -54,49 +55,57 @@ public class MessagingService extends FirebaseMessagingService {
 
         if (remoteMessage.getData().size() > 0) {
             Log.i(TAG, "DATA: " + remoteMessage.getData() );
+
+            context = Trade.getAppContext();
+
             try {
                 // Получили объект с сервера, надо разобрать что это!
                 JSONObject data = new JSONObject( remoteMessage.getData().get( Protocol.NOTIFICATION_DATA ) );
+                JSONArray arr;
+                JSONObject obj;
+
+                Log.i("MESSAGE", data.toString() );
 
                 // Обрабатываем запросы на синхронизацию
-                if ( this.syncCustomQuery( data.optJSONArray( Protocol.NOTIFICATION_DATA ) ) ) {
-                    Log.i(TAG, "Запрос синхронизации выполнен" );
+                arr = data.optJSONArray( Protocol.NOTIFICATION_DATA );
+                Log.i("MESSAGE-arr", String.valueOf( arr.length() ) );
+                if ( arr.length() > 0 ) {
+                    if ( this.syncCustomQuery( arr ) ) {
+                        Log.i(TAG, "Запрос передан в сервис синхронизации" );
+                    }
                 }
 
                 // Загрузка объектов
                 //saveObjectDB( data.optJSONObject( Protocol.NOTIFICATION_DATA ) );
 
 
-                // Показываем уведомление на экране
-//                if ( data.optJSONObject(Protocol.NOTIFICATION_OBJECT) != null ) {
-//                    sendNotification( data.optJSONObject(Protocol.NOTIFICATION_OBJECT) );
-//                }
+
+                // Прислали уведомление, показываем на экране
+                obj = data.getJSONObject( Protocol.NOTIFICATION_OBJECT );
+                //Log.i("MESSAGE-obj", obj.toString() );
+                if ( obj != null ) {
+                    sendNotification( context, obj );
+                }
 
             } catch (Exception e) {
                 //e.printStackTrace();
             }
         }
 
-        if (remoteMessage.getNotification() != null) {
-            Log.i(TAG, "BODY: " + remoteMessage.getNotification().getBody());
-
-            //sendNotification( remoteMessage.getNotification().getBody() );
-        }
-
     }
 
-    private void sendNotification(JSONObject n) {
+    private void sendNotification(Context context, JSONObject n) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
 
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.worker);
 
-        NotificationCompat.Builder notifiBuilder = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder notifiBuilder = new NotificationCompat.Builder(context, "ChannelID")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(largeIcon)
                 .setColor( Color.parseColor( n.optString(Protocol.NOTIFICATION_COLOR, "#4B8A08") ) )
@@ -106,7 +115,7 @@ public class MessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true)
                 .setSound(notificationSound)
                 .setVibrate( new long[] { 1000, 1000, 1000, 1000, 1000 } )
-                .setLights(Color.MAGENTA, 500, 1000)
+                .setLights(Color.RED, 500, 1000)
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -118,6 +127,8 @@ public class MessagingService extends FirebaseMessagingService {
 
         Log.i(TAG, "syncCustomQuery: "+ data.toString() );
         DB db = Trade.getWritableDatabase();
+
+
 
         try {
 
