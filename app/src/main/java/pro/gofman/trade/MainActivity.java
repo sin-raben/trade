@@ -8,9 +8,13 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -150,6 +154,23 @@ public class MainActivity extends AppCompatActivity {
         db = Trade.getWritableDatabase();
 
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            boolean inWhiteList = powerManager.isIgnoringBatteryOptimizations("pro.gofman.trade");
+
+            if ( ! inWhiteList ) {
+                // startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+
+
+                Intent intent = new
+                        Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                        Uri.parse("package:" + getPackageName()));
+                startActivity(intent);
+
+
+            }
+
+        }
 
         try {
             // Берем с базы данных информацию подключения к серверу и пользователе
@@ -161,8 +182,6 @@ public class MainActivity extends AppCompatActivity {
             if ( ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED ) {
                 ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_PHONE_STATE }, PERMISSION_REQUEST_CODE );
             }
-
-
 
         } catch (JSONException e) {
             e.printStackTrace();
