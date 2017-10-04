@@ -105,7 +105,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.worker);
 
-        NotificationCompat.Builder notifiBuilder = new NotificationCompat.Builder(context, "ChannelID")
+        NotificationCompat.Builder notifiBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(largeIcon)
                 .setColor( Color.parseColor( n.optString(Protocol.NOTIFICATION_COLOR, "#4B8A08") ) )

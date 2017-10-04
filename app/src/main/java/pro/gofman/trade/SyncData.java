@@ -316,12 +316,12 @@ public class SyncData extends IntentService {
                                 //sendCoord(websocket);
 
                                 // Запрос новостей
-                                //getNews(websocket, par );
+                                syncQuery( websocket, Protocol.SYNC_NEWS );
 
                                 // Запрашиваем номенклатуру и всё что с ней связано
-                                syncQuery( websocket, Protocol.SYNC_ITEMS );                // 0.0001  дай мне товары
+                                syncQuery( websocket, Protocol.SYNC_ITEMS );
 
-                                syncQuery( websocket, Protocol.SYNC_ITEMGROUPTYPES );       // 3 дай мне группы но я тебе соберу кучу всякого барахла
+                                syncQuery( websocket, Protocol.SYNC_ITEMGROUPTYPES );
                                 syncQuery( websocket, Protocol.SYNC_ITEMGROUPS );
                                 syncQuery( websocket, Protocol.SYNC_LINKITEMGROUP );
                                 syncQuery( websocket, Protocol.SYNC_ITEMUNITS );
@@ -748,7 +748,6 @@ public class SyncData extends IntentService {
                             }
 
                         }
-
 
                         Log.i("GETBODY", "getBody - b " + b.toString() );
                         return b;
