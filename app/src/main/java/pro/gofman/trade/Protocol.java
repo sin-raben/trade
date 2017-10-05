@@ -86,6 +86,7 @@ public class Protocol {
 
     // Описание уведомления
     public static final String NOTIFICATION_OBJECT = "n";
+    public static final String NOTIFICATION_DBDATA = "b";
     public static final String NOTIFICATION_DATA = "d";
     public static final String NOTIFICATION_TITLE = "t";
     public static final String NOTIFICATION_BODY = "b";

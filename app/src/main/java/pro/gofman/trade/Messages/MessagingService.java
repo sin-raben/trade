@@ -75,12 +75,13 @@ public class MessagingService extends FirebaseMessagingService {
                     }
                 }
 
-                // Загрузка объектов
-                //saveObjectDB( data.optJSONObject( Protocol.NOTIFICATION_DATA ) );
+                // Загрузка объектов в базу данных
+                saveObjectDB( data.optJSONArray( Protocol.NOTIFICATION_DBDATA ) );
 
 
 
                 // Прислали уведомление, показываем на экране
+                // Реализовать переход на привязанные объект, если он есть!!!
                 obj = data.getJSONObject( Protocol.NOTIFICATION_OBJECT );
                 //Log.i("MESSAGE-obj", obj.toString() );
                 if ( obj != null ) {
@@ -153,11 +154,14 @@ public class MessagingService extends FirebaseMessagingService {
         return true;
     }
 
-    private void saveObjectDB( JSONObject obj ) throws Exception {
+    // Сохранение объектов в базе данных
+    // Нужно добавить в JSON название функции
+    // Сделать цикл для загрузки всех элементов
+    private void saveObjectDB( JSONArray obj ) throws Exception {
 
         DB db = Trade.getWritableDatabase();
-        JSONObject t = obj.optJSONObject( Protocol.DB_NEWS );
-        String[][] f =  Protocol.FIELDS_NEWS;
+        JSONObject t = obj.optJSONObject(0);
+        String[][] f = Protocol.FIELDS_NEWS;
 
         if ( t != null ) {
 
@@ -167,6 +171,8 @@ public class MessagingService extends FirebaseMessagingService {
                     cv.put(f[j][0], t.getString(f[j][1]));
                 } else if (f[j][2].equals("int")) {
                     cv.put(f[j][0], t.getInt(f[j][1]));
+                } else if (f[j][2].equals("bool")) {
+                    cv.put(f[j][0], t.getBoolean(f[j][1]));
                 }
 
             }
