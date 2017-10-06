@@ -162,6 +162,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         switch ( head ) {
 
+            // Сохраняем новости
             case Protocol.SYNC_NEWS: {
 
                 String[][] f = Protocol.FIELDS_NEWS;

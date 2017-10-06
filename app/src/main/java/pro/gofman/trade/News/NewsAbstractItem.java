@@ -46,8 +46,8 @@ public class NewsAbstractItem extends AbstractItem<NewsAbstractItem, NewsAbstrac
     public void bindView(NewsAbstractItem.ViewHolder holder, List payloads) {
         super.bindView(holder, payloads);
 
-        holder.name.setText( this.no.getName() );
-        holder.description.setText( this.no.getDescription() );
+        holder.name.setText( this.no.getTitle() );
+        holder.description.setText( this.no.getText() );
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {

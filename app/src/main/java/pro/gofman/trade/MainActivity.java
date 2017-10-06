@@ -57,6 +57,7 @@ import pro.gofman.trade.Coords.CoordsActivity;
 import pro.gofman.trade.Countragents.DeliveryPointActivity;
 import pro.gofman.trade.Docs.DocsActivity;
 import pro.gofman.trade.Items.ItemsActivity;
+import pro.gofman.trade.News.NewsActivity;
 import pro.gofman.trade.PrintForms.UPD;
 
 public class MainActivity extends AppCompatActivity {
@@ -327,6 +328,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                         case 2003: {
                             // Оплаты покупателя
+
+                            Intent i = new Intent( MainActivity.this, NewsActivity.class );
+                            startActivity( i );
+
                             Toast.makeText(view.getContext(), R.string.door, Toast.LENGTH_SHORT).show();
 
                             break;
@@ -471,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
                     // Номенклатура
                     String s = "";
 
-                    OpenItems( s );
+                    //OpenItems( s );
                     break;
                 }
 
@@ -516,8 +521,10 @@ public class MainActivity extends AppCompatActivity {
 
                 // Сервис синхронизация закончил свою работу
                 if ( SyncDataResult.optBoolean( "finish", false ) ) {
-                    stopService( SyncDataIntent );
-                    SyncDataIntent = null;
+                    if (SyncDataIntent != null) {
+                        stopService(SyncDataIntent);
+                        SyncDataIntent = null;
+                    }
 
                     Toast.makeText( context, "Синхронизация завершена!", Toast.LENGTH_SHORT).show();
                 }

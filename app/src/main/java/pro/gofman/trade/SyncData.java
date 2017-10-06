@@ -879,7 +879,7 @@ public class SyncData extends IntentService {
                         }
                         db.replace(tn, cv);
 
-                        //Log.i(tn, cv.getAsString(f[0][0]));
+                        Log.i(tn, cv.getAsString(f[0][0]));
 
                     }
 
