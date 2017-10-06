@@ -76,9 +76,9 @@ public class MessagingService extends FirebaseMessagingService {
                 }
 
                 // Загрузка объектов в базу данных
-                saveObjectDB( data.optJSONArray( Protocol.NOTIFICATION_DBDATA ) );
-
-
+                if ( ! data.isNull( Protocol.NOTIFICATION_DBDATA ) ) {
+                    saveObjectDB( data.getJSONObject(Protocol.NOTIFICATION_DBDATA) );
+                }
 
                 // Прислали уведомление, показываем на экране
                 // Реализовать переход на привязанные объект, если он есть!!!
@@ -155,30 +155,123 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     // Сохранение объектов в базе данных
-    // Нужно добавить в JSON название функции
-    // Сделать цикл для загрузки всех элементов
-    private void saveObjectDB( JSONArray obj ) throws Exception {
+    private void saveObjectDB( JSONObject obj ) throws Exception {
 
         DB db = Trade.getWritableDatabase();
-        JSONObject t = obj.optJSONObject(0);
-        String[][] f = Protocol.FIELDS_NEWS;
+        String head = obj.optString( Protocol.NOTIFICATION_HEAD, "" );
 
-        if ( t != null ) {
+        switch ( head ) {
 
-            ContentValues cv = new ContentValues();
-            for (int j = 0; j < f.length; j++) {
-                if (f[j][2].equals("text")) {
-                    cv.put(f[j][0], t.getString(f[j][1]));
-                } else if (f[j][2].equals("int")) {
-                    cv.put(f[j][0], t.getInt(f[j][1]));
-                } else if (f[j][2].equals("bool")) {
-                    cv.put(f[j][0], t.getBoolean(f[j][1]));
-                }
+            case Protocol.SYNC_NEWS: {
 
+                String[][] f = Protocol.FIELDS_NEWS;
+                JSONArray items = obj.optJSONArray( Protocol.NOTIFICATION_DATA );
+
+                if ( items != null ) {
+
+                    for (int i = 0; i < items.length(); i++) {
+                        JSONObject t = items.optJSONObject(i);
+
+                        if ( t != null ) {
+
+                            ContentValues cv = new ContentValues();
+                            for (int j = 0; j < f.length; j++) {
+                                if (f[j][2].equals("text")) {
+                                    cv.put(f[j][0], t.getString(f[j][1]));
+                                } else if (f[j][2].equals("int")) {
+                                    cv.put(f[j][0], t.getInt(f[j][1]));
+                                } else if (f[j][2].equals("bool")) {
+                                    cv.put(f[j][0], t.getBoolean(f[j][1]));
+                                }
+                            }
+                            db.replace(Protocol.DB_NEWS, cv);
+                            Log.i("saveObjectDB", t.toString() );
+
+
+                        } // !null элемент массива
+
+                    } // Цикл по элементам массива
+
+                } // !null массив
+
+
+                break;
             }
-            db.replace(Protocol.DB_NEWS, cv);
 
+            default:
+                break;
         }
+
+
+
 
     }
 }
+
+
+/*
+
+  // функция принимает данные от сервера и записывает в мобильную базу данных
+            private void syncFunction(WebSocket w, String fun, String tn, String[][] f) throws Exception {
+
+                //Log.i(fun, tn);
+                // Получаем из тела функции набор данных который надо записать в базу данных
+                JSONArray items = body.optJSONArray( Protocol.DATA );
+                if ( items == null ) {
+                    // Надо залогировать проблему
+                    return;
+                }
+
+                // Если есть параметр FULLSYNC, то сначала обнуляем таблицу
+                if ( FullSync ) {
+                    db.execSQL("DELETE FROM " + tn);
+                }
+
+                // Идентификатор синхронизации
+                Integer SyncID = body.optInt( Protocol.SYNC_ID, 0);
+
+                try {
+
+                    for (int i = 0; i < items.length(); i++ ) {
+                        JSONObject t = items.getJSONObject(i);
+
+                        ContentValues cv = new ContentValues();
+                        for (int j = 0; j < f.length; j++ ) {
+                            if ( f[j][2].equals("text") ) {
+                                cv.put(f[j][0],  t.getString(f[j][1]));
+                            } else if ( f[j][2].equals("int") ) {
+                                cv.put(f[j][0],  t.getInt(f[j][1]));
+                            } else if ( f[j][2].equals("bool") ) {
+                                cv.put(f[j][0],  t.getBoolean(f[j][1]));
+                            }
+
+                        }
+                        db.replace(tn, cv);
+
+                        //Log.i(tn, cv.getAsString(f[0][0]));
+
+                    }
+
+                } catch (Exception e) {
+                    Log.e("error", "syncFunction: ", e);
+                }
+
+                //Log.i("COUNT", tn);
+
+                // Отправляем ответ об успешном приеме данных
+                JSONObject r = new JSONObject();
+                r.put( Protocol.HEAD, Protocol.RESULT_SYNC );
+                r.put( Protocol.BODY,
+                        new JSONObject()
+                                .put( Protocol.NAME, fun )
+                                .put( Protocol.SYNC_ID, SyncID )
+                                .put( Protocol.RESULT, true )
+                );
+
+                count+=1;
+                Log.i("COUNT", String.valueOf(count) + " " + Protocol.RESULT_SYNC+" "+tn );
+
+                w.sendText( r.toString() );
+
+            }
+ */

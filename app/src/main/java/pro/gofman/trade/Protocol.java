@@ -49,27 +49,27 @@ public class Protocol {
     protected static final String STOCKS = "stocks";
 
     // Функции синхронизации
-    protected static final String SYNC_NEWS = "f020018g";
-    protected static final String SYNC_ITEMS = "f020006g";
-    protected static final String SYNC_ITEMGROUPTYPES = "f020007g";
-    protected static final String SYNC_ITEMGROUPS = "f020008g";
-    protected static final String SYNC_LINKITEMGROUP = "f020009g";
-    protected static final String SYNC_ITEMUNITS = "f020010g";
-    protected static final String SYNC_LINKITEMUNIT = "f020011g";
-    protected static final String SYNC_ITEMSEARCH = "f020012g";
+    public static final String SYNC_NEWS = "f020018g";
+    public static final String SYNC_ITEMS = "f020006g";
+    public static final String SYNC_ITEMGROUPTYPES = "f020007g";
+    public static final String SYNC_ITEMGROUPS = "f020008g";
+    public static final String SYNC_LINKITEMGROUP = "f020009g";
+    public static final String SYNC_ITEMUNITS = "f020010g";
+    public static final String SYNC_LINKITEMUNIT = "f020011g";
+    public static final String SYNC_ITEMSEARCH = "f020012g";
 
-    protected static final String SYNC_COUNTERAGENTS = "f020013g";
-    protected static final String SYNC_DELIVERYPOINTS = "f020014g";
-    protected static final String SYNC_LINKCOUNTERAGENTPOINT = "f020015g";
-    protected static final String SYNC_COUNTERAGENTADDRESS = "f020016g";
-    protected static final String SYNC_POINTSEARCH = "f020017g";
+    public static final String SYNC_COUNTERAGENTS = "f020013g";
+    public static final String SYNC_DELIVERYPOINTS = "f020014g";
+    public static final String SYNC_LINKCOUNTERAGENTPOINT = "f020015g";
+    public static final String SYNC_COUNTERAGENTADDRESS = "f020016g";
+    public static final String SYNC_POINTSEARCH = "f020017g";
 
 
-    protected static final String SYNC_CALLS = "f020005s";
-    protected static final String SYNC_COORDS = "f020004s";
+    public static final String SYNC_CALLS = "f020005s";
+    public static final String SYNC_COORDS = "f020004s";
 
     public static final String SYNC_FCMTOKEN = "f010003s";
-    protected static final String RESULT_SYNC = "f010004s";
+    public static final String RESULT_SYNC = "f010004s";
 
 
 
@@ -87,6 +87,7 @@ public class Protocol {
     // Описание уведомления
     public static final String NOTIFICATION_OBJECT = "n";
     public static final String NOTIFICATION_DBDATA = "b";
+    public static final String NOTIFICATION_HEAD = "h";
     public static final String NOTIFICATION_DATA = "d";
     public static final String NOTIFICATION_TITLE = "t";
     public static final String NOTIFICATION_BODY = "b";
