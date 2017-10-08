@@ -68,10 +68,12 @@ public class MessagingService extends FirebaseMessagingService {
 
                 // Обрабатываем запросы на синхронизацию
                 arr = data.optJSONArray( Protocol.NOTIFICATION_DATA );
-                Log.i("MESSAGE-arr", String.valueOf( arr.length() ) );
-                if ( arr.length() > 0 ) {
-                    if ( this.syncCustomQuery( arr ) ) {
-                        Log.i(TAG, "Запрос передан в сервис синхронизации" );
+                if ( arr != null ) {
+                    if (arr.length() > 0) {
+                        Log.i("MESSAGE-arr", String.valueOf( arr.length() ) );
+                        if ( this.syncCustomQuery(arr) ) {
+                            Log.i(TAG, "Запрос передан в сервис синхронизации");
+                        }
                     }
                 }
 
@@ -82,14 +84,15 @@ public class MessagingService extends FirebaseMessagingService {
 
                 // Прислали уведомление, показываем на экране
                 // Реализовать переход на привязанные объект, если он есть!!!
-                obj = data.getJSONObject( Protocol.NOTIFICATION_OBJECT );
-                //Log.i("MESSAGE-obj", obj.toString() );
+                obj = data.optJSONObject( Protocol.NOTIFICATION_OBJECT );
+                //
                 if ( obj != null ) {
+                    Log.i("MESSAGE-obj", obj.toString() );
                     sendNotification( context, obj );
                 }
 
             } catch (Exception e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
         }
 
@@ -113,6 +116,7 @@ public class MessagingService extends FirebaseMessagingService {
                 .setStyle( new NotificationCompat.BigTextStyle().bigText( n.optString(Protocol.NOTIFICATION_BODY, "") ) )
                 .setContentTitle( n.optString(Protocol.NOTIFICATION_TITLE, "") )
                 .setContentText( n.optString(Protocol.NOTIFICATION_BODY, "") )
+                .setTicker("Hello")
                 .setAutoCancel(true)
                 .setSound(notificationSound)
                 .setVibrate( new long[] { 1000, 1000, 1000, 1000, 1000 } )

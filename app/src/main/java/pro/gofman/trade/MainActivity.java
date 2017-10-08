@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -470,16 +471,23 @@ public class MainActivity extends AppCompatActivity {
 
             String cmd = getIntent().getExtras().getString( Protocol.COMMAND_SERVER );
 
-            switch ( cmd ) {
-                case Protocol.CMD_OPENITEMS: {
+            if ( cmd != null ) {
 
-                    // Номенклатура
-                    String s = "";
 
-                    //OpenItems( s );
-                    break;
+                switch (cmd) {
+                    case Protocol.CMD_OPENITEMS: {
+
+                        // Номенклатура
+                        String s = "";
+
+                        //OpenItems( s );
+                        break;
+                    }
+
+                    default:
+                        break;
+
                 }
-
             }
 
             /*
@@ -497,6 +505,7 @@ public class MainActivity extends AppCompatActivity {
             SyncData.ACTION_SYNCDATA
         );
         registerReceiver( syncDataReceive, intentFilter );
+
 
 
 
@@ -572,6 +581,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        unregisterReceiver( syncDataReceive );
         super.onDestroy();
     }
 
