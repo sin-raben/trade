@@ -947,6 +947,10 @@ public class SyncData extends IntentService {
     }
 
 
+    private void workWithLocation() {
+
+    }
+
 
     /**
      * Handle action Baz in the provided background thread with the provided

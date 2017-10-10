@@ -27,6 +27,9 @@ import pro.gofman.trade.R;
 import pro.gofman.trade.SyncData;
 import pro.gofman.trade.Trade;
 
+import static pro.gofman.trade.Utils.sendNotification;
+
+
 /**
  * Created by gofman on 15.06.17.
  */
@@ -98,7 +101,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     }
 
-    private void sendNotification(Context context, JSONObject n) {
+   /* private void sendNotification(Context context, JSONObject n) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -126,7 +129,7 @@ public class MessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, notifiBuilder.build() );
 
-    }
+    }*/
 
     private Boolean syncCustomQuery(JSONArray data)   {
 

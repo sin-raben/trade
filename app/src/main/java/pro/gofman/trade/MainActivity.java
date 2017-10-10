@@ -519,6 +519,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // Функция принимает данные от сервиса синхронизации
     class SyncDataReceive extends BroadcastReceiver {
 
         @Override
