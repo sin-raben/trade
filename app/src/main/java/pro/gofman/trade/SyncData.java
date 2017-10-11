@@ -352,13 +352,19 @@ public class SyncData extends IntentService {
                                 for ( Integer i = 0; i < p.optJSONArray(Protocol.DATA).length(); i++ ) {
 
                                     obj = p.optJSONArray(Protocol.DATA).getJSONObject(i);
+                                    if ( obj != null) {
+                                        // Запрос координат нужно сначала получить координаты
+                                        if (obj.optString(Protocol.HEAD, "").equals( Protocol.SYNC_COORDS )) {
 
-                                    JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : getSyncData( obj.getString(Protocol.HEAD) );
+                                        } else {
+                                            // Запросы остальных функций
+                                            JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : getSyncData(obj.getString(Protocol.HEAD));
 
-                                    if ( body != null ) {
-                                        syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body);
+                                            if (body != null) {
+                                                syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body);
+                                            }
+                                        }
                                     }
-
                                 }
 
                             }

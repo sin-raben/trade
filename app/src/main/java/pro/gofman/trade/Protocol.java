@@ -98,6 +98,10 @@ public class Protocol {
     public static final String NOTIFICATION_VIBRATE = "v";
     public static final String NOTIFICATION_LIGHT = "l";
 
+    public static final int LOCATION_UPDATE_INTERVAL = 60000;
+    public static final long LOCATION_FASTEST_UPDATE_INTERVAL = 30000;
+    public static final long LOCATION_MAX_WAIT_TIME = LOCATION_UPDATE_INTERVAL * 5;
+
 
     // Таблицы, надо придумать что более красивое
     public static final String DB_NEWS = "news";

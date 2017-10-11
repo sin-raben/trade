@@ -11,14 +11,27 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.preference.PreferenceManager;
+import android.location.Location;
 
 import org.json.JSONObject;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.List;
+
 
 /**
  * Created by gofman on 10.10.17.
  */
 
 public class Utils {
+    final static String KEY_LOCATION_UPDATES_REQUESTED = "location-updates-requested";
+    final static String KEY_LOCATION_UPDATES_RESULT = "location-update-result";
 
     public static void sendNotification(Context context, JSONObject n) {
 
@@ -69,4 +82,58 @@ public class Utils {
         notificationManager.notify(0, notifiBuilder.build() );
 
     }
+
+
+    public static void createLocationRequest( LocationRequest lr ) {
+
+        lr = new LocationRequest();
+
+        lr.setInterval( Protocol.LOCATION_UPDATE_INTERVAL );
+        lr.setFastestInterval( Protocol.LOCATION_FASTEST_UPDATE_INTERVAL );
+        lr.setPriority( LocationRequest.PRIORITY_HIGH_ACCURACY );
+        lr.setMaxWaitTime( Protocol.LOCATION_MAX_WAIT_TIME );
+
+    }
+
+    public static String getLocationResultTitle(Context context, List<Location> locations) {
+        String numLocationsReported = context.getResources().getQuantityString(
+                R.plurals.num_locations_reported, locations.size(), locations.size());
+        return numLocationsReported + ": " + DateFormat.getDateTimeInstance().format(new Date());
+    }
+
+    /**
+     * Returns te text for reporting about a list of  {@link Location} objects.
+     *
+     * @param locations List of {@link Location}s.
+     */
+    public static String getLocationResultText(Context context, List<Location> locations) {
+        if (locations.isEmpty()) {
+            return "Координат нет";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Location location : locations) {
+            sb.append("(");
+            sb.append(location.getLatitude());
+            sb.append(", ");
+            sb.append(location.getLongitude());
+            sb.append(")");
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static void setLocationUpdatesResult(Context context, List<Location> locations) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(KEY_LOCATION_UPDATES_RESULT, getLocationResultTitle(context, locations)
+                        + "\n" + getLocationResultText(context, locations))
+                .apply();
+    }
+
+    public static String getLocationUpdatesResult(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(KEY_LOCATION_UPDATES_RESULT, "");
+    }
+
+
 }
