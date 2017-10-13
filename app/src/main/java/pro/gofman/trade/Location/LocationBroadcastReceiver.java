@@ -7,8 +7,12 @@ import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.location.LocationResult;
+
+import org.json.JSONObject;
+
 import java.util.List;
 
+import pro.gofman.trade.Protocol;
 import pro.gofman.trade.Utils;
 
 /**
@@ -30,7 +34,19 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
 
                     List<Location> locations = result.getLocations();
                     Utils.setLocationUpdatesResult(context, locations);
-                    Utils.sendNotification(context, Utils.getLocationResultTitle(context, locations));
+
+                    try {
+
+                        Utils.sendNotification(
+                                context,
+                                new JSONObject()
+                                        .put( Protocol.NOTIFICATION_TITLE, Utils.getLocationResultTitle(context, locations) )
+                                        .put( Protocol.NOTIFICATION_BODY, "Тест" )
+                        );
+
+                    } catch (Exception e) {
+
+                    }
                     Log.i("", Utils.getLocationUpdatesResult(context));
                 }
             }

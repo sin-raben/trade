@@ -19,12 +19,18 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.ServiceCompat;
 import android.support.v4.database.DatabaseUtilsCompat;
 import android.util.Log;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.neovisionaries.ws.client.OpeningHandshakeException;
 import com.neovisionaries.ws.client.ThreadType;
 import com.neovisionaries.ws.client.WebSocket;
@@ -40,8 +46,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -77,6 +86,10 @@ public class SyncData extends IntentService {
     private NotificationManager mNM;
 
 
+    private LocationRequest mLocationRequest;
+    private FusedLocationProviderClient mFusedLocationClient;
+
+
     public SyncData() {
         super("SyncData");
     }
@@ -86,6 +99,9 @@ public class SyncData extends IntentService {
         super.onCreate();
         db = Trade.getWritableDatabase();
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient( Trade.getAppContext() );
+        Utils.createLocationRequest( mLocationRequest );
     }
 
     @Override
@@ -355,7 +371,18 @@ public class SyncData extends IntentService {
                                     if ( obj != null) {
                                         // Запрос координат нужно сначала получить координаты
                                         if (obj.optString(Protocol.HEAD, "").equals( Protocol.SYNC_COORDS )) {
+                                            Log.i("CUSTOM_SYNC", "1");
+                                            try {
 
+
+                                                mFusedLocationClient.getLastLocation().addOnCompleteListener( onCompleteListener );
+
+
+
+
+                                            } catch ( SecurityException e ) {
+                                                Log.i("CUSTOM_SYNC", "2");
+                                            }
                                         } else {
                                             // Запросы остальных функций
                                             JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : getSyncData(obj.getString(Protocol.HEAD));
@@ -1041,6 +1068,28 @@ public class SyncData extends IntentService {
         //Log.i("LOG", "6");
 
     }
+
+    private OnCompleteListener onCompleteListener = new OnCompleteListener<Location>() {
+        @Override
+        public void onComplete(@NonNull Task<Location> task) {
+            Location mLastLocation;
+            if (task.isSuccessful() && task.getResult() != null) {
+
+                mLastLocation = task.getResult();
+
+
+                Log.i("OnCompleteListener", String.format(Locale.ROOT, "%s: %f х %f",
+                        "lan",
+                        mLastLocation.getLatitude(), mLastLocation.getLongitude() ));
+
+                Log.i("OnCompleteListener", String.valueOf( mLastLocation.getTime() ));
+
+            } else {
+                Log.i("addOnCompleteListener", "getLastLocation:exception", task.getException());
+
+            }
+        }
+    };
 
 
 }

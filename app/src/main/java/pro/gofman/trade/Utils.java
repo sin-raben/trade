@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.preference.PreferenceManager;
 import android.location.Location;
+import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -73,8 +74,8 @@ public class Utils {
                 .setContentText( n.optString(Protocol.NOTIFICATION_BODY, "") )
                 .setTicker("Hello")
                 .setAutoCancel(true)
-                .setSound(notificationSound)
-                .setVibrate( new long[] { 1000, 1000, 1000, 1000, 1000 } )
+                //.setSound(notificationSound)
+                //.setVibrate( new long[] { 1000, 1000, 1000, 1000, 1000 } )
                 .setLights(Color.RED, 500, 1000)
                 .setContentIntent(notificationPendingIntent);
 
@@ -119,6 +120,9 @@ public class Utils {
             sb.append(")");
             sb.append("\n");
         }
+
+        Log.i("getLocationResultText", sb.toString() );
+
         return sb.toString();
     }
 
