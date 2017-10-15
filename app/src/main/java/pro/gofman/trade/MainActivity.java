@@ -571,9 +571,11 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra( Trade.SERVICE_PARAM, "{}");
 
             if ( isChecked ) {
+                Log.i("ACTION_LOGCOORD", "1");
                 intent.setAction(SyncData.ACTION_LOGCOORD);
                 startService(intent);
             } else {
+                Log.i("ACTION_LOGCOORD", "2");
                 intent.setAction(SyncData.ACTION_LOGCOORD_STOP);
                 startService(intent);
             }

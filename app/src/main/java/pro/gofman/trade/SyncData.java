@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -52,6 +53,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import pro.gofman.trade.Location.LocationBroadcastReceiver;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -171,9 +174,8 @@ public class SyncData extends IntentService {
                     e.printStackTrace();
                 }
 
-            } else {
-
-                if ( Trade.SERVICE_LOGCOORD.equals(action) ) {
+            } else if ( Trade.SERVICE_LOGCOORD.equals(action) ) {
+                /*
                     JSONObject p;
                     try {
 
@@ -195,13 +197,24 @@ public class SyncData extends IntentService {
                         e.printStackTrace();
                     }
 
-                } else {
+                */
 
-                    if (ACTION_LOGCOORD_STOP.equals(action)) {
+                try {
+
+                    handleActionGetLocations( new JSONObject(intent.getStringExtra( Trade.SERVICE_PARAM )) );
+
+                } catch (Exception e) {
+
+                }
+
+            } else if ( ACTION_LOGCOORD_STOP.equals(action) ) {
+                /*
                         Log.d("StopService", "123");
                         stopSelf();
-                    }
-                }
+                       */
+
+                removeLocationUpdates();
+
             }
         }
     }
@@ -233,6 +246,9 @@ public class SyncData extends IntentService {
         String url = "";
         try {
             url = getConnectionUrl( p.getJSONObject( Protocol.CONNECTION_BEGIN ) );
+
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -242,7 +258,7 @@ public class SyncData extends IntentService {
         WebSocket ws = new WebSocketFactory().createSocket( url );
         //ws.setMaxPayloadSize()
 
-        WebSocket webSocket = ws.addListener(new WebSocketListener() {
+        final WebSocket webSocket = ws.addListener(new WebSocketListener() {
             @Override
             public void onStateChanged(WebSocket websocket, WebSocketState newState) throws Exception {
 
@@ -374,11 +390,7 @@ public class SyncData extends IntentService {
                                             Log.i("CUSTOM_SYNC", "1");
                                             try {
 
-
                                                 mFusedLocationClient.getLastLocation().addOnCompleteListener( onCompleteListener );
-
-
-
 
                                             } catch ( SecurityException e ) {
                                                 Log.i("CUSTOM_SYNC", "2");
@@ -939,6 +951,30 @@ public class SyncData extends IntentService {
 
             }
 
+            private OnCompleteListener onCompleteListener = new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    Location mLastLocation;
+                    if (task.isSuccessful() && task.getResult() != null) {
+
+                        mLastLocation = task.getResult();
+
+
+
+
+                        Log.i("OnCompleteListener", String.format(Locale.ROOT, "%s: %f х %f",
+                                "lan",
+                                mLastLocation.getLatitude(), mLastLocation.getLongitude() ));
+
+                        Log.i("OnCompleteListener", String.valueOf( mLastLocation.getTime() ));
+
+                    } else {
+                        Log.i("addOnCompleteListener", "getLastLocation:exception", task.getException());
+
+                    }
+                }
+            };
+
 
 
         });
@@ -1069,27 +1105,68 @@ public class SyncData extends IntentService {
 
     }
 
-    private OnCompleteListener onCompleteListener = new OnCompleteListener<Location>() {
-        @Override
-        public void onComplete(@NonNull Task<Location> task) {
-            Location mLastLocation;
-            if (task.isSuccessful() && task.getResult() != null) {
+    /*
 
-                mLastLocation = task.getResult();
+    Сервис сбора координат
 
+     */
 
-                Log.i("OnCompleteListener", String.format(Locale.ROOT, "%s: %f х %f",
-                        "lan",
-                        mLastLocation.getLatitude(), mLastLocation.getLongitude() ));
+    private PendingIntent getPendingIndentLocation() {
 
-                Log.i("OnCompleteListener", String.valueOf( mLastLocation.getTime() ));
+        Intent intent = new Intent( Trade.getAppContext(), LocationBroadcastReceiver.class );
+        intent.setAction( LocationBroadcastReceiver.ACTION_PROCESS_UPDATES );
 
-            } else {
-                Log.i("addOnCompleteListener", "getLastLocation:exception", task.getException());
+        return PendingIntent.getBroadcast( Trade.getAppContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
 
-            }
+    }
+
+    //
+
+    public static void createLocationRequest( LocationRequest lr ) {
+
+        lr = new LocationRequest();
+
+        lr.setInterval( Protocol.LOCATION_UPDATE_INTERVAL );
+        lr.setFastestInterval( Protocol.LOCATION_FASTEST_UPDATE_INTERVAL );
+        lr.setPriority( LocationRequest.PRIORITY_HIGH_ACCURACY );
+        lr.setMaxWaitTime( Protocol.LOCATION_MAX_WAIT_TIME );
+
+    }
+
+    public void requestLocationUpdates() {
+        try {
+
+            mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval( Protocol.LOCATION_UPDATE_INTERVAL );
+            mLocationRequest.setFastestInterval( Protocol.LOCATION_FASTEST_UPDATE_INTERVAL );
+            mLocationRequest.setPriority( LocationRequest.PRIORITY_HIGH_ACCURACY );
+            mLocationRequest.setMaxWaitTime( Protocol.LOCATION_MAX_WAIT_TIME );
+
+            final Task<Void> voidTask = mFusedLocationClient.requestLocationUpdates( mLocationRequest, getPendingIndentLocation() );
+
+        } catch (SecurityException e) {
+
         }
-    };
+    }
+
+    // Функция остановки сбора координат
+    public void removeLocationUpdates() {
+
+        Log.i("removeLocationUpdates", "40");
+        mFusedLocationClient.removeLocationUpdates( getPendingIndentLocation() );
+
+    }
+
+    // Функционал сервиса сбора координат
+    private void handleActionGetLocations( JSONObject p ) {
+
+        Log.i("handleActionGetLocations", "20");
+
+       requestLocationUpdates();
+
+    }
+
+
 
 
 }

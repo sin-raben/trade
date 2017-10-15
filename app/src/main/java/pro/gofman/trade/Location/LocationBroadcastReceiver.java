@@ -21,7 +21,7 @@ import pro.gofman.trade.Utils;
 
 public class LocationBroadcastReceiver extends BroadcastReceiver {
 
-    static final String ACTION_PROCESS_UPDATES = "pro.gofman.trade.location.action.PROCESS_UPDATES";
+    public static final String ACTION_PROCESS_UPDATES = "pro.gofman.trade.location.action.PROCESS_UPDATES";
 
     @Override
     public void onReceive(Context context, Intent intent) {
