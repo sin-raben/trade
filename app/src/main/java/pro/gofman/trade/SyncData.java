@@ -713,95 +713,177 @@ public class SyncData extends IntentService {
 
             }
 
+            // Функция собирает пакет звонков для отправки на сервер
+            private JSONObject getSyncCalls() throws Exception {
 
-            // Функция заполняет body для отправки данных на сервер
-            private JSONObject getSyncData(String head) throws Exception {
                 JSONObject b = new JSONObject();
                 Integer syncid = 0;
 
+                Log.i("GETBODY", "SYNC_CALLS: " + head);
+
+                // Проверяем есть ли данные для отправки на сервер
+                Boolean NeedSync = false;
+                String sql = "SELECT c.lc_id as any_id FROM log_calls c LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1) WHERE sd.sd_id ISNULL;";
+                Cursor c = db.rawQuery(sql, null);
+                if (c != null) {
+                    NeedSync = c.getCount() > 0;
+
+                    Log.i("GETBODY", "getBody: " + String.valueOf( c.getCount() ) );
+                    c.close();
+                }
+                // Данные есть нужна синхронизация
+                if (NeedSync) {
+
+                    // Добавляем в таблицу начало синхронизации
+                    sql = "INSERT INTO sync (sdate) VALUES ( current_timestamp )";
+                    db.execSQL(sql);
+
+                    // Получаем ID синхронизации
+                    sql = "SELECT last_insert_rowid()";
+                    c = db.rawQuery(sql, null);
+                    c.moveToFirst();
+                    syncid = c.getInt( 0 );
+                    c.close();
+                    Log.i("GETBODY", "SyncID: " + String.valueOf(syncid) );
+
+                    // Фиксируем данные для синхронизации на полученный ID синхронизации
+                    sql = "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
+                            "SELECT\n" +
+                            "  1 as obj_id,\n" +
+                            "  c.lc_id as any_id,\n" +
+                            " " + String.valueOf(syncid) +" as s_id\n" +
+                            "FROM\n" +
+                            "  log_calls c\n" +
+                            "  LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1)\n" +
+                            "WHERE\n" +
+                            "  sd.sd_id ISNULL;";
+                    db.execSQL(sql);
+
+                    // Формируем пакет данных для отправки на сервер
+                    sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.lc_id AND sd.obj_id = 1) WHERE sd.s_id = " + String.valueOf(syncid);
+                    c = db.rawQuery(sql, null);
+                    if ( c != null ) {
+                        c.moveToFirst();
+                        JSONArray a = new JSONArray();
+                        do {
+                            Log.d("GETBODY", "getBody: " + c.getString( c.getColumnIndex("lc_phone") ) );
+                            a.put(
+                                    new JSONObject()
+                                            .put("lc_id", c.getLong( c.getColumnIndex("lc_id") ) )
+                                            .put("lc_stime", Long.valueOf( c.getString( c.getColumnIndex("lc_stime") )))
+                                            .put("lc_billsec", c.getInt( c.getColumnIndex("lc_billsec") ))
+                                            .put("lc_phone", c.getString( c.getColumnIndex("lc_phone") ))
+                                            .put("lc_name", c.getString( c.getColumnIndex("lc_name") ))
+                                            .put("lc_incoming", c.getInt( c.getColumnIndex("lc_incoming") ))
+                            );
+
+                        } while ( c.moveToNext() );
+                        c.close();
+
+
+                        b.put( Protocol.SYNC_ID, syncid );
+                        b.put( Protocol.DATA, a );
+
+                    }
+
+                }
+
+                Log.i("GETBODY", "getBody - b " + b.toString() );
+                return b;
+            }
+
+            // Функция собирает пакет координат для отправки на сервер
+            private  JSONObject getSyncCoords() throws Exception {
+
+                JSONObject b = new JSONObject();
+                Integer syncid = 0;
+
+                Log.i("GETBODY", "SYNC_CALLS: " + head);
+
+                // Проверяем есть ли данные для отправки на сервер
+                Boolean NeedSync = false;
+                String sql = "SELECT c.lc_id as any_id FROM log_calls c LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1) WHERE sd.sd_id ISNULL;";
+                Cursor c = db.rawQuery(sql, null);
+                if (c != null) {
+                    NeedSync = c.getCount() > 0;
+
+                    Log.i("GETBODY", "getBody: " + String.valueOf( c.getCount() ) );
+                    c.close();
+                }
+                // Данные есть нужна синхронизация
+                if (NeedSync) {
+
+                    // Добавляем в таблицу начало синхронизации
+                    sql = "INSERT INTO sync (sdate) VALUES ( current_timestamp )";
+                    db.execSQL(sql);
+
+                    // Получаем ID синхронизации
+                    sql = "SELECT last_insert_rowid()";
+                    c = db.rawQuery(sql, null);
+                    c.moveToFirst();
+                    syncid = c.getInt( 0 );
+                    c.close();
+                    Log.i("GETBODY", "SyncID: " + String.valueOf(syncid) );
+
+                    // Фиксируем данные для синхронизации на полученный ID синхронизации
+                    sql = "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
+                            "SELECT\n" +
+                            "  1 as obj_id,\n" +
+                            "  c.lc_id as any_id,\n" +
+                            " " + String.valueOf(syncid) +" as s_id\n" +
+                            "FROM\n" +
+                            "  log_calls c\n" +
+                            "  LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1)\n" +
+                            "WHERE\n" +
+                            "  sd.sd_id ISNULL;";
+                    db.execSQL(sql);
+
+                    // Формируем пакет данных для отправки на сервер
+                    sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.lc_id AND sd.obj_id = 1) WHERE sd.s_id = " + String.valueOf(syncid);
+                    c = db.rawQuery(sql, null);
+                    if ( c != null ) {
+                        c.moveToFirst();
+                        JSONArray a = new JSONArray();
+                        do {
+                            Log.d("GETBODY", "getBody: " + c.getString( c.getColumnIndex("lc_phone") ) );
+                            a.put(
+                                    new JSONObject()
+                                            .put("lc_id", c.getLong( c.getColumnIndex("lc_id") ) )
+                                            .put("lc_stime", Long.valueOf( c.getString( c.getColumnIndex("lc_stime") )))
+                                            .put("lc_billsec", c.getInt( c.getColumnIndex("lc_billsec") ))
+                                            .put("lc_phone", c.getString( c.getColumnIndex("lc_phone") ))
+                                            .put("lc_name", c.getString( c.getColumnIndex("lc_name") ))
+                                            .put("lc_incoming", c.getInt( c.getColumnIndex("lc_incoming") ))
+                            );
+
+                        } while ( c.moveToNext() );
+                        c.close();
+
+
+                        b.put( Protocol.SYNC_ID, syncid );
+                        b.put( Protocol.DATA, a );
+
+                    }
+
+                }
+
+                Log.i("GETBODY", "getBody - b " + b.toString() );
+                return b;
+            }
+
+            // Функция заполняет body для отправки данных на сервер
+            private JSONObject getSyncData(String head) throws Exception {
                 Log.i("GETBODY", "getData: " + head);
 
                 switch (head) {
 
                     // obj_id = 1 - это звонки
                     case Protocol.SYNC_CALLS: {
-                        Log.i("GETBODY", "SYNC_CALLS: " + head);
-
-                        // Проверяем есть ли данные для отправки на сервер
-                        Boolean NeedSync = false;
-                        String sql = "SELECT c.lc_id as any_id FROM log_calls c LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1) WHERE sd.sd_id ISNULL;";
-                        Cursor c = db.rawQuery(sql, null);
-                        if (c != null) {
-                            NeedSync = c.getCount() > 0;
-
-                            Log.i("GETBODY", "getBody: " + String.valueOf( c.getCount() ) );
-                            c.close();
-                        }
-                        // Данные есть нужна синхронизация
-                        if (NeedSync) {
-
-                            // Добавляем в таблицу начало синхронизации
-                            sql = "INSERT INTO sync (sdate) VALUES ( current_timestamp )";
-                            db.execSQL(sql);
-
-                            // Получаем ID синхронизации
-                            sql = "SELECT last_insert_rowid()";
-                            c = db.rawQuery(sql, null);
-                            c.moveToFirst();
-                            syncid = c.getInt( 0 );
-                            c.close();
-                            Log.i("GETBODY", "SyncID: " + String.valueOf(syncid) );
-
-                            // Фиксируем данные для синхронизации на полученный ID синхронизации
-                            sql = "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
-                                    "SELECT\n" +
-                                    "  1 as obj_id,\n" +
-                                    "  c.lc_id as any_id,\n" +
-                                    " " + String.valueOf(syncid) +" as s_id\n" +
-                                    "FROM\n" +
-                                    "  log_calls c\n" +
-                                    "  LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1)\n" +
-                                    "WHERE\n" +
-                                    "  sd.sd_id ISNULL;";
-                            db.execSQL(sql);
-
-                            // Формируем пакет данных для отправки на сервер
-                            sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.lc_id AND sd.obj_id = 1) WHERE sd.s_id = " + String.valueOf(syncid);
-                            c = db.rawQuery(sql, null);
-                            if ( c != null ) {
-                                c.moveToFirst();
-                                JSONArray a = new JSONArray();
-                                do {
-                                    Log.d("GETBODY", "getBody: " + c.getString( c.getColumnIndex("lc_phone") ) );
-                                    a.put(
-                                            new JSONObject()
-                                                .put("lc_id", c.getLong( c.getColumnIndex("lc_id") ) )
-                                                .put("lc_stime", Long.valueOf( c.getString( c.getColumnIndex("lc_stime") )))
-                                                .put("lc_billsec", c.getInt( c.getColumnIndex("lc_billsec") ))
-                                                .put("lc_phone", c.getString( c.getColumnIndex("lc_phone") ))
-                                                .put("lc_name", c.getString( c.getColumnIndex("lc_name") ))
-                                                .put("lc_incoming", c.getInt( c.getColumnIndex("lc_incoming") ))
-                                    );
-
-                                } while ( c.moveToNext() );
-                                c.close();
-
-
-                                b.put( Protocol.SYNC_ID, syncid );
-                                b.put( Protocol.DATA, a );
-
-                            }
-
-                        }
-
-                        Log.i("GETBODY", "getBody - b " + b.toString() );
-                        return b;
+                        return getSyncCalls();
                     }
 
                     case Protocol.SYNC_COORDS: {
-
-
-                        return b;
+                        return getSyncCoords();
                     }
 
                     default:
@@ -810,7 +892,7 @@ public class SyncData extends IntentService {
 
                 }
 
-                return b;
+                return new JSONObject();
             }
 
             private Boolean clearSyncData( Integer SyncID ) {
@@ -1143,6 +1225,12 @@ public class SyncData extends IntentService {
             mLocationRequest.setMaxWaitTime( Protocol.LOCATION_MAX_WAIT_TIME );
 
             final Task<Void> voidTask = mFusedLocationClient.requestLocationUpdates( mLocationRequest, getPendingIndentLocation() );
+
+            if ( voidTask.isSuccessful() ) {
+                Log.i("requestLocationUpdates", "да" );
+            } else {
+                Log.i("requestLocationUpdates", "нет" );
+            }
 
         } catch (SecurityException e) {
 

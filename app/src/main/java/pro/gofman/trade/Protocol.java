@@ -98,6 +98,10 @@ public class Protocol {
     public static final String NOTIFICATION_VIBRATE = "v";
     public static final String NOTIFICATION_LIGHT = "l";
 
+    // События регистрируемые в приложении
+    public static final int EVENT_MONITORING = 1;
+
+
     public static final int LOCATION_UPDATE_INTERVAL = 10000;
     public static final long LOCATION_FASTEST_UPDATE_INTERVAL = 5000;
     public static final long LOCATION_MAX_WAIT_TIME = LOCATION_UPDATE_INTERVAL * 5;

@@ -56,6 +56,12 @@
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".Location.LocationBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="pro.gofman.trade.location.action.PROCESS_UPDATES" />
+            </intent-filter>
+        </receiver>
 
 
 

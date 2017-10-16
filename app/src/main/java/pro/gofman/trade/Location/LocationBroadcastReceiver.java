@@ -1,6 +1,7 @@
 package pro.gofman.trade.Location;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -12,7 +13,9 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import pro.gofman.trade.DB;
 import pro.gofman.trade.Protocol;
+import pro.gofman.trade.Trade;
 import pro.gofman.trade.Utils;
 
 /**
@@ -33,15 +36,34 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
                 if (result != null) {
 
                     List<Location> locations = result.getLocations();
-                    Utils.setLocationUpdatesResult(context, locations);
+
+                    DB db = Trade.getWritableDatabase();
+
+
+                    for ( int i = 0; i < locations.size(); i++ ) {
+
+                        ContentValues cv = new ContentValues();
+
+                        long time = locations.get(i).getTime()/1000;
+                        cv.put( "lc_lat",  String.valueOf( locations.get(i).getLatitude() ) );
+                        cv.put( "lc_lon",  String.valueOf( locations.get(i).getLongitude() ) );
+                        cv.put( "lc_time", (int) time );
+                        cv.put( "lc_provider", locations.get(i).getProvider() );
+                        cv.put( "lc_event", Protocol.EVENT_MONITORING );
+
+                        db.insert( "log_coords", cv );
+
+                    }
+
+
 
                     try {
 
                         Utils.sendNotification(
                                 context,
                                 new JSONObject()
-                                        .put( Protocol.NOTIFICATION_TITLE, Utils.getLocationResultTitle(context, locations) )
-                                        .put( Protocol.NOTIFICATION_BODY, "Тест" )
+                                        .put( Protocol.NOTIFICATION_TITLE, "Тест" )
+                                        .put( Protocol.NOTIFICATION_BODY, Utils.getLocationResultTitle(context, locations) )
                         );
 
                     } catch (Exception e) {
