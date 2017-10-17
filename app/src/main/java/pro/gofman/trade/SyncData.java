@@ -839,18 +839,18 @@ public class SyncData extends IntentService {
                     db.execSQL(sql);
 
                     // Формируем пакет данных для отправки на сервер
-                    sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.lc_id AND sd.obj_id = 2) WHERE sd.s_id = " + String.valueOf(syncid);
+                    sql = "SELECT c.* FROM sync_data sd JOIN log_coords c ON (sd.any_id = c.lc_id AND sd.obj_id = 2) WHERE sd.s_id = " + String.valueOf(syncid);
                     c = db.rawQuery(sql, null);
                     if ( c != null ) {
                         c.moveToFirst();
                         JSONArray a = new JSONArray();
                         do {
-                            Log.d("GETBODY", "getBody: " + c.getString( c.getColumnIndex("lc_lat") ) );
+                            Log.i("GETBODY", "getBody: " + c.getString( c.getColumnIndex("lc_lat") ) );
                             a.put(
                                     new JSONObject()
                                             .put("lc_id", c.getLong( c.getColumnIndex("lc_id") ) )
                                             .put("lc_time", Long.valueOf( c.getString( c.getColumnIndex("lc_time") )))
-                                            .put("lc_lat", c.getInt( c.getColumnIndex("lc_lat") ))
+                                            .put("lc_lat", c.getString( c.getColumnIndex("lc_lat") ))
                                             .put("lc_lon", c.getString( c.getColumnIndex("lc_lon") ))
                                             .put("lc_provider", c.getString( c.getColumnIndex("lc_provider") ))
                                             .put("lc_event", c.getInt( c.getColumnIndex("lc_event") ))
@@ -1044,9 +1044,8 @@ public class SyncData extends IntentService {
 
 
 
-                        Log.i("OnCompleteListener", String.format(Locale.ROOT, "%s: %f х %f",
-                                "lan",
-                                mLastLocation.getLatitude(), mLastLocation.getLongitude() ));
+                        Log.i("OnCompleteListener", String.format(Locale.ROOT, "%s: %f х %f : %s", "lan",
+                                mLastLocation.getLatitude(), mLastLocation.getLongitude(), mLastLocation.getProvider() ));
 
                         Log.i("OnCompleteListener", String.valueOf( mLastLocation.getTime() ));
 
