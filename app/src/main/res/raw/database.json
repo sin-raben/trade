@@ -472,6 +472,13 @@
       "description": "Хранение координат",
       "fields": [
         {
+          "field": "lc_id",
+          "type": "integer",
+          "description": "ID записи",
+          "primary_key": true,
+          "autoincrement": true
+        },
+        {
           "field": "lc_lat",
           "type": "text",
           "description": "Широта"
@@ -859,6 +866,11 @@
           "so_id": 1,
           "so_name": "Звонки",
           "so_table": "log_calls"
+        },
+        {
+          "so_id": 2,
+          "so_name": "Координаты",
+          "so_table": "log_coords"
         }
       ]
     },

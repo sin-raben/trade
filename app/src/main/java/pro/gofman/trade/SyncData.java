@@ -798,11 +798,11 @@ public class SyncData extends IntentService {
                 JSONObject b = new JSONObject();
                 Integer syncid = 0;
 
-                Log.i("GETBODY", "SYNC_CALLS: " + head);
+                Log.i("GETBODY", "SYNC_COORDS: " + head);
 
                 // Проверяем есть ли данные для отправки на сервер
                 Boolean NeedSync = false;
-                String sql = "SELECT c.lc_id as any_id FROM log_calls c LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1) WHERE sd.sd_id ISNULL;";
+                String sql = "SELECT c.lc_id as any_id FROM log_coords c LEFT JOIN sync_data sd ON ( c.lc_id = sd.any_id AND sd.obj_id = 2) WHERE sd.sd_id ISNULL;";
                 Cursor c = db.rawQuery(sql, null);
                 if (c != null) {
                     NeedSync = c.getCount() > 0;
@@ -828,32 +828,32 @@ public class SyncData extends IntentService {
                     // Фиксируем данные для синхронизации на полученный ID синхронизации
                     sql = "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
                             "SELECT\n" +
-                            "  1 as obj_id,\n" +
+                            "  2 as obj_id,\n" +
                             "  c.lc_id as any_id,\n" +
                             " " + String.valueOf(syncid) +" as s_id\n" +
                             "FROM\n" +
-                            "  log_calls c\n" +
-                            "  LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 1)\n" +
+                            "  log_coords c\n" +
+                            "  LEFT JOIN sync_data sd ON (c.lc_id = sd.any_id AND sd.obj_id = 2)\n" +
                             "WHERE\n" +
                             "  sd.sd_id ISNULL;";
                     db.execSQL(sql);
 
                     // Формируем пакет данных для отправки на сервер
-                    sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.lc_id AND sd.obj_id = 1) WHERE sd.s_id = " + String.valueOf(syncid);
+                    sql = "SELECT c.* FROM sync_data sd JOIN log_calls c ON (sd.any_id = c.lc_id AND sd.obj_id = 2) WHERE sd.s_id = " + String.valueOf(syncid);
                     c = db.rawQuery(sql, null);
                     if ( c != null ) {
                         c.moveToFirst();
                         JSONArray a = new JSONArray();
                         do {
-                            Log.d("GETBODY", "getBody: " + c.getString( c.getColumnIndex("lc_phone") ) );
+                            Log.d("GETBODY", "getBody: " + c.getString( c.getColumnIndex("lc_lat") ) );
                             a.put(
                                     new JSONObject()
                                             .put("lc_id", c.getLong( c.getColumnIndex("lc_id") ) )
-                                            .put("lc_stime", Long.valueOf( c.getString( c.getColumnIndex("lc_stime") )))
-                                            .put("lc_billsec", c.getInt( c.getColumnIndex("lc_billsec") ))
-                                            .put("lc_phone", c.getString( c.getColumnIndex("lc_phone") ))
-                                            .put("lc_name", c.getString( c.getColumnIndex("lc_name") ))
-                                            .put("lc_incoming", c.getInt( c.getColumnIndex("lc_incoming") ))
+                                            .put("lc_time", Long.valueOf( c.getString( c.getColumnIndex("lc_time") )))
+                                            .put("lc_lat", c.getInt( c.getColumnIndex("lc_lat") ))
+                                            .put("lc_lon", c.getString( c.getColumnIndex("lc_lon") ))
+                                            .put("lc_provider", c.getString( c.getColumnIndex("lc_provider") ))
+                                            .put("lc_event", c.getInt( c.getColumnIndex("lc_event") ))
                             );
 
                         } while ( c.moveToNext() );
