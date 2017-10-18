@@ -8,17 +8,23 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Locale;
 
 import pro.gofman.trade.DB;
 import pro.gofman.trade.MainActivity;
@@ -210,10 +216,47 @@ public class MessagingService extends FirebaseMessagingService {
                 break;
         }
 
-
-
-
     }
+
+/*
+
+    // Запрос координат нужно сначала получить координаты
+                                        if (obj.optString(Protocol.HEAD, "").equals( Protocol.SYNC_COORDS )) {
+        Log.i("CUSTOM_SYNC", "1");
+        try {
+
+            mFusedLocationClient.getLastLocation().addOnCompleteListener( onCompleteListener );
+
+        } catch ( SecurityException e ) {
+            Log.i("CUSTOM_SYNC", "2");
+        }
+    }
+
+    private OnCompleteListener onCompleteListener = new OnCompleteListener<Location>() {
+        @Override
+        public void onComplete(@NonNull Task<Location> task) {
+            Location mLastLocation;
+            if (task.isSuccessful() && task.getResult() != null) {
+
+                mLastLocation = task.getResult();
+
+
+
+
+                Log.i("OnCompleteListener", String.format(Locale.ROOT, "%s: %f х %f : %s", "lan",
+                        mLastLocation.getLatitude(), mLastLocation.getLongitude(), mLastLocation.getProvider() ));
+
+                Log.i("OnCompleteListener", String.valueOf( mLastLocation.getTime() ));
+
+            } else {
+                Log.i("addOnCompleteListener", "getLastLocation:exception", task.getException());
+
+            }
+        }
+    };
+
+*/
+
 }
 
 

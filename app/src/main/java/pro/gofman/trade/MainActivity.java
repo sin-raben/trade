@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
                                 if ( c.moveToFirst() ) {
                                     do {
 
-                                        Log.d("CALLS", String.valueOf(c.getLong(c.getColumnIndex("lc_id"))) + " " + c.getString( c.getColumnIndex("lс_stime") )  + " " + c.getString( c.getColumnIndex("lc_phone") )  );
+                                        Log.i("CALLS", String.valueOf(c.getLong(c.getColumnIndex("lc_id"))) + " " + c.getString( c.getColumnIndex("lс_stime") )  + " " + c.getString( c.getColumnIndex("lc_phone") )  );
 
 
                                     } while ( c.moveToNext() );

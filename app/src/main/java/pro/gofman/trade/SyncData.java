@@ -385,23 +385,12 @@ public class SyncData extends IntentService {
 
                                     obj = p.optJSONArray(Protocol.DATA).getJSONObject(i);
                                     if ( obj != null) {
-                                        // Запрос координат нужно сначала получить координаты
-                                        if (obj.optString(Protocol.HEAD, "").equals( Protocol.SYNC_COORDS )) {
-                                            Log.i("CUSTOM_SYNC", "1");
-                                            try {
 
-                                                mFusedLocationClient.getLastLocation().addOnCompleteListener( onCompleteListener );
+                                        // Запросы остальных функций
+                                        JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : getSyncData(obj.getString(Protocol.HEAD));
 
-                                            } catch ( SecurityException e ) {
-                                                Log.i("CUSTOM_SYNC", "2");
-                                            }
-                                        } else {
-                                            // Запросы остальных функций
-                                            JSONObject body = obj.optJSONObject(Protocol.BODY) != null ? obj.optJSONObject(Protocol.BODY) : getSyncData(obj.getString(Protocol.HEAD));
-
-                                            if (body != null) {
-                                                syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body);
-                                            }
+                                        if (body != null) {
+                                            syncCustomQuery(websocket, obj.getString(Protocol.HEAD), body);
                                         }
                                     }
                                 }
@@ -1033,28 +1022,7 @@ public class SyncData extends IntentService {
 
             }
 
-            private OnCompleteListener onCompleteListener = new OnCompleteListener<Location>() {
-                @Override
-                public void onComplete(@NonNull Task<Location> task) {
-                    Location mLastLocation;
-                    if (task.isSuccessful() && task.getResult() != null) {
 
-                        mLastLocation = task.getResult();
-
-
-
-
-                        Log.i("OnCompleteListener", String.format(Locale.ROOT, "%s: %f х %f : %s", "lan",
-                                mLastLocation.getLatitude(), mLastLocation.getLongitude(), mLastLocation.getProvider() ));
-
-                        Log.i("OnCompleteListener", String.valueOf( mLastLocation.getTime() ));
-
-                    } else {
-                        Log.i("addOnCompleteListener", "getLastLocation:exception", task.getException());
-
-                    }
-                }
-            };
 
 
 
@@ -1080,20 +1048,15 @@ public class SyncData extends IntentService {
 
 
             }
-        }
-        catch (OpeningHandshakeException e) {
+        } catch (OpeningHandshakeException e) {
             // A violation against the WebSocket protocol was detected
             // during the opening handshake.
-        }
-        catch (WebSocketException e)
-        {
+        } catch (WebSocketException e) {
             // Failed to establish a WebSocket connection.
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-
-        //throw new UnsupportedOperationException("Not yet implemented");
     }
 
 
