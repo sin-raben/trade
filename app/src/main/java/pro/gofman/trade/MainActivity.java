@@ -567,18 +567,34 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, PERMISSION_REQUEST_CODE );
             }
 
-            Intent intent = new Intent(Trade.getAppContext(), SyncData.class);
-            intent.putExtra( Trade.SERVICE_PARAM, "{}");
+            try {
 
-            if ( isChecked ) {
-                Log.i("ACTION_LOGCOORD", "1");
-                intent.setAction(SyncData.ACTION_LOGCOORD);
-                startService(intent);
-            } else {
-                Log.i("ACTION_LOGCOORD", "2");
-                intent.setAction(SyncData.ACTION_LOGCOORD_STOP);
-                startService(intent);
+                Intent intent = new Intent(Trade.getAppContext(), SyncData.class);
+
+                intent.putExtra(
+                        Trade.SERVICE_PARAM,
+                        new JSONObject()
+                                .put(Protocol.EVENT, Protocol.EVENT_MONITORING)
+                                .toString()
+                );
+
+
+
+                if ( isChecked ) {
+                    Log.i("ACTION_LOGCOORD", "1");
+                    intent.setAction(SyncData.ACTION_LOGCOORD);
+                    startService(intent);
+                } else {
+                    Log.i("ACTION_LOGCOORD", "2");
+                    intent.setAction(SyncData.ACTION_LOGCOORD_STOP);
+                    startService(intent);
+                }
+
+
+            } catch (Exception e){
+
             }
+
         }
     };
 

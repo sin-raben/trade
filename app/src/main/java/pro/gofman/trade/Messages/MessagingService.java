@@ -72,13 +72,51 @@ public class MessagingService extends FirebaseMessagingService {
                 JSONObject data = new JSONObject( remoteMessage.getData().get( Protocol.NOTIFICATION_DATA ) );
                 JSONArray arr;
                 JSONObject obj;
+                Boolean delaySync = false;
 
                 Log.i("MESSAGE", data.toString() );
 
+
+                /*
+
+                    Через уведомления могут прийти несколько управляющих команд
+                    нужно пустить их все через обработку и только потом вызывать синхронизацию
+                    f020004s - команда без параметра, обычная синхронизация локальной таблицы с сервером
+                    f020004s - команда с указанным параметром
+                     {
+                        "body": {
+                            "now": true
+                        }
+                     }
+                    заставляет устройство получить координату, записать в локальную таблицу и только потом
+                    выполняется синхронизация
+
+
+                 */
+
+
+
+
                 // Обрабатываем запросы на синхронизацию
+                // получаем массив запросов
                 arr = data.optJSONArray( Protocol.NOTIFICATION_DATA );
                 if ( arr != null ) {
-                    if (arr.length() > 0) {
+                    if ( arr.length() > 0 ) {
+
+                        for (int i = 0; i <= arr.length(); i++) {
+                            // Выясняем есть ли управляющие команды, признаки находятся в BODY
+                            // если есть, то синхронизацию откладываем пока не получим результат
+                            if ( arr.getJSONObject(i).optString(Protocol.HEAD).equals(Protocol.SYNC_COORDS) ) {
+                                if (  !arr.getJSONObject(i).isNull(Protocol.BODY) ) {
+                                    if ( arr.getJSONObject(i).getJSONObject(Protocol.BODY).optBoolean("now", false) ) {
+
+                                    }
+                                }
+                            }
+
+                        }
+
+
                         Log.i("MESSAGE-arr", String.valueOf( arr.length() ) );
                         if ( this.syncCustomQuery(arr) ) {
                             Log.i(TAG, "Запрос передан в сервис синхронизации");

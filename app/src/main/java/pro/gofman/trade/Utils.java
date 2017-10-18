@@ -72,11 +72,11 @@ public class Utils {
                 .setStyle( new NotificationCompat.BigTextStyle().bigText( n.optString(Protocol.NOTIFICATION_BODY, "") ) )
                 .setContentTitle( n.optString(Protocol.NOTIFICATION_TITLE, "") )
                 .setContentText( n.optString(Protocol.NOTIFICATION_BODY, "") )
-                .setTicker("Hello")
+                .setTicker( n.optString(Protocol.NOTIFICATION_TICKER, "Hello!") )
                 .setAutoCancel(true)
                 //.setSound(notificationSound)
                 //.setVibrate( new long[] { 1000, 1000, 1000, 1000, 1000 } )
-                .setLights(Color.RED, 500, 1000)
+                .setLights(Color.YELLOW, 500, 1000)
                 .setContentIntent(notificationPendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

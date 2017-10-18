@@ -91,6 +91,7 @@ public class Protocol {
     public static final String NOTIFICATION_DATA = "d";
     public static final String NOTIFICATION_TITLE = "t";
     public static final String NOTIFICATION_BODY = "b";
+    public static final String NOTIFICATION_TICKER = "tr";
     public static final String NOTIFICATION_SMALLICON = "si";
     public static final String NOTIFICATION_LARGEICON = "li";
     public static final String NOTIFICATION_COLOR = "c";
@@ -98,7 +99,11 @@ public class Protocol {
     public static final String NOTIFICATION_VIBRATE = "v";
     public static final String NOTIFICATION_LIGHT = "l";
 
+
+    public static final String EVENT = "event";
+
     // События регистрируемые в приложении
+    public static final int EVENT_UNKNOW = 0;
     public static final int EVENT_MONITORING = 1;
 
 

@@ -120,6 +120,7 @@ public class SyncData extends IntentService {
      */
     // TODO: Customize helper method
     public static void startActionSyncData(Context context, JSONObject j) {
+
         Intent intent = new Intent(context, SyncData.class);
         intent.setAction( Trade.SERVICE_SYNCDATA );
         intent.putExtra( Trade.SERVICE_PARAM, j.toString() );
@@ -135,6 +136,7 @@ public class SyncData extends IntentService {
      */
     // TODO: Customize helper method
     public static void startActionLogCoord(Context context, JSONObject j) {
+
         Intent intent = new Intent(context, SyncData.class);
         intent.setAction( Trade.SERVICE_LOGCOORD );
         intent.putExtra( Trade.SERVICE_PARAM, j.toString());
@@ -213,7 +215,12 @@ public class SyncData extends IntentService {
                         stopSelf();
                        */
 
-                removeLocationUpdates();
+                try {
+
+                    removeLocationUpdates(new JSONObject(intent.getStringExtra(Trade.SERVICE_PARAM)));
+                } catch (Exception e) {
+
+                }
 
             }
         }
@@ -245,9 +252,8 @@ public class SyncData extends IntentService {
 
         String url = "";
         try {
+
             url = getConnectionUrl( p.getJSONObject( Protocol.CONNECTION_BEGIN ) );
-
-
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1059,12 +1065,6 @@ public class SyncData extends IntentService {
 
     }
 
-
-    private void workWithLocation() {
-
-    }
-
-
     /**
      * Handle action Baz in the provided background thread with the provided
      * parameters.
@@ -1149,23 +1149,28 @@ public class SyncData extends IntentService {
 
     }
 
+
+
+
+
     /*
 
     Сервис сбора координат
 
      */
 
-    private PendingIntent getPendingIndentLocation() {
+
+    private PendingIntent getPendingIndentLocation(JSONObject p) {
 
         Intent intent = new Intent( Trade.getAppContext(), LocationBroadcastReceiver.class );
         intent.setAction( LocationBroadcastReceiver.ACTION_PROCESS_UPDATES );
+        intent.putExtra( LocationBroadcastReceiver.ACTION_EVENT, p.toString() );
 
         return PendingIntent.getBroadcast( Trade.getAppContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
 
     }
 
     //
-
     public static void createLocationRequest( LocationRequest lr ) {
 
         lr = new LocationRequest();
@@ -1177,7 +1182,7 @@ public class SyncData extends IntentService {
 
     }
 
-    public void requestLocationUpdates() {
+    public void requestLocationUpdates(JSONObject p) {
         try {
 
             mLocationRequest = new LocationRequest();
@@ -1186,13 +1191,15 @@ public class SyncData extends IntentService {
             mLocationRequest.setPriority( LocationRequest.PRIORITY_HIGH_ACCURACY );
             mLocationRequest.setMaxWaitTime( Protocol.LOCATION_MAX_WAIT_TIME );
 
-            final Task<Void> voidTask = mFusedLocationClient.requestLocationUpdates( mLocationRequest, getPendingIndentLocation() );
+            final Task<Void> voidTask = mFusedLocationClient.requestLocationUpdates( mLocationRequest, getPendingIndentLocation( p ) );
 
+            /*
             if ( voidTask.isSuccessful() ) {
                 Log.i("requestLocationUpdates", "да" );
             } else {
                 Log.i("requestLocationUpdates", "нет" );
             }
+            */
 
         } catch (SecurityException e) {
 
@@ -1200,10 +1207,10 @@ public class SyncData extends IntentService {
     }
 
     // Функция остановки сбора координат
-    public void removeLocationUpdates() {
+    public void removeLocationUpdates( JSONObject p ) {
 
         Log.i("removeLocationUpdates", "40");
-        mFusedLocationClient.removeLocationUpdates( getPendingIndentLocation() );
+        mFusedLocationClient.removeLocationUpdates( getPendingIndentLocation( p ) );
 
     }
 
@@ -1212,7 +1219,7 @@ public class SyncData extends IntentService {
 
         Log.i("handleActionGetLocations", "20");
 
-       requestLocationUpdates();
+       requestLocationUpdates( p );
 
     }
 
