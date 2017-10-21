@@ -1168,7 +1168,8 @@ public class SyncData extends IntentService {
 
         Intent intent = new Intent( Trade.getAppContext(), LocationBroadcastReceiver.class );
         intent.setAction( LocationBroadcastReceiver.ACTION_PROCESS_UPDATES );
-        //intent.putExtra( LocationBroadcastReceiver.ACTION_EVENT, p.toString() );
+        Log.i("COORD",  p.toString() );
+        intent.putExtra( LocationBroadcastReceiver.ACTION_EVENT, p.toString() );
 
         Log.i("COORD","e11");
 

@@ -77,11 +77,11 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
 
                             try {
 
-                                Log.d("COORD", String.valueOf(locations.get(i).getLatitude()) + " "+ String.valueOf(locations.get(i).getLongitude()));
+                                Log.i("COORD", String.valueOf(locations.get(i).getLatitude()) + " "+ String.valueOf(locations.get(i).getLongitude()));
 
                                 db.insert("log_coords", cv);
                             } catch (Exception e){
-                                Log.d("COORD","e1");
+                                Log.i("COORD","e1");
                                 e.printStackTrace();
                             }
 
