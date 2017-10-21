@@ -1162,15 +1162,21 @@ public class SyncData extends IntentService {
 
     private PendingIntent getPendingIndentLocation(JSONObject p) {
 
+        Log.d("COORD","e10");
+        Log.i("COORD","e10");
+
+
         Intent intent = new Intent( Trade.getAppContext(), LocationBroadcastReceiver.class );
         intent.setAction( LocationBroadcastReceiver.ACTION_PROCESS_UPDATES );
-        intent.putExtra( LocationBroadcastReceiver.ACTION_EVENT, p.toString() );
+        //intent.putExtra( LocationBroadcastReceiver.ACTION_EVENT, p.toString() );
+
+        Log.i("COORD","e11");
 
         return PendingIntent.getBroadcast( Trade.getAppContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
 
     }
 
-    //
+    /*
     public static void createLocationRequest( LocationRequest lr ) {
 
         lr = new LocationRequest();
@@ -1181,6 +1187,7 @@ public class SyncData extends IntentService {
         lr.setMaxWaitTime( Protocol.LOCATION_MAX_WAIT_TIME );
 
     }
+    */
 
     public void requestLocationUpdates(JSONObject p) {
         try {
@@ -1202,7 +1209,7 @@ public class SyncData extends IntentService {
             */
 
         } catch (SecurityException e) {
-
+            Log.d("COORD","e3");
         }
     }
 

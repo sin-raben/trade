@@ -59,6 +59,7 @@ import pro.gofman.trade.Docs.DocsActivity;
 import pro.gofman.trade.Items.ItemsActivity;
 import pro.gofman.trade.News.NewsActivity;
 import pro.gofman.trade.PrintForms.UPD;
+import android.os.Build;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -153,6 +154,12 @@ public class MainActivity extends AppCompatActivity {
             При первом подключении отправляем IMEI, который является токеном, пользователь вводит логин и пароль
             и вытягиваем информацию о пользователе
          */
+
+        String model = Build.BRAND + " : " + Build.MODEL + " : " + Build.BOARD + " : " + Build.BOOTLOADER + " : " + Build.DEVICE + " : "
+                + Build.DISPLAY + " : " + Build.FINGERPRINT + " : " + Build.HARDWARE + " : " + Build.HOST + " : " + Build.MANUFACTURER  + " : " + Build.ID + " : " + Build.PRODUCT + " : " + Build.USER;
+
+        Log.d("onCreate", model);
+
         db = Trade.getWritableDatabase();
 
 

@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.util.Log;
 
 
 import com.google.android.gms.location.LocationResult;
@@ -29,19 +30,31 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        Log.i("COORD","e12");
+
         if ( intent != null ) {
+            Log.i("COORD","e13");
             final String action = intent.getAction();
 
+            Log.i("COORD","e14");
 
 
 
             if ( ACTION_PROCESS_UPDATES.equals(action) ) {
+
+                Log.i("COORD","e15");
+
                 LocationResult result = LocationResult.extractResult(intent);
 
+                Log.i("COORD","e16");
+
                 if (result != null) {
+                    Log.i("COORD","e0");
 
                     try {
-                        JSONObject p = new JSONObject( intent.getStringExtra( Trade.SERVICE_PARAM ) );
+                        Log.i("COORD","e17");
+                        //JSONObject p = new JSONObject( intent.getStringExtra( Trade.SERVICE_PARAM ) );
 
 
 
@@ -55,14 +68,22 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
 
                             ContentValues cv = new ContentValues();
 
-                            long time = locations.get(i).getTime()/1000;
-                            cv.put( "lc_lat",  String.valueOf( locations.get(i).getLatitude() ) );
-                            cv.put( "lc_lon",  String.valueOf( locations.get(i).getLongitude() ) );
-                            cv.put( "lc_time", (int) time );
-                            cv.put( "lc_provider", locations.get(i).getProvider() );
-                            cv.put( "lc_event", p.optInt(Protocol.EVENT, Protocol.EVENT_UNKNOW) );
+                            long time = locations.get(i).getTime() / 1000;
+                            cv.put("lc_lat", String.valueOf(locations.get(i).getLatitude()));
+                            cv.put("lc_lon", String.valueOf(locations.get(i).getLongitude()));
+                            cv.put("lc_time", (int) time);
+                            cv.put("lc_provider", locations.get(i).getProvider());
+                            cv.put("lc_event", 1 /*p.optInt(Protocol.EVENT, Protocol.EVENT_UNKNOW) */ );
 
-                            db.insert( "log_coords", cv );
+                            try {
+
+                                Log.d("COORD", String.valueOf(locations.get(i).getLatitude()) + " "+ String.valueOf(locations.get(i).getLongitude()));
+
+                                db.insert("log_coords", cv);
+                            } catch (Exception e){
+                                Log.d("COORD","e1");
+                                e.printStackTrace();
+                            }
 
                         }
 
@@ -76,7 +97,8 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
                         );
 
                     } catch (Exception e) {
-
+                        Log.d("COORD","e2");
+                        e.printStackTrace();
                     }
 
 
