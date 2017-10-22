@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.google.android.gms.location.LocationResult;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -45,6 +46,12 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
 
                 Log.i("COORD","e15");
 
+                try {
+                    JSONObject p = new JSONObject( intent.getStringExtra( LocationBroadcastReceiver.ACTION_EVENT ) );
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 LocationResult result = LocationResult.extractResult(intent);
 
                 Log.i("COORD","e16");
@@ -54,7 +61,7 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
 
                     try {
                         Log.i("COORD","e17");
-                        //JSONObject p = new JSONObject( intent.getStringExtra( Trade.SERVICE_PARAM ) );
+                        // JSONObject p = new JSONObject( intent.getStringExtra( LocationBroadcastReceiver.ACTION_EVENT ) );
 
 
 
@@ -73,7 +80,7 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
                             cv.put("lc_lon", String.valueOf(locations.get(i).getLongitude()));
                             cv.put("lc_time", (int) time);
                             cv.put("lc_provider", locations.get(i).getProvider());
-                            cv.put("lc_event", 1 /*p.optInt(Protocol.EVENT, Protocol.EVENT_UNKNOW) */ );
+                            cv.put("lc_event", 1 /*p.optInt(Protocol.EVENT, Protocol.EVENT_UNKNOW) */);
 
                             try {
 
@@ -97,11 +104,13 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
                         );
 
                     } catch (Exception e) {
-                        Log.d("COORD","e2");
+                        Log.i("COORD","e2");
                         e.printStackTrace();
                     }
 
 
+                } else {
+                    Log.i("COORD","e3");
                 }
             }
         }
