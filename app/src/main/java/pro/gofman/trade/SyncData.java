@@ -1164,22 +1164,15 @@ public class SyncData extends IntentService {
 
     private PendingIntent getPendingIndentLocation(JSONObject p) {
 
-        Log.d("COORD","e10");
         Log.i("COORD","e10");
-
 
         Intent intent = new Intent( Trade.getAppContext(), LocationBroadcastReceiver.class );
         intent.setAction( LocationBroadcastReceiver.ACTION_PROCESS_UPDATES );
-        //Log.i("COORD",  p.toString() );
-        // intent.putExtra( LocationBroadcastReceiver.EXTRA_EVENT, p.toString() );
         intent.setType( p.toString() );
 
         Log.i("COORD","e11");
 
-
-
-        return PendingIntent.getBroadcast( Trade.getAppContext(), 0, intent, 0 );
-
+        return PendingIntent.getBroadcast( Trade.getAppContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
     }
 
     /*
@@ -1222,7 +1215,7 @@ public class SyncData extends IntentService {
     // Функция остановки сбора координат
     public void removeLocationUpdates( JSONObject p ) {
 
-        Log.i("removeLocationUpdates", "40");
+        Log.i("COORD", "removeLocationUpdates");
         mFusedLocationClient.removeLocationUpdates( getPendingIndentLocation( p ) );
 
     }
@@ -1230,7 +1223,7 @@ public class SyncData extends IntentService {
     // Функционал сервиса сбора координат
     private void handleActionGetLocations( JSONObject p ) {
 
-        Log.i("handleActionGetLocations", "20");
+        Log.i("COORD", "handleActionGetLocations");
 
        requestLocationUpdates( p );
 

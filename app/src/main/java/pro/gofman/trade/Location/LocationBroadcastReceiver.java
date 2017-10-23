@@ -31,29 +31,18 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i("COORD","e12");
-
         if ( intent != null ) {
-            Log.i("COORD","e13");
+
             final String action = intent.getAction();
-
-            Log.i("COORD","e14");
-
-
 
             if ( ACTION_PROCESS_UPDATES.equals(action) ) {
 
 
                if (LocationResult.hasResult( intent ) ) {
-
                    Log.i("COORD", "Есть координаты");
                    Log.i("COORD", intent.toString() );
-
-
                } else {
-
                    Log.i("COORD", "Нет координат");
-                   //Log.i("COORD", intent.getE );
                }
 
                 LocationResult result = LocationResult.extractResult(intent);
@@ -64,8 +53,6 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
                     Log.i("COORD","e0");
 
                     try {
-                        Log.i("COORD","e17");
-
 
                         JSONObject p = new JSONObject( intent.getType() );
 
