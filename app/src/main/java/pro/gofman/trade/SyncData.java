@@ -56,6 +56,8 @@ import java.util.Map;
 
 import pro.gofman.trade.Location.LocationBroadcastReceiver;
 
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
@@ -1168,14 +1170,15 @@ public class SyncData extends IntentService {
 
         Intent intent = new Intent( Trade.getAppContext(), LocationBroadcastReceiver.class );
         intent.setAction( LocationBroadcastReceiver.ACTION_PROCESS_UPDATES );
-        Log.i("COORD",  p.toString() );
-        //intent.putExtra( LocationBroadcastReceiver.ACTION_EVENT, p.toString() );
+        //Log.i("COORD",  p.toString() );
+        // intent.putExtra( LocationBroadcastReceiver.EXTRA_EVENT, p.toString() );
+        intent.setType( p.toString() );
 
         Log.i("COORD","e11");
 
 
 
-        return PendingIntent.getBroadcast( Trade.getAppContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+        return PendingIntent.getBroadcast( Trade.getAppContext(), 0, intent, 0 );
 
     }
 

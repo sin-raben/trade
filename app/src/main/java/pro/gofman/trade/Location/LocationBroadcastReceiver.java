@@ -26,8 +26,7 @@ import pro.gofman.trade.Utils;
 
 public class LocationBroadcastReceiver extends BroadcastReceiver {
 
-    public static final String ACTION_PROCESS_UPDATES = "pro.gofman.trade.location.action.PROCESS_UPDATES";
-    public static final String ACTION_EVENT = "pro.gofman.trade.location.param.ACTION_EVENT";
+    public static final String ACTION_PROCESS_UPDATES = "pro.gofman.trade.location.ACTION_PROCESS_UPDATES";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -44,13 +43,18 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
 
             if ( ACTION_PROCESS_UPDATES.equals(action) ) {
 
-                Log.i("COORD","e15");
 
-                try {
-                    JSONObject p = new JSONObject( intent.getStringExtra( LocationBroadcastReceiver.ACTION_EVENT ) );
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+               if (LocationResult.hasResult( intent ) ) {
+
+                   Log.i("COORD", "Есть координаты");
+                   Log.i("COORD", intent.toString() );
+
+
+               } else {
+
+                   Log.i("COORD", "Нет координат");
+                   //Log.i("COORD", intent.getE );
+               }
 
                 LocationResult result = LocationResult.extractResult(intent);
 
@@ -61,13 +65,11 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
 
                     try {
                         Log.i("COORD","e17");
-                        // JSONObject p = new JSONObject( intent.getStringExtra( LocationBroadcastReceiver.ACTION_EVENT ) );
 
 
+                        JSONObject p = new JSONObject( intent.getType() );
 
                         List<Location> locations = result.getLocations();
-
-
                         DB db = Trade.getWritableDatabase();
 
 
@@ -80,7 +82,7 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
                             cv.put("lc_lon", String.valueOf(locations.get(i).getLongitude()));
                             cv.put("lc_time", (int) time);
                             cv.put("lc_provider", locations.get(i).getProvider());
-                            cv.put("lc_event", 1 /*p.optInt(Protocol.EVENT, Protocol.EVENT_UNKNOW) */);
+                            cv.put("lc_event",  p.optInt(Protocol.EVENT, Protocol.EVENT_UNKNOW) );
 
                             try {
 
