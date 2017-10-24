@@ -68,9 +68,9 @@ import static android.app.PendingIntent.FLAG_IMMUTABLE;
 public class SyncData extends IntentService {
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    protected static final String ACTION_SYNCDATA = "pro.gofman.trade.action.syncdata";
-    protected static final String ACTION_LOGCOORD = "pro.gofman.trade.action.logcoord";
-    protected static final String ACTION_LOGCOORD_STOP = "pro.gofman.trade.action.logcoord_stop";
+    public static final String ACTION_SYNCDATA = "pro.gofman.trade.action.syncdata";
+    public static final String ACTION_LOGCOORD = "pro.gofman.trade.action.logcoord";
+    public static final String ACTION_LOGCOORD_STOP = "pro.gofman.trade.action.logcoord_stop";
 
     protected static final String EXTRA_PARAM1 = "pro.gofman.trade.extra.param";
     protected static final String EXTRA_RESULT = "pro.gofman.trade.result";
@@ -148,6 +148,7 @@ public class SyncData extends IntentService {
 
 
 
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -212,14 +213,12 @@ public class SyncData extends IntentService {
                 }
 
             } else if ( ACTION_LOGCOORD_STOP.equals(action) ) {
-                /*
-                        Log.d("StopService", "123");
-                        stopSelf();
-                       */
+                Log.i("COORD", "Запрос на отстановку сервиса по сбору координат");
+
 
                 try {
 
-                    removeLocationUpdates(new JSONObject(intent.getStringExtra(Trade.SERVICE_PARAM)));
+                    removeLocationUpdates( new JSONObject(intent.getStringExtra(Trade.SERVICE_PARAM)));
                 } catch (Exception e) {
 
                 }
@@ -1175,29 +1174,47 @@ public class SyncData extends IntentService {
         return PendingIntent.getBroadcast( Trade.getAppContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
     }
 
-    /*
-    public static void createLocationRequest( LocationRequest lr ) {
-
-        lr = new LocationRequest();
-
-        lr.setInterval( Protocol.LOCATION_UPDATE_INTERVAL );
-        lr.setFastestInterval( Protocol.LOCATION_FASTEST_UPDATE_INTERVAL );
-        lr.setPriority( LocationRequest.PRIORITY_HIGH_ACCURACY );
-        lr.setMaxWaitTime( Protocol.LOCATION_MAX_WAIT_TIME );
-
-    }
-    */
-
     public void requestLocationUpdates(JSONObject p) {
+        /*
+
+            JSONObject входящий
+            {
+                lr: {
+                    ui: 10000,
+                    fui: 5000,
+                    pha: 100,
+                    mwt: 50000
+                },
+
+                event: 1
+            }
+
+        */
         try {
 
-            mLocationRequest = new LocationRequest();
-            mLocationRequest.setInterval( Protocol.LOCATION_UPDATE_INTERVAL );
-            mLocationRequest.setFastestInterval( Protocol.LOCATION_FASTEST_UPDATE_INTERVAL );
-            mLocationRequest.setPriority( LocationRequest.PRIORITY_HIGH_ACCURACY );
-            mLocationRequest.setMaxWaitTime( Protocol.LOCATION_MAX_WAIT_TIME );
+            JSONObject lr = p.optJSONObject( Protocol.LOCATION_REQUEST );
 
-            final Task<Void> voidTask = mFusedLocationClient.requestLocationUpdates( mLocationRequest, getPendingIndentLocation( p ) );
+            mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(
+                     lr != null ? lr.optLong( Protocol.LR_UPDATE_INTERVAL, Protocol.LOCATION_UPDATE_INTERVAL ) : Protocol.LOCATION_UPDATE_INTERVAL
+            );
+            mLocationRequest.setFastestInterval(
+                    lr != null ? lr.optLong( Protocol.LR_FASTEST_INTERVAL, Protocol.LOCATION_FASTEST_UPDATE_INTERVAL ) : Protocol.LOCATION_FASTEST_UPDATE_INTERVAL
+            );
+            mLocationRequest.setPriority(
+                    lr != null ? lr.optInt( Protocol.LR_PRIORITY_HIGH_ACCURACY, LocationRequest.PRIORITY_HIGH_ACCURACY ) : LocationRequest.PRIORITY_HIGH_ACCURACY
+            );
+            mLocationRequest.setMaxWaitTime(
+                    lr != null ? lr.optLong( Protocol.LR_MAX_WAIT_TIME, Protocol.LOCATION_MAX_WAIT_TIME ) : Protocol.LOCATION_MAX_WAIT_TIME
+            );
+
+            final Task<Void> voidTask = mFusedLocationClient.requestLocationUpdates(
+                    mLocationRequest,
+                    getPendingIndentLocation(
+                            new JSONObject()
+                                .put( Protocol.EVENT, p.optInt(Protocol.EVENT, Protocol.EVENT_UNKNOW) )
+                    )
+            );
 
             /*
             if ( voidTask.isSuccessful() ) {
@@ -1208,7 +1225,9 @@ public class SyncData extends IntentService {
             */
 
         } catch (SecurityException e) {
-            Log.d("COORD","e3");
+            Log.i("COORD","Нет доступа к GPS");
+        } catch (JSONException e) {
+            Log.i("COORD","Ошибка формирования JSON объекта");
         }
     }
 
@@ -1224,8 +1243,7 @@ public class SyncData extends IntentService {
     private void handleActionGetLocations( JSONObject p ) {
 
         Log.i("COORD", "handleActionGetLocations");
-
-       requestLocationUpdates( p );
+        requestLocationUpdates( p );
 
     }
 

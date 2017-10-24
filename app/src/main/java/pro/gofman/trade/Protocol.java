@@ -19,6 +19,8 @@ public class Protocol {
     public static final String BODY = "body";
     public static final String NAME = "name";
     public static final String ID = "id";
+    public static final String DEBUG = "debug";
+
 
     protected static final String CONNECTION_BEGIN = "BeginConnection";
 
@@ -101,13 +103,22 @@ public class Protocol {
 
 
     public static final String EVENT = "event";
-
     // События регистрируемые в приложении
-    public static final int EVENT_UNKNOW = 0;
-    public static final int EVENT_MONITORING = 1;
+    public static final int EVENT_UNKNOW = 0;         //
+    public static final int EVENT_MONITORING = 1;     // Постоянный мониторинг
+    public static final int EVENT_QUERY = 2;          // По запросу
+    public static final int EVENT_ANSWER_ACTION = 3;  // В момент ответа на Действия (новости)
 
 
-    public static final int LOCATION_UPDATE_INTERVAL = 10000;
+
+    public static final String LOCATION_REQUEST = "lr";
+    public static final String LR_UPDATE_INTERVAL = "lr_ui";
+    public static final String LR_FASTEST_INTERVAL = "lr_fui";
+    public static final String LR_MAX_WAIT_TIME = "lr_mwt";
+    public static final String LR_PRIORITY_HIGH_ACCURACY  = "lr_pha";
+
+    // LocationRequest значения по умолчанию
+    public static final long LOCATION_UPDATE_INTERVAL = 10000;
     public static final long LOCATION_FASTEST_UPDATE_INTERVAL = 5000;
     public static final long LOCATION_MAX_WAIT_TIME = LOCATION_UPDATE_INTERVAL * 5;
 

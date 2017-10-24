@@ -103,12 +103,25 @@ public class MessagingService extends FirebaseMessagingService {
                 if ( arr != null ) {
                     if ( arr.length() > 0 ) {
 
-                        for (int i = 0; i <= arr.length(); i++) {
+                        for (int i = 0; i < arr.length(); i++) {
                             // Выясняем есть ли управляющие команды, признаки находятся в BODY
                             // если есть, то синхронизацию откладываем пока не получим результат
                             if ( arr.getJSONObject(i).optString(Protocol.HEAD).equals(Protocol.SYNC_COORDS) ) {
                                 if (  !arr.getJSONObject(i).isNull(Protocol.BODY) ) {
                                     if ( arr.getJSONObject(i).getJSONObject(Protocol.BODY).optBoolean("now", false) ) {
+
+                                        Intent intent = new Intent(Trade.getAppContext(), SyncData.class);
+
+                                        intent.putExtra(
+                                                Trade.SERVICE_PARAM,
+                                                new JSONObject()
+                                                        .put(Protocol.EVENT, Protocol.EVENT_QUERY)
+                                                        .toString()
+                                        );
+
+                                        Log.i("ACTION_LOGCOORD", "1");
+                                        intent.setAction(SyncData.ACTION_LOGCOORD);
+                                        startService(intent);
 
                                     }
                                 }
