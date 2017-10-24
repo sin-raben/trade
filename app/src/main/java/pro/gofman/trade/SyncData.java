@@ -588,11 +588,15 @@ public class SyncData extends IntentService {
                                     clearSyncData( syncid );
                                 }
 
-                                // Удаляем данные
 
+                                break;
+                            }
 
-                                // Удаляем данные из таблиц синхронизации
+                            case Protocol.SYNC_COORDS: {
 
+                                if ( syncid > 0 ) {
+                                    clearSyncData( syncid );
+                                }
 
                                 break;
                             }
@@ -878,6 +882,7 @@ public class SyncData extends IntentService {
                         return getSyncCalls();
                     }
 
+                    // obj_id = 2 - это координаты
                     case Protocol.SYNC_COORDS: {
                         return getSyncCoords();
                     }
@@ -1066,91 +1071,6 @@ public class SyncData extends IntentService {
 
     }
 
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionLogCoord(JSONObject p, Notification n) {
-
-        //long minTime = 60 * 60 * 1000;  // 1 час
-        long minTime = 60 * 1000;  // 1 минута
-        float minDistance = 0;
-
-
-        mNM.notify( 1, n );
-        startForeground(777, n );
-
-
-        if ( p.optLong("minTime") > 0 ) {
-            minTime = p.optLong("minTime");
-        }
-        if ( p.optInt("minDistance") > 0 ) {
-            minDistance = (float) p.optLong("minDistance");
-        }
-
-        Log.i("LOG", "1");
-
-        Log.i("LOG", "2");
-
-        LocationListener ll = new LocationListener() {
-
-
-
-            @Override
-            public void onLocationChanged(Location location) {
-                Log.i("LOG", "7");
-
-                DB db = Trade.getWritableDatabase();
-
-                if ( location != null ) {
-                    Log.i("GPS", "Широта="+location.getLatitude());
-                    Log.i("GPS", "Долгота="+location.getLongitude());
-
-                    Log.i("LOG", "8");
-
-                    long time = System.currentTimeMillis() / 1000;
-                    String sql = "INSERT INTO coords (\"lat\", \"lon\", \"atime\", \"provider\" ) VALUES (";
-                    sql += "\"" + location.getLatitude() + "\", \"" + location.getLongitude() + "\"," + String.valueOf( time ) + ", \"" + location.getProvider() + "\"";
-                    sql += ");";
-
-
-                    Log.i("TIME", String.valueOf( System.currentTimeMillis() ) + " -- " + String.valueOf(time) );
-
-                    Log.i("SQL", sql);
-                    db.execSQL(sql);
-                    Log.i("LOG", "11");
-                }
-            }
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
-
-        //Log.i("LOG", "3");
-
-        LocationManager lm = (LocationManager) getSystemService( LOCATION_SERVICE );
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.i("LOG", "4");
-            return;
-        }
-        //Log.i("LOG", "5");
-        lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, minTime, minDistance, ll, Looper.getMainLooper() );
-        //Log.i("LOG", "6");
-
-    }
-
-
 
 
 
@@ -1161,7 +1081,20 @@ public class SyncData extends IntentService {
      */
 
 
-    private PendingIntent getPendingIndentLocation(JSONObject p) {
+
+
+
+    /*
+
+    JSONObject входящий параметр
+    {
+        event: 1
+    }
+    указавает на тип запроса координат (мониторинг, запрос) для последующей обработки данных
+
+
+    */
+    private PendingIntent getPendingIndentLocation( JSONObject p ) {
 
         Log.i("COORD","e10");
 
@@ -1174,22 +1107,22 @@ public class SyncData extends IntentService {
         return PendingIntent.getBroadcast( Trade.getAppContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
     }
 
-    public void requestLocationUpdates(JSONObject p) {
-        /*
+    /*
 
-            JSONObject входящий
-            {
-                lr: {
-                    ui: 10000,
-                    fui: 5000,
-                    pha: 100,
-                    mwt: 50000
-                },
+    JSONObject входящий параметр
+    {
+        lr: {
+            ui: 10000,
+            fui: 5000,
+            pha: 100,
+            mwt: 50000
+        },
+        event: 1
+    }
 
-                event: 1
-            }
+    */
+    public void requestLocationUpdates( JSONObject p ) {
 
-        */
         try {
 
             JSONObject lr = p.optJSONObject( Protocol.LOCATION_REQUEST );

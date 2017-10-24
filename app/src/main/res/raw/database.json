@@ -468,44 +468,6 @@
       ]
     },
     {
-      "table": "log_coords",
-      "description": "Хранение координат",
-      "fields": [
-        {
-          "field": "lc_id",
-          "type": "integer",
-          "description": "ID записи",
-          "primary_key": true,
-          "autoincrement": true
-        },
-        {
-          "field": "lc_lat",
-          "type": "text",
-          "description": "Широта"
-        },
-        {
-          "field": "lc_lon",
-          "type": "text",
-          "description": "Долгота"
-        },
-        {
-          "field": "lc_time",
-          "type": "integer",
-          "description": "Время получения координат"
-        },
-        {
-          "field": "lc_provider",
-          "type": "text",
-          "description": "Провайдер, который зарегистрировал координаты"
-        },
-        {
-          "field": "lc_event",
-          "type": "integer",
-          "description": "Событие при котором запрашиваются координаты"
-        }
-      ]
-    },
-    {
       "table": "docs",
       "description": "Документов",
       "fields": [
@@ -841,6 +803,44 @@
       ]
     },
     {
+      "table": "log_coords",
+      "description": "Хранение координат",
+      "fields": [
+        {
+          "field": "lc_id",
+          "type": "integer",
+          "description": "ID записи",
+          "primary_key": true,
+          "autoincrement": true
+        },
+        {
+          "field": "lc_lat",
+          "type": "text",
+          "description": "Широта"
+        },
+        {
+          "field": "lc_lon",
+          "type": "text",
+          "description": "Долгота"
+        },
+        {
+          "field": "lc_time",
+          "type": "integer",
+          "description": "Время получения координат"
+        },
+        {
+          "field": "lc_provider",
+          "type": "text",
+          "description": "Провайдер, который зарегистрировал координаты"
+        },
+        {
+          "field": "lc_event",
+          "type": "integer",
+          "description": "Событие при котором запрашиваются координаты"
+        }
+      ]
+    },
+    {
       "table": "sync_object",
       "description": "Описание объектов, которые синхронизируются",
       "fields": [
@@ -925,8 +925,6 @@
         }
       ]
     }
-
-
   ]
 }
 
