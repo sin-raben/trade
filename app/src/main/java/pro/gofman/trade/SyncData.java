@@ -573,6 +573,8 @@ public class SyncData extends IntentService {
 
                     // Получает ответы сервера после передачи данных
                     case Protocol.RESULT_SYNC: {
+                        Log.i("COORD", "Получили ответ от сервера");
+
 
                         Integer syncid = body.optInt( Protocol.SYNC_ID, 0 );
 
@@ -586,6 +588,7 @@ public class SyncData extends IntentService {
                                 // Получили ответ синхронизации по ID
                                 if ( syncid > 0 ) {
                                     clearSyncData( syncid );
+                                    Log.i("CALL", "Удаление синхронизированные данные");
                                 }
 
 
@@ -595,7 +598,9 @@ public class SyncData extends IntentService {
                             case Protocol.SYNC_COORDS: {
 
                                 if ( syncid > 0 ) {
+
                                     clearSyncData( syncid );
+                                    Log.i("COORD", "Удаление синхронизированные данные");
                                 }
 
                                 break;
@@ -798,7 +803,7 @@ public class SyncData extends IntentService {
                 JSONObject b = new JSONObject();
                 Integer syncid = 0;
 
-                Log.i("GETBODY", "SYNC_COORDS: " + head);
+                Log.i("COORD", "SYNC_COORDS: " + head);
 
                 // Проверяем есть ли данные для отправки на сервер
                 Boolean NeedSync = false;
@@ -807,7 +812,7 @@ public class SyncData extends IntentService {
                 if (c != null) {
                     NeedSync = c.getCount() > 0;
 
-                    Log.i("GETBODY", "getBody: " + String.valueOf( c.getCount() ) );
+                    Log.i("COORD", "getBody: " + String.valueOf( c.getCount() ) );
                     c.close();
                 }
                 // Данные есть нужна синхронизация
@@ -823,7 +828,7 @@ public class SyncData extends IntentService {
                     c.moveToFirst();
                     syncid = c.getInt( 0 );
                     c.close();
-                    Log.i("GETBODY", "SyncID: " + String.valueOf(syncid) );
+                    Log.i("COORD", "SyncID: " + String.valueOf(syncid) );
 
                     // Фиксируем данные для синхронизации на полученный ID синхронизации
                     sql = "INSERT INTO sync_data (obj_id, any_id, s_id)\n" +
@@ -845,7 +850,7 @@ public class SyncData extends IntentService {
                         c.moveToFirst();
                         JSONArray a = new JSONArray();
                         do {
-                            Log.i("GETBODY", "getBody: " + c.getString( c.getColumnIndex("lc_lat") ) );
+                            Log.i("COORD", "getBody: " + c.getString( c.getColumnIndex("lc_lat") ) );
                             a.put(
                                     new JSONObject()
                                             .put("lc_id", c.getLong( c.getColumnIndex("lc_id") ) )
@@ -867,7 +872,7 @@ public class SyncData extends IntentService {
 
                 }
 
-                Log.i("GETBODY", "getBody - b " + b.toString() );
+                Log.i("COORD", "getBody - b " + b.toString() );
                 return b;
             }
 
@@ -897,6 +902,7 @@ public class SyncData extends IntentService {
             }
 
             private Boolean clearSyncData( Integer SyncID ) {
+                Log.i("COORD", "Щас будем удалять");
                 if ( SyncID < 1 ) return false;
 
                 String so_table = "";
@@ -912,12 +918,15 @@ public class SyncData extends IntentService {
                     c.close();
                 }
 
+
                 // Чистка таблицы с данными
                 switch (so_table) {
 
                     case "log_calls": {
                         sql = "DELETE FROM log_calls lc WHERE EXISTS ( SELECT sd.any_id FROM sync_data sd WHERE sd.obj_id = " + String.valueOf(obj_id) + " AND sd.any_id = lc.lc_id AND sd.s_id = "+ String.valueOf(SyncID) +" )";
                         db.execSQL(sql);
+
+                        Log.i("COORD", "Данные удалены");
 
                         break;
                     }
