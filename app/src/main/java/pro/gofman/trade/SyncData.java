@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.database.SQLException;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -571,46 +572,25 @@ public class SyncData extends IntentService {
                         break;
                     }
 
-                    // Получает ответы сервера после передачи данных
-                    case Protocol.RESULT_SYNC: {
-                        Log.i("COORD", "Получили ответ от сервера");
 
-
+                    // Ответы сервера после приемки звонков
+                    case Protocol.SYNC_CALLS: {
                         Integer syncid = body.optInt( Protocol.SYNC_ID, 0 );
 
-                        // Должно быть удаление успешно отправленных данных
-                        switch ( body.optString(Protocol.NAME) ) {
-
-
-                            // Ответ от отправки данных по звонкам
-                            case Protocol.SYNC_CALLS: {
-
-                                // Получили ответ синхронизации по ID
-                                if ( syncid > 0 ) {
-                                    clearSyncData( syncid );
-                                    Log.i("CALL", "Удаление синхронизированные данные");
-                                }
-
-
-                                break;
-                            }
-
-                            case Protocol.SYNC_COORDS: {
-
-                                if ( syncid > 0 ) {
-
-                                    clearSyncData( syncid );
-                                    Log.i("COORD", "Удаление синхронизированные данные");
-                                }
-
-                                break;
-                            }
-
-                            default:
-                                break;
+                        if ( body.optBoolean(Protocol.RESULT, false) ) {
+                            Log.i("CALL", "Удаление синхронизированные данные");
+                            clearSyncData( syncid );
                         }
 
+                    }
+                    // Ответы сервера после приемки координаты
+                    case Protocol.SYNC_COORDS: {
+                        Integer syncid = body.optInt( Protocol.SYNC_ID, 0 );
 
+                        if ( body.optBoolean(Protocol.RESULT, false) ) {
+                            Log.i("COORD", "Удаление синхронизированные данные");
+                            clearSyncData( syncid );
+                        }
 
                     }
 
@@ -631,7 +611,7 @@ public class SyncData extends IntentService {
                     // Сообщаем MainActyvity что синхронизация окончена
                     Intent intent = new Intent();
                     intent.setAction( ACTION_SYNCDATA );
-                    intent.putExtra( EXTRA_RESULT, new JSONObject().put("finish", true).toString() );
+                    intent.putExtra( EXTRA_RESULT, new JSONObject().put(Protocol.FINISH, true).toString() );
                     sendBroadcast( intent );
 
                     // websocket.disconnect();
@@ -909,7 +889,7 @@ public class SyncData extends IntentService {
                 Integer obj_id = 0;
 
                 // Узнаем тип объета который надо зачистить
-                String sql = "SELECT so.so_table, so.so_id FROM sync s JOIN sync_object so ON (s.obj_id = so.so_id) WHERE s.s_id = " + String.valueOf(SyncID);
+                String sql = "SELECT so.so_table, so.so_id FROM sync_data sd JOIN sync_object so ON (sd.obj_id = so.so_id) WHERE sd.s_id = " + String.valueOf(SyncID) + " LIMIT 1";
                 Cursor c = db.rawQuery(sql, null);
                 if ( c != null ) {
                     c.moveToFirst();
@@ -918,26 +898,13 @@ public class SyncData extends IntentService {
                     c.close();
                 }
 
-
-                // Чистка таблицы с данными
-                switch (so_table) {
-
-                    case "log_calls": {
-                        sql = "DELETE FROM log_calls lc WHERE EXISTS ( SELECT sd.any_id FROM sync_data sd WHERE sd.obj_id = " + String.valueOf(obj_id) + " AND sd.any_id = lc.lc_id AND sd.s_id = "+ String.valueOf(SyncID) +" )";
-                        db.execSQL(sql);
-
-                        Log.i("COORD", "Данные удалены");
-
-                        break;
-                    }
-
-                    default:
-                        break;
-
-                }
+                sql = "DELETE FROM " + so_table + " WHERE EXISTS ( SELECT sd.any_id FROM sync_data sd WHERE sd.obj_id = " + String.valueOf(obj_id) + " AND sd.any_id = " + so_table + ".lc_id AND sd.s_id = "+ String.valueOf(SyncID) +" )";
+                //Log.i("COORD", sql);
+                db.execSQL(sql);
+                Log.i("COORD", "Данные удалены");
 
                 // Чистка таблицы синхронизации
-                sql = "DELETE FROM sync_data sd WHERE sd.obj_id = " + String.valueOf(obj_id) + " AND sd.s_id = " + so_table;
+                sql = "DELETE FROM sync_data sd WHERE sd.obj_id = " + String.valueOf(obj_id) + " AND sd.s_id = " + SyncID;
                 db.execSQL(sql);
 
                 sql = "DELETE FROM sync s WHERE s.s_id = " + String.valueOf(SyncID);
@@ -1012,7 +979,6 @@ public class SyncData extends IntentService {
                             } else if ( f[j][2].equals("bool") ) {
                                 cv.put(f[j][0],  t.getBoolean(f[j][1]));
                             }
-
                         }
                         db.replace(tn, cv);
 

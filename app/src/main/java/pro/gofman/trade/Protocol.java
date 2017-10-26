@@ -20,6 +20,8 @@ public class Protocol {
     public static final String NAME = "name";
     public static final String ID = "id";
     public static final String DEBUG = "debug";
+    public static final String FINISH = "finish";
+
 
 
     protected static final String CONNECTION_BEGIN = "BeginConnection";

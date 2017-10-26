@@ -94,9 +94,6 @@ public class MessagingService extends FirebaseMessagingService {
 
                  */
 
-
-
-
                 // Обрабатываем запросы на синхронизацию
                 // получаем массив запросов
                 arr = data.optJSONArray( Protocol.NOTIFICATION_DATA );
