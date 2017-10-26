@@ -15,6 +15,8 @@ import android.preference.PreferenceManager;
 import android.location.Location;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -34,6 +36,7 @@ public class Utils {
     final static String KEY_LOCATION_UPDATES_REQUESTED = "location-updates-requested";
     final static String KEY_LOCATION_UPDATES_RESULT = "location-update-result";
 
+    // Создание уведомления на телефоне
     public static void sendNotification(Context context, JSONObject n) {
 
         // Переход по клику
@@ -84,17 +87,41 @@ public class Utils {
 
     }
 
+    // Запуск синхронизации данных
+    public static Boolean sendCustomSync(  JSONArray p ) {
 
-    public static void createLocationRequest( LocationRequest lr ) {
+        Log.i(Protocol.CUSTOM_SYNC, "syncCustomQuery: "+ p.toString() );
+        DB db = Trade.getWritableDatabase();
 
-        lr = new LocationRequest();
+        try {
 
-        lr.setInterval( Protocol.LOCATION_UPDATE_INTERVAL );
-        lr.setFastestInterval( Protocol.LOCATION_FASTEST_UPDATE_INTERVAL );
-        lr.setPriority( LocationRequest.PRIORITY_HIGH_ACCURACY );
-        lr.setMaxWaitTime( Protocol.LOCATION_MAX_WAIT_TIME );
+            JSONObject connectionData = new JSONObject( db.getOptions( DB.OPTION_CONNECTION ) );
+            JSONObject userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
 
+            // Параметры для соединения с сервером
+            connectionData.put( Protocol.USER_DATA, userData );
+            connectionData.put( Protocol.CUSTOM_SYNC, true );
+            connectionData.put( Protocol.DATA, p );
+
+            Intent intent = new Intent( Trade.getAppContext(), SyncData.class);
+            intent.setAction( Trade.SERVICE_SYNCDATA );
+            intent.putExtra( Trade.SERVICE_PARAM, connectionData.toString() );
+
+            Trade.getAppContext().startService( intent );
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+
+        return true;
     }
+
+
+
+
+
 
     public static String getLocationResultTitle(Context context, List<Location> locations) {
         String numLocationsReported = context.getResources().getQuantityString(

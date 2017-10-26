@@ -26,12 +26,16 @@ public class NewsAbstractItem extends AbstractItem<NewsAbstractItem, NewsAbstrac
 
     @Override
     public int getType() {
-        return 0;
+        return no.getType();
     }
 
     @Override
     public int getLayoutRes() {
-        return R.layout.recycleview_news;
+        if (no.getType() == 2) {
+            return R.layout.recycleview_news;
+        } else {
+            return R.layout.recycleview_news2;
+        }
     }
 
     public NewsObject getObj() {

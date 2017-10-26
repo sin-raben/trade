@@ -21,6 +21,7 @@ public class Protocol {
     public static final String ID = "id";
     public static final String DEBUG = "debug";
     public static final String FINISH = "finish";
+    public static final String NOW = "now";
 
 
 

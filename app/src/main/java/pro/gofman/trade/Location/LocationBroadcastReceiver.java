@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.google.android.gms.location.LocationResult;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -99,7 +100,7 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
                         }
 
 
-                        // Надо попробовать отсюда остановить сбор координат, если тип запроса координат одиночный запрос
+                        // Если одиночный запрос, останавливаем сервис сбора координат
                         if ( p.optInt(Protocol.EVENT, Protocol.EVENT_UNKNOW) == Protocol.EVENT_QUERY ) {
 
                             Intent intentStop = new Intent(context, SyncData.class);
@@ -107,9 +108,23 @@ public class LocationBroadcastReceiver extends BroadcastReceiver {
                             intentStop.putExtra( Trade.SERVICE_PARAM,  p.toString() );
                             context.startService(intentStop);
 
-
                             Log.i("COORD", "Стоп отправлен");
+
+                            // Запускаем сервис синхронизации с отправкой координат
+                            Utils.sendCustomSync(
+                                    new JSONArray()
+                                        .put(
+                                                new JSONObject()
+                                                    .put( Protocol.HEAD, Protocol.SYNC_COORDS )
+                                        )
+
+                            );
+
+                            Log.i("COORD", "Старт синхронизации отправлен");
+
                         }
+
+
 
 
                     } catch (Exception e) {

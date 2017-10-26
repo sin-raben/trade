@@ -58,7 +58,7 @@ public class NewsActivity extends AppCompatActivity {
         ia.withOnClickListener(new FastAdapter.OnClickListener<NewsAbstractItem>() {
             @Override
             public boolean onClick(View v, IAdapter<NewsAbstractItem> adapter, NewsAbstractItem item, int position) {
-                DB db = Trade.getWritableDatabase();
+                //DB db = Trade.getWritableDatabase();
                 //Log.i("CLICK", String.valueOf(position) + " " + String.valueOf(item.getObj().getID()) + " " + db.getSearchString( item.getObj().getID() ));
 
                 Toast.makeText( v.getContext(), "Новость: " + String.valueOf( item.getObj().getID() ), Toast.LENGTH_SHORT ).show();
@@ -86,6 +86,7 @@ public class NewsActivity extends AppCompatActivity {
                     i.getObj().setID( c.getInt( c.getColumnIndex("n_id") ));
                     i.getObj().setTitle( c.getString( c.getColumnIndex("n_title") ) );
                     i.getObj().setText( c.getString( c.getColumnIndex("n_text")  ) );
+                    i.getObj().setType( c.getInt(c.getColumnIndex("n_type" ) ) );
 
                     r.add(i);
 

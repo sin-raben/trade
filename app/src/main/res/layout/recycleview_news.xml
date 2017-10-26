@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/material_drawer_item_primary"
-    android:gravity="center_vertical|start"
-    android:paddingEnd="@dimen/material_drawer_vertical_padding"
-    android:paddingStart="@dimen/material_drawer_vertical_padding"
-    android:paddingRight="@dimen/material_drawer_vertical_padding"
-    android:paddingLeft="@dimen/material_drawer_vertical_padding">
+    android:layout_height="match_parent"
+    card_view:cardCornerRadius="@dimen/material_drawer_account_header_horizontal_bottom">
 
-    <TextView
-        android:id="@+id/recycleview_news_name"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_vertical|start"
-        android:lines="1"
-        android:textDirection="anyRtl"
-        android:textSize="@dimen/material_drawer_item_primary_text"
-        tools:text="Some drawer text" />
+        android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/recycleview_news_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:gravity="center_vertical|start"
-        android:lines="1"
-        android:textDirection="anyRtl"
-        android:textSize="@dimen/material_drawer_item_primary_description"
-        tools:text="Some drawer text" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="47dp"
+            android:text="Button"
+            card_view:layout_anchorGravity="bottom|end"
+            tools:layout_editor_absoluteY="3dp" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+</android.support.v7.widget.CardView>

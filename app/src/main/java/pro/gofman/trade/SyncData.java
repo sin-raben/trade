@@ -107,7 +107,6 @@ public class SyncData extends IntentService {
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient( Trade.getAppContext() );
-        Utils.createLocationRequest( mLocationRequest );
     }
 
     @Override
@@ -215,7 +214,6 @@ public class SyncData extends IntentService {
 
             } else if ( ACTION_LOGCOORD_STOP.equals(action) ) {
                 Log.i("COORD", "Запрос на отстановку сервиса по сбору координат");
-
 
                 try {
 

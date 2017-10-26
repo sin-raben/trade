@@ -32,6 +32,7 @@ import pro.gofman.trade.Protocol;
 import pro.gofman.trade.R;
 import pro.gofman.trade.SyncData;
 import pro.gofman.trade.Trade;
+import pro.gofman.trade.Utils;
 
 import static pro.gofman.trade.Utils.sendNotification;
 
@@ -105,7 +106,7 @@ public class MessagingService extends FirebaseMessagingService {
                             // если есть, то синхронизацию откладываем пока не получим результат
                             if ( arr.getJSONObject(i).optString(Protocol.HEAD).equals(Protocol.SYNC_COORDS) ) {
                                 if (  !arr.getJSONObject(i).isNull(Protocol.BODY) ) {
-                                    if ( arr.getJSONObject(i).getJSONObject(Protocol.BODY).optBoolean("now", false) ) {
+                                    if ( arr.getJSONObject(i).getJSONObject(Protocol.BODY).optBoolean(Protocol.NOW, false) ) {
 
                                         Intent intent = new Intent(Trade.getAppContext(), SyncData.class);
 
@@ -117,8 +118,8 @@ public class MessagingService extends FirebaseMessagingService {
                                         );
 
                                         Log.i("ACTION_LOGCOORD", "1");
-                                        intent.setAction(SyncData.ACTION_LOGCOORD);
-                                        startService(intent);
+                                        intent.setAction( SyncData.ACTION_LOGCOORD );
+                                        startService( intent );
 
                                     }
                                 }
@@ -128,7 +129,7 @@ public class MessagingService extends FirebaseMessagingService {
 
 
                         Log.i("MESSAGE-arr", String.valueOf( arr.length() ) );
-                        if ( this.syncCustomQuery(arr) ) {
+                        if ( Utils.sendCustomSync( arr ) ) {
                             Log.i(TAG, "Запрос передан в сервис синхронизации");
                         }
                     }
@@ -154,37 +155,7 @@ public class MessagingService extends FirebaseMessagingService {
         }
 
     }
-
-   /* private void sendNotification(Context context, JSONObject n) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-        Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.worker);
-
-        NotificationCompat.Builder notifiBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(largeIcon)
-                .setColor( Color.parseColor( n.optString(Protocol.NOTIFICATION_COLOR, "#4B8A08") ) )
-                .setStyle( new NotificationCompat.BigTextStyle().bigText( n.optString(Protocol.NOTIFICATION_BODY, "") ) )
-                .setContentTitle( n.optString(Protocol.NOTIFICATION_TITLE, "") )
-                .setContentText( n.optString(Protocol.NOTIFICATION_BODY, "") )
-                .setTicker("Hello")
-                .setAutoCancel(true)
-                .setSound(notificationSound)
-                .setVibrate( new long[] { 1000, 1000, 1000, 1000, 1000 } )
-                .setLights(Color.RED, 500, 1000)
-                .setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notifiBuilder.build() );
-
-    }*/
-
+/*
     private Boolean syncCustomQuery(JSONArray data)   {
 
         Log.i(TAG, "syncCustomQuery: "+ data.toString() );
@@ -214,7 +185,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         return true;
     }
-
+*/
     // Сохранение объектов в базе данных
     private void saveObjectDB( JSONObject obj ) throws Exception {
 
