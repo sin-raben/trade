@@ -15,9 +15,14 @@ import pro.gofman.trade.R;
  * Created by roman on 04.10.17.
  */
 
+
+// http://www.codexpedia.com/android/android-recyclerview-with-multiple-different-layouts/
+
 public class NewsAbstractItem extends AbstractItem<NewsAbstractItem, NewsAbstractItem.ViewHolder> {
 
     private NewsObject no;
+
+
 
     @Override
     public int getType() {
