@@ -737,6 +737,11 @@
           "primary_key": true
         },
         {
+          "field": "n_exid",
+          "type": "integer",
+          "description": "Внешний ID новости"
+        },
+        {
           "field": "n_date",
           "type": "text",
           "description": "Дата новости"
@@ -762,6 +767,38 @@
           "description": "Тип новости"
         }
 
+      ]
+    },
+    {
+      "table": "news_type",
+      "description": "Справочник типов новостей",
+      "fields": [
+        {
+          "field": "n_type",
+          "type": "integer",
+          "description": "ID типа новости",
+          "primary_key": true
+        },
+        {
+          "field": "n_name",
+          "type": "text",
+          "description": "Описание типа новости"
+        }
+
+      ],
+      "values": [
+        {
+          "n_type": 1,
+          "n_name": "Простая новость без действий"
+        },
+        {
+          "n_type": 2,
+          "n_name": "Новость с картинкой без действий"
+        },
+        {
+          "n_type": 3,
+          "n_name": "Новость "
+        }
       ]
     },
     {

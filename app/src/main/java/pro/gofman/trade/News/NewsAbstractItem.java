@@ -2,6 +2,7 @@ package pro.gofman.trade.News;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
@@ -16,12 +17,9 @@ import pro.gofman.trade.R;
  */
 
 
-// http://www.codexpedia.com/android/android-recyclerview-with-multiple-different-layouts/
-
 public class NewsAbstractItem extends AbstractItem<NewsAbstractItem, NewsAbstractItem.ViewHolder> {
 
     private NewsObject no;
-
 
 
     @Override
@@ -32,9 +30,9 @@ public class NewsAbstractItem extends AbstractItem<NewsAbstractItem, NewsAbstrac
     @Override
     public int getLayoutRes() {
         if (no.getType() == 2) {
-            return R.layout.recycleview_news;
+            return R.layout.recycleview_news_3;
         } else {
-            return R.layout.recycleview_news2;
+            return R.layout.recycleview_news;
         }
     }
 
@@ -62,12 +60,15 @@ public class NewsAbstractItem extends AbstractItem<NewsAbstractItem, NewsAbstrac
     protected static class ViewHolder extends RecyclerView.ViewHolder {
         protected TextView name;
         protected TextView description;
+        protected Button btnOK;
 
         public ViewHolder(View view) {
             super(view);
 
             this.name = (TextView) view.findViewById(R.id.recycleview_news_name);
             this.description = (TextView) view.findViewById(R.id.recycleview_news_desc);
+            this.btnOK = (Button) view.findViewById(R.id.recycleview_news_btnOK);
+            // btnOK.setOnClickListener(  );
         }
     }
 }

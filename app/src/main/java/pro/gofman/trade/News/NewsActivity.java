@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.mikepenz.fastadapter.FastAdapter;
@@ -61,13 +62,14 @@ public class NewsActivity extends AppCompatActivity {
                 //DB db = Trade.getWritableDatabase();
                 //Log.i("CLICK", String.valueOf(position) + " " + String.valueOf(item.getObj().getID()) + " " + db.getSearchString( item.getObj().getID() ));
 
+
                 Toast.makeText( v.getContext(), "Новость: " + String.valueOf( item.getObj().getID() ), Toast.LENGTH_SHORT ).show();
                 return true;
             }
         });
 
         r.setLayoutManager( new LinearLayoutManager( this ) );
-        r.addItemDecoration( new LineDividerItemDecoration( this ) );
+        //r.addItemDecoration( new LineDividerItemDecoration( this ) );
         r.setAdapter( ia );
     }
 
