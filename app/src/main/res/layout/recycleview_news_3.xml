@@ -18,9 +18,10 @@
             android:id="@+id/imageView"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:hapticFeedbackEnabled="true"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent"
-            card_view:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+            card_view:srcCompat="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/recycleview_news_name"
@@ -61,7 +62,6 @@
             style="@android:style/Widget.Material.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:elevation="10dp"
             android:text="ОТКЛИК"
             card_view:layout_constraintTop_toBottomOf="@+id/recycleview_news_desc"

@@ -347,13 +347,12 @@ public class SyncData extends IntentService {
                         if ( mAuth ) {
 
 
-                            Log.i("newKey", body.getString("newKey"));
-                            if ( body.optString("newKey").length() > 0 ) {
+                            Log.i("NEWKEY", body.getString(Protocol.NEW_KEY));
 
-                                saveNewKey( websocket, body.optString("newKey") );
-
+                            // Получили новый ключ для шифрования логина и пароля при следующем подключении
+                            if ( body.optString(Protocol.NEW_KEY).length() > 0 ) {
+                                saveNewKey( websocket, body.optString( Protocol.NEW_KEY ) );
                             }
-
 
 
                             // Делаем синхронизацию, инициатор пользователь

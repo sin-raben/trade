@@ -33,9 +33,10 @@ public class DB {
     private SQLiteDatabase mDatabase;
     private SimpleDateFormat df;
 
+
     public static final int OPTION_CONNECTION = 1;
     public static final int OPTION_AUTH = 2;
-    public static final int OPTION_COORD = 3;
+    public static final int OPTION_TKEY = 3;
 
     public DB(Context context) {
         mHelper = new dbHelper(context);

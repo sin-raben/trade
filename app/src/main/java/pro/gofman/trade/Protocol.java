@@ -28,6 +28,7 @@ public class Protocol {
     protected static final String CONNECTION_BEGIN = "BeginConnection";
 
     public static final String USER_DATA = "userData";
+    public static final String NEW_KEY = "newKey";
     public static final String COMMAND_SYNC = "commandSync";
     public static final String CUSTOM_SYNC = "customSync";
     // Команды синхронизации

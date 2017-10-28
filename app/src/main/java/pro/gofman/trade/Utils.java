@@ -160,13 +160,14 @@ public class Utils {
 
     public static JSONObject authData(JSONObject a ) throws JSONException {
         JSONObject r = new JSONObject();
+        DB db = Trade.getWritableDatabase();
 
         r.put( Protocol.HEAD, Protocol.AUTH_USER );
         r.put(
                 Protocol.BODY,
                 new JSONObject()
                     .put("idToken", a.getString("idToken" ))
-                    .put( "key", md5( a.getString("login") + a.getString("password") + a.getString("idToken"), a.getString("tkey") ) )
+                    .put( "key", md5( a.getString("login") + a.getString("password") + a.getString("idToken"), db.getOptions(DB.OPTION_TKEY) ) )
 
         );
 

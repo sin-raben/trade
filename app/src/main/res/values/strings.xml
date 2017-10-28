@@ -24,4 +24,5 @@
         <item quantity="one">One location reported</item>
         <item quantity="other">%d locations reported</item>
     </plurals>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>
