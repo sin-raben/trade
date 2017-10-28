@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
             и вытягиваем информацию о пользователе
          */
 
+
         String model = Build.BRAND + " : " + Build.MODEL + " : " + Build.BOARD + " : " + Build.BOOTLOADER + " : " + Build.DEVICE + " : "
                 + Build.DISPLAY + " : " + Build.FINGERPRINT + " : " + Build.HARDWARE + " : " + Build.HOST + " : " + Build.MANUFACTURER  + " : " + Build.ID + " : " + Build.PRODUCT + " : " + Build.USER;
 
@@ -185,6 +186,11 @@ public class MainActivity extends AppCompatActivity {
             // Берем с базы данных информацию подключения к серверу и пользователе
             connectionData = new JSONObject( db.getOptions( DB.OPTION_CONNECTION ) );
             userData = new JSONObject( db.getOptions( DB.OPTION_AUTH ) );
+
+            //userData = Utils.authData( userData.getJSONObject("auth") );
+
+            Log.i("userData", userData.toString() );
+
             // При авторизации надо отправить на сервер, FCM Token, чтобы можно было пушить на устройство
             userData.put( Protocol.FCM_TOKEN, Trade.getFcmToken() );
 

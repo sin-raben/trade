@@ -31,13 +31,13 @@
         },
         {
           "o_id": 2,
-          "o_info": "Авторизация",
-          "o_data": "{\"FullName\":\"Гофман Роман\",\"Email\":\"roman@gofman.pro\",\"idToken\":\"gofman-1\",\"authData\":{\"login\":\"gofman\",\"password\":\"1\"}}"
+          "o_info": "Персональные данные",
+          "o_data": "{ \"fullname\": \"Гофман Роман\", \"email\": \"roman@gofman.pro\", \"auth\": { \"idToken\": \"gofman-1\", \"login\": \"gofman\", \"password\": \"1\", \"tkey\": \"1\" } }"
         },
         {
           "o_id": 3,
-          "o_info": "Геолокация",
-          "o_data": "{\"mon\":{\"work\":true,\"t0\":\"8:00\",\"t1\":\"17:00\"},\"lm\":{\"minTime\":60000,\"minDistance\":0}}"
+          "o_info": "Авторизация",
+          "o_data": ""
         }
       ]
     },
@@ -735,11 +735,6 @@
           "type": "integer",
           "description": "ID справочника новостей",
           "primary_key": true
-        },
-        {
-          "field": "n_exid",
-          "type": "integer",
-          "description": "Внешний ID новости"
         },
         {
           "field": "n_date",

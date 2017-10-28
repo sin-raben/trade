@@ -1,6 +1,7 @@
 package pro.gofman.trade.News;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -68,7 +69,12 @@ public class NewsAbstractItem extends AbstractItem<NewsAbstractItem, NewsAbstrac
             this.name = (TextView) view.findViewById(R.id.recycleview_news_name);
             this.description = (TextView) view.findViewById(R.id.recycleview_news_desc);
             this.btnOK = (Button) view.findViewById(R.id.recycleview_news_btnOK);
-            // btnOK.setOnClickListener(  );
+//            btnOK.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Log.i("CARDVIEW", v.toString());
+//                }
+//            });
         }
     }
 }

@@ -346,6 +346,16 @@ public class SyncData extends IntentService {
 
                         if ( mAuth ) {
 
+
+                            Log.i("newKey", body.getString("newKey"));
+                            if ( body.optString("newKey").length() > 0 ) {
+
+                                saveNewKey( websocket, body.optString("newKey") );
+
+                            }
+
+
+
                             // Делаем синхронизацию, инициатор пользователь
                             if ( p.optBoolean( Protocol.COMMAND_SYNC, false ) ) {
 
@@ -599,6 +609,8 @@ public class SyncData extends IntentService {
                 }
 
 
+
+
                 count -= 1;
                 // Log.i("COUNT", String.valueOf(count) + " " + head + " -" );
 
@@ -693,6 +705,40 @@ public class SyncData extends IntentService {
 
             @Override
             public void onSendingHandshake(WebSocket websocket, String requestLine, List<String[]> headers) throws Exception {
+
+            }
+
+            private void saveNewKey(WebSocket w, String nk) {
+                Log.i( "NEWKEY", p.toString()
+                );
+
+                try {
+                    JSONObject a = p.getJSONObject("userData");
+                    a.getJSONObject("auth").remove("tkey");
+                    a.getJSONObject("auth").put("tkey", nk );
+
+                    Log.i( "NEWKEY", a.toString() );
+
+
+                    if ( db.setOptions( DB.OPTION_AUTH, a.toString() ) ) {
+                        Log.i("NEWKEY", "true");
+                    } else {
+                        Log.i("NEWKEY", "false");
+                    }
+
+
+                    w.sendText(
+                            new JSONObject()
+                                .put( Protocol.HEAD, Protocol.AUTH_USER )
+                                .put( Protocol.BODY, new JSONObject().put(Protocol.RESULT, true) )
+                                .toString()
+                    );
+
+
+                } catch (JSONException e) {
+
+                }
+
 
             }
 
@@ -1021,14 +1067,12 @@ public class SyncData extends IntentService {
             // Проверка соединения
             if ( ws.isOpen() ) {
 
-                // Log.i("auth", p.toString());
+                Log.i("auth", p.getJSONObject("userData").getJSONObject("auth").toString());
                 // Формирование и отправка команды авторизации
                 ws.sendText(
-                        new JSONObject()
-                                .put( Protocol.HEAD, Protocol.AUTH_USER )
-                                .put( Protocol.BODY, p.getJSONObject( Protocol.USER_DATA ) )
-                                .toString()
-
+                        Utils.authData(
+                                p.getJSONObject("userData").getJSONObject("auth")
+                        ).toString()
                 );
 
 

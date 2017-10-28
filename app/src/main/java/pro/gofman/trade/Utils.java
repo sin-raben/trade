@@ -22,10 +22,18 @@ import org.json.JSONObject;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.JsonNull;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 
 /**
@@ -116,6 +124,53 @@ public class Utils {
 
 
         return true;
+    }
+
+
+
+
+    public static String md5(String s, String keyString) {
+        String sEncodedString = null;
+        try
+        {
+            SecretKeySpec key = new SecretKeySpec((keyString).getBytes("UTF-8"), "HmacMD5");
+            Mac mac = Mac.getInstance("HmacMD5");
+            mac.init(key);
+
+            byte[] bytes = mac.doFinal(s.getBytes("ASCII"));
+
+            StringBuffer hash = new StringBuffer();
+
+            for (int i=0; i<bytes.length; i++) {
+                String hex = Integer.toHexString(0xFF &  bytes[i]);
+                if (hex.length() == 1) {
+                    hash.append('0');
+                }
+                hash.append(hex);
+            }
+            sEncodedString = hash.toString();
+        }
+        catch (UnsupportedEncodingException e) {}
+        catch(InvalidKeyException e){}
+        catch (NoSuchAlgorithmException e) {}
+        return sEncodedString ;
+    }
+
+
+
+    public static JSONObject authData(JSONObject a ) throws JSONException {
+        JSONObject r = new JSONObject();
+
+        r.put( Protocol.HEAD, Protocol.AUTH_USER );
+        r.put(
+                Protocol.BODY,
+                new JSONObject()
+                    .put("idToken", a.getString("idToken" ))
+                    .put( "key", md5( a.getString("login") + a.getString("password") + a.getString("idToken"), a.getString("tkey") ) )
+
+        );
+
+        return r;
     }
 
 

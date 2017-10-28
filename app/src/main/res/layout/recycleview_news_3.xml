@@ -14,6 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+
         <TextView
             android:id="@+id/recycleview_news_name"
             android:layout_width="0dp"
@@ -23,8 +31,7 @@
             android:text="Новый товар!"
             android:textAlignment="viewStart"
             android:textStyle="bold"
-            card_view:layout_constraintEnd_toStartOf="@+id/textView"
-            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintStart_toEndOf="@+id/imageView"
             card_view:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -35,7 +42,7 @@
             android:layout_marginStart="8dp"
             android:text="В продажу поступили новые товараы, которые отличаются качеством и количеством. Цена на эти вещи очень интересная и сохраниться еще 2 недели. "
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintStart_toEndOf="@+id/imageView"
             card_view:layout_constraintTop_toBottomOf="@+id/recycleview_news_name" />
 
         <TextView
@@ -60,21 +67,6 @@
             card_view:layout_constraintTop_toBottomOf="@+id/recycleview_news_desc"
             tools:layout_editor_absoluteX="8dp" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/colorPrimaryDark"
-            android:elevation="6dp"
-            android:text=" ЭЛЕКТРИКА "
-            android:textColor="@color/material_drawer_selected"
-            card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintHorizontal_bias="1.0"
-            card_view:layout_constraintStart_toEndOf="@+id/recycleview_news_name"
-            card_view:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
