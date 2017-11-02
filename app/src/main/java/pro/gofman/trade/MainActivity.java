@@ -202,6 +202,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        if ( userData.
+
+
+
         AccountHeader ah = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withSelectionListEnabledForSingleProfile(false)
@@ -213,10 +217,16 @@ public class MainActivity extends AppCompatActivity {
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+
+
+
                         return false;
                     }
                 })
+                .withProfileImagesClickable(true).withResetDrawerOnProfileListClick(true)
                 .build();
+
+
 
 
 
