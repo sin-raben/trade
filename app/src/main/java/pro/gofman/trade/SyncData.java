@@ -322,7 +322,7 @@ public class SyncData extends IntentService {
 
             @Override
             public void onTextMessage(WebSocket websocket, String text) throws Exception {
-                //Log.i("WS", "Text: " + text);
+                Log.i("WEBSOCKET", "Text: " + text);
 
 
                 // Полученный JSONObject
@@ -707,25 +707,18 @@ public class SyncData extends IntentService {
 
             }
 
+            // Функция записывает новый ключ шифрования
             private void saveNewKey(WebSocket w, String nk) {
-                Log.i( "NEWKEY", p.toString()
-                );
 
                 try {
-                    JSONObject a = p.getJSONObject("userData");
-                    a.getJSONObject("auth").remove("tkey");
-                    a.getJSONObject("auth").put("tkey", nk );
 
-                    Log.i( "NEWKEY", a.toString() );
-
-
-                    if ( db.setOptions( DB.OPTION_AUTH, a.toString() ) ) {
+                    if ( db.setOptions( DB.OPTION_TKEY, nk ) ) {
                         Log.i("NEWKEY", "true");
                     } else {
                         Log.i("NEWKEY", "false");
                     }
 
-
+                    // Отправляем на сервер инфу, что новый ключ сохранили
                     w.sendText(
                             new JSONObject()
                                 .put( Protocol.HEAD, Protocol.AUTH_USER )
@@ -734,11 +727,9 @@ public class SyncData extends IntentService {
                     );
 
 
-                } catch (JSONException e) {
+                } catch (Exception e) {
 
                 }
-
-
             }
 
             // Функция собирает пакет звонков для отправки на сервер

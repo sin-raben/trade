@@ -131,8 +131,7 @@ public class Utils {
 
     public static String md5(String s, String keyString) {
         String sEncodedString = null;
-        try
-        {
+        try {
             SecretKeySpec key = new SecretKeySpec((keyString).getBytes("UTF-8"), "HmacMD5");
             Mac mac = Mac.getInstance("HmacMD5");
             mac.init(key);
@@ -149,11 +148,15 @@ public class Utils {
                 hash.append(hex);
             }
             sEncodedString = hash.toString();
+        } catch (UnsupportedEncodingException e) {
+
+        } catch(InvalidKeyException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
         }
-        catch (UnsupportedEncodingException e) {}
-        catch(InvalidKeyException e){}
-        catch (NoSuchAlgorithmException e) {}
-        return sEncodedString ;
+
+        return sEncodedString;
     }
 
 

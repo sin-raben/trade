@@ -32,12 +32,12 @@
         {
           "o_id": 2,
           "o_info": "Персональные данные",
-          "o_data": "{ \"fullname\": \"Гофман Роман\", \"email\": \"roman@gofman.pro\", \"auth\": { \"idToken\": \"gofman-1\", \"login\": \"gofman\", \"password\": \"1\", \"tkey\": \"1\" } }"
+          "o_data": "{ \"fullname\": \"Гофман Роман\", \"email\": \"roman@gofman.pro\", \"auth\": { \"idToken\": \"gofman-1\", \"login\": \"gofman\", \"password\": \"1\" } }"
         },
         {
           "o_id": 3,
           "o_info": "Авторизация",
-          "o_data": ""
+          "o_data": "1"
         }
       ]
     },

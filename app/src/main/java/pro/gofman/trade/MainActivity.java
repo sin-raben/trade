@@ -53,6 +53,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 
+import pro.gofman.trade.Auth.LoginActivity;
 import pro.gofman.trade.Coords.CoordsActivity;
 import pro.gofman.trade.Countragents.DeliveryPointActivity;
 import pro.gofman.trade.Docs.DocsActivity;
@@ -202,8 +203,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if ( userData.
-
 
 
         AccountHeader ah = new AccountHeaderBuilder()
@@ -303,7 +302,13 @@ public class MainActivity extends AppCompatActivity {
                                 .withName("Полная синхронизация")
                                 .withLevel(2)
                                 .withIcon(R.drawable.document)
-                                .withIdentifier(2005)
+                                .withIdentifier(2005),
+                        new SecondaryDrawerItem()
+                                .withName("Вход")
+                                .withLevel(2)
+                                .withIcon(R.drawable.document)
+                                .withIdentifier(2010)
+
                 ),
 
                 new ExpandableDrawerItem().withName("Мониторинг").withIcon(R.drawable.items).withIdentifier(22).withSelectable(false).withSubItems(
@@ -471,6 +476,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                             break;
+                        }
+
+                        case 2010: {
+                            Intent i = new Intent( MainActivity.this, LoginActivity.class );
+                            startActivity(i);
+
                         }
 
                         default:
