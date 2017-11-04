@@ -5,9 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:layout_constraintVertical_chainStyle="packed"
     tools:context="pro.gofman.trade.Auth.LoginActivity"
-    tools:layout_editor_absoluteX="0dp"
     tools:showIn="@layout/activity_login">
 
     <android.support.design.widget.TextInputLayout
@@ -16,12 +14,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|center"
+        app:layout_constraintBottom_toTopOf="@+id/tilPassword"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_constraintVertical_bias="0.5">
+        app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/edtLogin"
@@ -34,8 +31,8 @@
             android:ems="10"
             android:hint="Пользователь"
             android:inputType="text" />
-    </android.support.design.widget.TextInputLayout>
 
+    </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/tilPassword"
@@ -43,12 +40,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|center"
+        app:layout_constraintBottom_toTopOf="@+id/btnEnter"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tilLogin"
-        tools:layout_constraintVertical_bias="0.5">
+        >
 
         <EditText
             android:id="@+id/edtPassword"
@@ -59,22 +56,18 @@
             android:ems="10"
             android:hint="Пароль"
             android:inputType="textPassword|textVisiblePassword" />
-    </android.support.design.widget.TextInputLayout>
 
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/btnEnter"
-        android:layout_width="215dp"
-        android:layout_height="52dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="Войти"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilPassword"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@+id/tilPassword" />
+
 </android.support.constraint.ConstraintLayout>
