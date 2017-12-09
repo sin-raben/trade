@@ -85,7 +85,7 @@ public class SyncData extends IntentService {
     private String head = "";
     private JSONObject body = null;
     private Integer headid = 0;
-    private Integer count = 1;
+    private Integer count = 2;
 
     private boolean mAuth = false;
 
