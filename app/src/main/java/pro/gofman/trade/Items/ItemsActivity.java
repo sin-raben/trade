@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.listeners.OnClickListener;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
@@ -61,13 +62,13 @@ public class ItemsActivity extends AppCompatActivity {
         r.setLayoutManager( new LinearLayoutManager( this ) );
 
 
-        ia = new FastItemAdapter();
+        ia = new FastItemAdapter<>();
 
         DB db = Trade.getWritableDatabase();
         ia.setNewList( getItems() );
 
         ia.withSelectable(false);
-        ia.withOnClickListener(new FastAdapter.OnClickListener<ItemAbstractItem>() {
+        ia.withOnClickListener(new OnClickListener<ItemAbstractItem>() {
             @Override
             public boolean onClick(View v, IAdapter<ItemAbstractItem> adapter, ItemAbstractItem item, int position) {
                 DB db = Trade.getWritableDatabase();

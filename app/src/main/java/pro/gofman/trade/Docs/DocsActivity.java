@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.listeners.OnClickListener;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
@@ -67,10 +68,10 @@ public class DocsActivity extends AppCompatActivity {
         r.setLayoutManager( new LinearLayoutManager( this ) );
 
         db = Trade.getWritableDatabase();
-        ia = new FastItemAdapter();
+        ia = new FastItemAdapter<>();
 
         ia.withSelectable(false);
-        ia.withOnClickListener(new FastAdapter.OnClickListener<Docs>() {
+        ia.withOnClickListener(new OnClickListener<Docs>() {
             @Override
             public boolean onClick(View v, IAdapter<Docs> adapter, Docs doc, int position) {
                 DB db = Trade.getWritableDatabase();

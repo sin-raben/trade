@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.listeners.OnClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +51,13 @@ public class NewsActivity extends AppCompatActivity {
         r.setLayoutManager( new LinearLayoutManager( this ) );
 
 
-        ia = new FastItemAdapter();
+        ia = new FastItemAdapter<>();
 
         DB db = Trade.getWritableDatabase();
         ia.setNewList( getNews() );
 
         ia.withSelectable(false);
-        ia.withOnClickListener(new FastAdapter.OnClickListener<NewsAbstractItem>() {
+        ia.withOnClickListener(new OnClickListener<NewsAbstractItem>() {
             @Override
             public boolean onClick(View v, IAdapter<NewsAbstractItem> adapter, NewsAbstractItem item, int position) {
                 //DB db = Trade.getWritableDatabase();

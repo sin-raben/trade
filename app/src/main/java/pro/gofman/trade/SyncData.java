@@ -85,7 +85,10 @@ public class SyncData extends IntentService {
     private String head = "";
     private JSONObject body = null;
     private Integer headid = 0;
-    private Integer count = 2;
+
+    // Переменная нужна для подсчета ответов от сервера, их должно быть равное количество
+    // если count = 0 можно отключаться
+    private Integer count = 1;
 
     private boolean mAuth = false;
 
@@ -346,11 +349,9 @@ public class SyncData extends IntentService {
                         endAuth = body.optBoolean(Protocol.AUTH_END, false);
 
                         if (mAuth) {
-
-
                             Log.i("NEWKEY", body.getString(Protocol.NEW_KEY));
 
-                            // Получили новый ключ для шифрования логина и пароля при следующем подключении
+                            // Получили новый ключ для шифрования логина и пароля для следующего подключения
                             if (body.optString(Protocol.NEW_KEY).length() > 0) {
                                 saveNewKey(websocket, body.optString(Protocol.NEW_KEY));
                             }
@@ -388,11 +389,6 @@ public class SyncData extends IntentService {
                                 syncQuery(websocket, Protocol.SYNC_COUNTERAGENTADDRESS);
                                 syncQuery(websocket, Protocol.SYNC_POINTSEARCH);
 
-                                // Запрашиваем цены
-                                //getPrices(websocket);
-
-                                // Запрашиваем остатки
-                                //getAmounts(websocket);
                             }
 
                             // Делаем синхронизацию, инициатор сервер,
@@ -712,12 +708,14 @@ public class SyncData extends IntentService {
             }
 
             // Функция записывает новый ключ шифрования
+            // Нужно проработать ситуацию ошибки записи в базу нового ключа
+            // отправить на сервер false и наверное отключиться или что-то другое!!!
             private void saveNewKey(WebSocket w, String nk) {
-
                 try {
 
-                    if (db.setOptions(DB.OPTION_TKEY, nk)) {
+                    if ( db.setOptions(DB.OPTION_TKEY, nk) ) {
                         Log.i("NEWKEY", "true");
+
                     } else {
                         Log.i("NEWKEY", "false");
                     }
@@ -730,6 +728,7 @@ public class SyncData extends IntentService {
                                     .toString()
                     );
 
+                    count += 1;
 
                 } catch (Exception e) {
 
@@ -997,7 +996,7 @@ public class SyncData extends IntentService {
 
                 // Если есть параметр FULLSYNC, то сначала обнуляем таблицу
                 if (FullSync) {
-                    db.execSQL("DELETE FROM " + tn);
+                    db.execSQL("DELETE FROM " + tn + ";");
                 }
 
                 // Идентификатор синхронизации
@@ -1009,6 +1008,8 @@ public class SyncData extends IntentService {
                         JSONObject t = items.getJSONObject(i);
 
                         ContentValues cv = new ContentValues();
+
+                        // Соответствие имен полей серверной базы и локальной
                         for (int j = 0; j < f.length; j++) {
                             if (f[j][2].equals("text")) {
                                 cv.put(f[j][0], t.getString(f[j][1]));
@@ -1018,8 +1019,8 @@ public class SyncData extends IntentService {
                                 cv.put(f[j][0], t.getBoolean(f[j][1]));
                             }
                         }
-                        db.replace(tn, cv);
 
+                        db.replace(tn, cv);
                         Log.i(tn, cv.getAsString(f[0][0]));
 
                     }
@@ -1028,7 +1029,6 @@ public class SyncData extends IntentService {
                     Log.e("error", "syncFunction: ", e);
                 }
 
-                //Log.i("COUNT", tn);
 
                 // Отправляем ответ об успешном приеме данных
                 JSONObject r = new JSONObject();
@@ -1057,8 +1057,8 @@ public class SyncData extends IntentService {
 
             // Проверка соединения
             if (ws.isOpen()) {
-
                 Log.i("auth", p.getJSONObject("userData").getJSONObject("auth").toString());
+
                 // Формирование и отправка команды авторизации
                 ws.sendText(
                         Utils.authData(

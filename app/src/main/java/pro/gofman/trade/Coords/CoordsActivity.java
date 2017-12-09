@@ -12,6 +12,7 @@ import android.view.View;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.listeners.OnClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +40,9 @@ public class CoordsActivity extends AppCompatActivity {
         RecyclerView r = (RecyclerView) findViewById(R.id.recyclerview_coords);
 
         db = Trade.getWritableDatabase();
-        ia = new FastItemAdapter();
+        ia = new FastItemAdapter<>();
         ia.withSelectable(false);
-        ia.withOnClickListener(new FastAdapter.OnClickListener<CoordAbstractItem>() {
+        ia.withOnClickListener(new OnClickListener<CoordAbstractItem>() {
             @Override
             public boolean onClick(View v, IAdapter<CoordAbstractItem> adapter, CoordAbstractItem item, int position) {
                 Log.i("CLICK", String.valueOf(position));

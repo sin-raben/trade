@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+import com.mikepenz.fastadapter.listeners.OnClickListener;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 
@@ -51,13 +52,13 @@ public class DeliveryPointActivity extends AppCompatActivity {
         r.setLayoutManager( new LinearLayoutManager( this ) );
 
 
-        ia = new FastItemAdapter();
+        ia = new FastItemAdapter<>();
 
         DB db = Trade.getWritableDatabase();
         ia.setNewList( getDeliveryPoint() );
 
         ia.withSelectable(false);
-        ia.withOnClickListener(new FastAdapter.OnClickListener<DeliveryPointAbstractItem>() {
+        ia.withOnClickListener(new OnClickListener<DeliveryPointAbstractItem>() {
             @Override
             public boolean onClick(View v, IAdapter<DeliveryPointAbstractItem> adapter, DeliveryPointAbstractItem item, int position) {
 
