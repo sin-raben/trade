@@ -43,6 +43,8 @@ public class Protocol {
     public static final String DATA = "data";
     public static final String RESULT = "result";
     public static final String FCM_TOKEN = "fcmToken";
+    public static final String AUTH_END = "ae";
+
 
     // Объекты синхронизации
     protected static final String AUTH_USER = "f010002s";
